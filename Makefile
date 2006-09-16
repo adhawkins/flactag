@@ -13,11 +13,15 @@ SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc)
 all: flactag discid
 
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) *.d *.bak *~ *.tar.bz2 flactag discid
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) *.d *.bak *~ *.tar.gz flactag discid
 
-distrib:
-	cd .. && tar cf - flactag/*.cc flactag/*.h flactag/Makefile flactag/README.txt | bzip2 > flactag/flactag-$(VERSION).tar.bz2
-		
+flactag-$(VERSION).tar.gz: all
+	cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz flactag/*.cc flactag/*.h flactag/Makefile flactag/README.txt
+
+install-webpages: flactag-$(VERSION).tar.gz
+	mkdir -p /auto/gentlyweb/flactag
+	cp index.html flactag-$(VERSION).tar.gz /auto/gentlyweb/flactag
+	
 %.d: %.cc
 	@echo DEPEND $< $@
 	@$(CXX) -MM $(CXXFLAGS) $< | \
