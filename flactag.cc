@@ -236,7 +236,13 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 		
 	m_FlacInfo.SetFileName(FlacFile);
 	m_FlacInfo.Read();
-	
+
+	if (!m_FlacInfo.CuesheetFound())
+	{
+		printf("No CUESHEET found\n");
+		exit(1);
+	}
+		
 	m_FlacTags=m_FlacInfo.Tags();
 	m_FlacCuesheet=m_FlacInfo.Cuesheet();
 	CDiskIDCalculate Calc(m_FlacCuesheet);

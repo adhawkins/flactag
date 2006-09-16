@@ -3,7 +3,8 @@
 #include "TagName.h"
 
 CFlacInfo::CFlacInfo()
-:	m_TagBlock(0)
+:	m_TagBlock(0),
+	m_CuesheetFound(false)
 {
 }
 
@@ -11,6 +12,11 @@ CFlacInfo::~CFlacInfo()
 {
 	if (m_TagBlock)
 		delete m_TagBlock;
+}
+
+bool CFlacInfo::CuesheetFound() const
+{
+	return m_CuesheetFound;
 }
 
 void CFlacInfo::SetFileName(const std::string& FileName)
@@ -21,6 +27,7 @@ void CFlacInfo::SetFileName(const std::string& FileName)
 	m_TagBlock=0;
 	
 	m_FileName=FileName;
+	m_CuesheetFound=0;
 }
 
 bool CFlacInfo::Read()
@@ -78,6 +85,8 @@ bool CFlacInfo::Read()
 								
 							case FLAC__METADATA_TYPE_CUESHEET:
 							{
+								m_CuesheetFound=true;
+								
 								FLAC::Metadata::CueSheet *Cuesheet=(FLAC::Metadata::CueSheet *)Iterator.get_block();
 								for (unsigned count=0;count<Cuesheet->get_num_tracks();count++)
 								{

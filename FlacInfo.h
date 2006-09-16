@@ -18,6 +18,7 @@ public:
 	bool Read();
 	tTagMap Tags() const;
 	CCuesheet Cuesheet() const;
+	bool CuesheetFound() const;
 
 	bool WriteTags(const tTagMap& Tags);
 	void SetTag(const CTagName& Name, const std::string& Value);
@@ -30,6 +31,7 @@ private:
 	CCuesheet m_Cuesheet;
 	FLAC::Metadata::Chain m_Chain;
 	FLAC::Metadata::VorbisComment *m_TagBlock;
+	bool m_CuesheetFound;
 };
 
 #endif
