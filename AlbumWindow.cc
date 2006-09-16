@@ -10,10 +10,10 @@ CAlbumWindow::CAlbumWindow(int Left, int Top, int Width, int Height, const std::
 	m_Top(Top),
 	m_Width(Width),
 	m_Height(Height),
-	m_Albums(Albums),
 	m_TopVisible(0),
 	m_CurrentLine(0),
-	m_Selected(false)
+	m_Selected(false),
+	m_Albums(Albums)
 {
 }
 
@@ -29,16 +29,16 @@ void CAlbumWindow::Draw()
 	SLsmg_write_string(" Albums ");
 	SLsmg_normal_video();
 	
-	int MaxAlbum=m_TopVisible+m_Height-2;
+	std::vector<CAlbum>::size_type MaxAlbum=m_TopVisible+m_Height-2;
 	if (MaxAlbum>m_Albums.size())
 		MaxAlbum=m_Albums.size();
 
 	SLsmg_fill_region(m_Top+1,m_Left+1,m_Height-2,m_Width-2,' ');
 			
-	for (int count=m_TopVisible;count<MaxAlbum;count++)
+	for (std::vector<CAlbum>::size_type count=m_TopVisible;count<MaxAlbum;count++)
 	{
 		SLsmg_gotorc(count+m_Top+1-m_TopVisible,m_Left+1);
-		if (count==m_CurrentLine)
+		if (count==(std::vector<CAlbum>::size_type)m_CurrentLine)
 			SLsmg_reverse_video();
 		else
 			SLsmg_normal_video();
@@ -53,7 +53,7 @@ bool CAlbumWindow::NextLine()
 {
 	bool RetVal=false;
 	
-	if (m_CurrentLine<m_Albums.size()-1)
+	if (std::vector<CAlbum>::size_type(m_CurrentLine)<m_Albums.size()-1)
 	{
 		m_CurrentLine++;
 		

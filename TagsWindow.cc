@@ -41,7 +41,7 @@ void CTagsWindow::Draw()
 	SLsmg_normal_video();
 		
 	int MaxTag=m_TopVisible+m_Height-2;
-	if (MaxTag>m_Tags.size())
+	if ((tTagMap::size_type)MaxTag>m_Tags.size())
 		MaxTag=m_Tags.size();
 
 	SLsmg_fill_region(m_Top+1,m_Left+1,m_Height-2,m_Width-2,' ');
@@ -76,7 +76,7 @@ bool CTagsWindow::NextLine()
 {
 	bool RetVal=false;
 	
-	if (m_CurrentLine<m_Tags.size()-1)
+	if ((tTagMap::size_type)m_CurrentLine<m_Tags.size()-1)
 	{
 		m_CurrentLine++;
 		

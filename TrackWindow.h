@@ -10,7 +10,7 @@ class CTrackWindow
 public:
 	CTrackWindow(int Left, int Top, int Width, int Height, const std::vector<CAlbum>& Albums);
 	
-	void SetCurrentAlbum(int Album);
+	void SetCurrentAlbum(std::vector<CAlbum>::size_type Album);
 	void Draw();
 	bool NextLine();
 	bool PreviousLine();

@@ -7,10 +7,9 @@ int main(int argc, const char *argv[])
 	if (argc==2)
 	{
     MusicBrainz o;
-    bool        ret;
 
     o.SetDevice(argv[1]);
-    o.SetDebug(1);
+    //o.SetDebug(1);
     
     if (o.Query(string(MBQ_GetCDTOC)))
     {

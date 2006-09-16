@@ -1,17 +1,17 @@
 #include "CuesheetTrack.h"
 
-CCuesheetTrack::CCuesheetTrack(int Number, int Offset)
+CCuesheetTrack::CCuesheetTrack(FLAC__byte Number, FLAC__uint64 Offset)
 :	m_Number(Number),
 	m_Offset(Offset)
 {
 }
 
-int CCuesheetTrack::Number() const
+FLAC__byte CCuesheetTrack::Number() const
 {
 	return m_Number;
 }
 
-int CCuesheetTrack::Offset() const
+FLAC__uint64 CCuesheetTrack::Offset() const
 {
 	return m_Offset;
 }

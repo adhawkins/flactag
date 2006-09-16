@@ -10,15 +10,15 @@ CTrackWindow::CTrackWindow(int Left, int Top, int Width, int Height, const std::
 	m_Top(Top),
 	m_Width(Width),
 	m_Height(Height),
-	m_Albums(Albums),
 	m_TopVisible(0),
 	m_CurrentLine(0),
 	m_Selected(false),
-	m_CurrentAlbum(-1)
+	m_CurrentAlbum(-1),
+	m_Albums(Albums)
 {
 }
 
-void CTrackWindow::SetCurrentAlbum(int Album)
+void CTrackWindow::SetCurrentAlbum(std::vector<CAlbum>::size_type Album)
 {
 	if (Album<m_Albums.size())
 	{
@@ -45,7 +45,7 @@ void CTrackWindow::Draw()
 		std::vector<CTrack> Tracks=m_Albums[m_CurrentAlbum].Tracks();
 			
 		int MaxTrack=m_TopVisible+m_Height-2;
-		if (MaxTrack>Tracks.size())
+		if ((std::vector<CTrack>::size_type)MaxTrack>Tracks.size())
 			MaxTrack=Tracks.size();
 	
 		SLsmg_fill_region(m_Top+1,m_Left+1,m_Height-2,m_Width-2,' ');
@@ -71,7 +71,7 @@ bool CTrackWindow::NextLine()
 	
 	std::vector<CTrack> Tracks=m_Albums[m_CurrentAlbum].Tracks();
 		
-	if (m_CurrentLine<Tracks.size()-1)
+	if ((std::vector<CTrack>::size_type)m_CurrentLine<Tracks.size()-1)
 	{
 		m_CurrentLine++;
 		

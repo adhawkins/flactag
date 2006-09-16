@@ -178,7 +178,7 @@ void CFlacTag::MainLoop()
 				CAlbum ThisAlbum=m_Albums[AlbumWindow.GetCurrentAlbum()];
 				std::vector<CTrack> Tracks=ThisAlbum.Tracks();
 				
-				for (int count=0;count<Tracks.size();count++)
+				for (std::vector<CTrack>::size_type count=0;count<Tracks.size();count++)
 				{
 					CTrack Track=Tracks[count];
 					

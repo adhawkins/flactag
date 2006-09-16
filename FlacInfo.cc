@@ -58,7 +58,7 @@ bool CFlacInfo::Read()
 							case FLAC__METADATA_TYPE_VORBIS_COMMENT:
 								m_TagBlock=(FLAC::Metadata::VorbisComment *)Iterator.get_block();
 	
-								for (int count=0;count<m_TagBlock->get_num_comments();count++)
+								for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
 								{
 									char Name[1024];
 									char Value[1024];
@@ -79,7 +79,7 @@ bool CFlacInfo::Read()
 							case FLAC__METADATA_TYPE_CUESHEET:
 							{
 								FLAC::Metadata::CueSheet *Cuesheet=(FLAC::Metadata::CueSheet *)Iterator.get_block();
-								for (int count=0;count<Cuesheet->get_num_tracks();count++)
+								for (unsigned count=0;count<Cuesheet->get_num_tracks();count++)
 								{
 									FLAC::Metadata::CueSheet::Track Track=Cuesheet->get_track(count);
 										
@@ -116,10 +116,10 @@ CCuesheet CFlacInfo::Cuesheet() const
 
 int CFlacInfo::CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) const
 {
-	int Offset=Track.get_offset();
-	int MaxIndexOffset=0;
+	FLAC__uint64 Offset=Track.get_offset();
+	FLAC__uint64 MaxIndexOffset=0;
 	
-	for (int count=0;count<Track.get_num_indices();count++)
+	for (unsigned count=0;count<Track.get_num_indices();count++)
 	{
 		FLAC__StreamMetadata_CueSheet_Index Index=Track.get_index(count);
 		
@@ -162,7 +162,7 @@ void CFlacInfo::SetTag(const CTagName& Name, const std::string& Value)
 {
 	bool Found=false;
 	
-	for (int count=0;!Found && count<m_TagBlock->get_num_comments();count++)
+	for (unsigned count=0;!Found && count<m_TagBlock->get_num_comments();count++)
 	{
 		FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
 		std::string ThisField=Entry.get_field_name();

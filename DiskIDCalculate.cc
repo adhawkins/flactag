@@ -20,7 +20,7 @@ CDiskIDCalculate::CDiskIDCalculate(const CCuesheet& Cuesheet)
 	sprintf(Temp,"%02X",m_Cuesheet.LastTrack());
 	sha_update(&sha, (unsigned char *)Temp, strlen(Temp));
 
-	sprintf(Temp,"%08lX",m_Cuesheet.Leadout());
+	sprintf(Temp,"%08lX",(unsigned long)m_Cuesheet.Leadout());
 	sha_update(&sha, (unsigned char *)Temp, strlen(Temp));
 	
 	for (int count=1;count<100;count++)
@@ -28,10 +28,10 @@ CDiskIDCalculate::CDiskIDCalculate(const CCuesheet& Cuesheet)
 		if (count<=m_Cuesheet.LastTrack())
 		{
 			CCuesheetTrack Track=m_Cuesheet.Track(count);
-			sprintf(Temp,"%08lX",Track.Offset());
+			sprintf(Temp,"%08lX",(unsigned long)Track.Offset());
   	}
 		else
-			sprintf(Temp,"%08lX",0);
+			sprintf(Temp,"%08lX",(unsigned long)0);
 	
 		sha_update(&sha, (unsigned char *)Temp, strlen(Temp));
 	}

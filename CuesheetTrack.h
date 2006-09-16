@@ -1,17 +1,19 @@
 #ifndef _CUESHEET_TRACK_H
 #define _CUESHEET_TRACK_H
 
+#include <FLAC++/metadata.h>
+
 class CCuesheetTrack
 {
 public:
-	CCuesheetTrack(int Number=-1, int Offset=-1);
+	CCuesheetTrack(FLAC__byte Number=255, FLAC__uint64 Offset=(FLAC__uint64)-1);
 
-	int Number() const;
-	int Offset() const;
+	FLAC__byte Number() const;
+	FLAC__uint64 Offset() const;
 		
 private:
-	int m_Number;
-	int m_Offset;
+	FLAC__byte m_Number;
+	FLAC__uint64 m_Offset;
 };
 
 #endif

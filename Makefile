@@ -1,21 +1,23 @@
+VERSION=0.01
+
+CXXFLAGS=-Wall -Werror
+
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiskIDCalculate.o \
 						sha1.o base64.o
 						
 DISCIDOBJS=discid.o
 
-SHAOBJS=shatest.o sha1.o base64.o
+SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
-SUBMITURLOBJS=submiturl.o FlacInfo.o Cuesheet.o CuesheetTrack.o DiskIDCalculate.o \
-						TagName.o sha1.o base64.o
-
-SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) $(SHAOBJS:.o=.cc) $(SUBMITURLOBJS:.o=.cc)
-
-all: flactag discid shatest submiturl
+all: flactag discid
 
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) $(SHAOBJS) $(SUBMITURLOBJS) *.d *.bak *~ flactag discid shatest submiturl 
-	
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) *.d *.bak *~ *.tar.bz2 flactag discid
+
+distrib:
+	tar cf - *.cc *.h Makefile README | bzip2 > flactag-$(VERSION).tar.bz2
+		
 %.d: %.cc
 	@echo DEPEND $< $@
 	@$(CXX) -MM $(CXXFLAGS) $< | \
@@ -26,11 +28,5 @@ flactag: $(FLACTAGOBJS)
 	
 discid: $(DISCIDOBJS)
 	g++ -o $@ -lmusicbrainz $^
-	
-shatest: $(SHAOBJS)
-	g++ -o $@ -lmusicbrainz $^
-	
-submiturl: $(SUBMITURLOBJS)
-	g++ -o $@ -lFLAC++ -lmusicbrainz $^
 	
 include $(SRCS:.cc=.d)
