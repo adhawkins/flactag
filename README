@@ -1,4 +1,6 @@
-FLACTAG - A utility for tagging single album FLAC files with embedded CUE sheets 
+FLACTAG v0.01
+
+A utility for tagging single album FLAC files with embedded CUE sheets 
 using data from the MusicBrainz service (http://www.musicbrainz.org)
 
 REQUIREMENTS
@@ -43,8 +45,10 @@ the application's main window will be shown. This contains three main areas:
 2. The 'Tracks' window. This contains a list of all the tracks on the currently selected album.
 
 3. The 'Tags' window. At startup, this will contain a list of the tags currently 
-   found in your FLAC file. If you make changes to these tags, an asterisk ('*') 
-   will be displayed to indicate that this information has been changed.
+   found in your FLAC file. If there are no tags present, then an empty set 
+   appropriate for the album will be displayed. If you make changes to these tags, an 
+   asterisk ('*') will be displayed to indicate that this information has been 
+   changed.
    
 The currently active window will be highlighted by the border and window title 
 changing colour. To switch between the three windows, press the 'TAB' key. To 
