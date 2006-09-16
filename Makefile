@@ -16,7 +16,7 @@ clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) *.d *.bak *~ *.tar.bz2 flactag discid
 
 distrib:
-	tar cf - *.cc *.h Makefile README | bzip2 > flactag-$(VERSION).tar.bz2
+	cd .. && tar cf - flactag/*.cc flactag/*.h flactag/Makefile flactag/README.txt | bzip2 > flactag/flactag-$(VERSION).tar.bz2
 		
 %.d: %.cc
 	@echo DEPEND $< $@

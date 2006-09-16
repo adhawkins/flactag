@@ -1,0 +1,90 @@
+<html>
+	<head>
+		<title>FLACTAG - A utility for tagging single album FLAC files</title>
+	</head>
+	<body>
+		<h1>FLACTAG - A utility for tagging single album FLAC files</h1>
+		
+FLACTAG is a utility for tagging single album FLAC files with embedded CUE sheets 
+using data from the MusicBrainz service (http://www.musicbrainz.org).<p>
+
+<h2>Requirements</h2>
+
+<ul>
+	<li>libmusicbrainz - http://musicbrainz.org/doc/libmusicbrainzDownload (I used version 2.1.4)
+	<li>libflac++ - http://flac.sourceforge.net/download.html (I used version 1.1.1)
+	<li>S-Lang - http://www.s-lang.org/download.html (I used version 1.4.9)
+</ul>
+
+<h2>Building</h2>
+
+To build the software, simply run 'make' in the directory you have extracted the 
+archive into. The build process should complete with no errors. You will be left 
+with the following executables:<p>
+
+<ul>
+	<li>flactag - The main application
+	<li>discid - A test utility to read the disc ID from a CD
+</ul>
+
+<h2>Using FLACTAG</h2>
+
+flactac should be executed from a linux console prompt, giving the path to the 
+FLAC file to tag as its only argument as follows:<p>
+
+<code>./flactag /music/Divine\ Comedy/Victory\ For\ The\ Comic\ Muse/Victory\ For\ The\ Comic\ Muse.flac</code><p>
+
+(filenames can be quoted if they contain special characters to avoid having to 
+'escape' these characters)<p>
+
+If the flactag utility does not find information for your CD, a URL will be 
+provided to submit information for your CD. Often the MusicBrainz server will 
+have information about the tracks and artist, but cannot match this up to your 
+CD. In these circumstances, it is simply a matter of 'associating' your CDs 
+DiskID with the correct album data on the MusicBrainz server. In other 
+instances, you may be required to enter the track and album information into the 
+MusicBrainz service.<p>
+
+If the flactag utility finds information for your CD at the musicbrainz server, 
+the application's main window will be shown. This contains three main areas:<p>
+
+<ul>
+	<li>The 'Albums' window. This will contain a list of albums that match the DiskID 
+	 for your FLAC file.
+	<li>The 'Tracks' window. This contains a list of all the tracks on the currently selected album.
+	<li>The 'Tags' window. At startup, this will contain a list of the tags currently 
+   found in your FLAC file. If there are no tags present, then an empty set 
+   appropriate for the album will be displayed. If you make changes to these tags, an 
+   asterisk ('*') will be displayed to indicate that this information has been 
+   changed.
+</ul>
+
+The currently active window will be highlighted by the border and window title 
+changing colour. To switch between the three windows, press the 'TAB' key. To 
+scroll around the active window, use the cursor UP and DOWN keys. Scolling in 
+the 'Albums' window will update the information in the 'Tracks' window 
+appropriately.<p>
+
+Once the appropriate album has been selected, pressing 'c' will copy the tags 
+for that album into the 'Tags' window. These tags can then be saved to the FLAC 
+file by pressing the 'w' key.<p>
+
+The application can be exited by pressing the 'q' key.<p>
+
+<h2>Bugs / Limitations / Possible Enhancements</h2>
+
+<ul>
+	<li>Once changes are written to the FLAC file, there is now way of reverting back to 
+the original tags.
+
+	<li>There is no way to 'rename' a FLAC file based on its new tags.
+
+<h2>Problems / Suggestions
+
+If you have any problems with the software, or suggestions for improvements or 
+new features, then please drop me an e-mail.<p>
+
+<address>Andy Hawkins <a href="mailto:andy@gently.org.uk">andy@gently.org.uk</address>
+
+	</body>
+</html>
