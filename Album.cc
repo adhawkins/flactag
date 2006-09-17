@@ -1,15 +1,43 @@
 #include "Album.h"
 
-CAlbum::CAlbum(const std::string& Name, const std::string& Artist, const std::string& Date)
-:	m_Name(Name),
-	m_Artist(Artist),
-	m_Date(Date)
+CAlbum::CAlbum()
+:	m_DiskNumber(-1)
 {
 }
 
 void CAlbum::AddTrack(const CTrack& Track)
 {
 	m_Tracks.push_back(Track);
+}
+
+void CAlbum::SetName(const std::string& Name)
+{
+	m_Name=Name;
+}
+
+void CAlbum::SetArtist(const std::string& Artist)
+{
+	m_Artist=Artist;
+}
+
+void CAlbum::SetArtistSort(const std::string& ArtistSort)
+{
+	m_ArtistSort=ArtistSort;
+}
+
+void CAlbum::SetAsin(const std::string& Asin)
+{
+	m_Asin=Asin;
+}
+
+void CAlbum::SetDate(const std::string& Date)
+{
+	m_Date=Date;
+}
+	
+void CAlbum::SetDiskNumber(int DiskNumber)
+{
+	m_DiskNumber=DiskNumber;
 }
 
 std::string CAlbum::Name() const
@@ -22,6 +50,11 @@ std::string CAlbum::Artist() const
 	return m_Artist;
 }
 
+std::string CAlbum::ArtistSort() const
+{
+	return m_ArtistSort;
+}
+
 std::string CAlbum::Date() const
 {
 	return m_Date;
@@ -32,8 +65,12 @@ std::vector<CTrack> CAlbum::Tracks() const
 	return m_Tracks;
 }
 
-void CAlbum::SetDate(const std::string& Date)
+std::string CAlbum::Asin() const
 {
-	m_Date=Date;
+	return m_Asin;
 }
-	
+
+int CAlbum::DiskNumber() const
+{
+	return m_DiskNumber;
+}

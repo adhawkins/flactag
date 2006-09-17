@@ -45,6 +45,9 @@ void CAlbumWindow::Draw()
 			
 		std::stringstream os;
 		os << std::setw(2) << std::setfill(' ') << count+1 << ": " << m_Albums[count].Artist() << " - " << m_Albums[count].Name();
+		if (-1!=m_Albums[count].DiskNumber())
+			os << " (disc " << m_Albums[count].DiskNumber() << ")";
+			
 		SLsmg_write_nstring((char *)os.str().c_str(),m_Width-2);
 	}
 }

@@ -183,22 +183,32 @@ void CFlacTag::MainLoop()
 					CTrack Track=Tracks[count];
 					
 					std::stringstream os;
-					os << Track.Number();
+					os << (int)Track.Number();
 					
 					m_WriteTags[CTagName("TRACKNUMBER",Track.Number())]=os.str();
 					m_WriteTags[CTagName("TITLE",Track.Number())]=Track.Name();
 					m_WriteTags[CTagName("ARTIST",Track.Number())]=Track.Artist();
+					m_WriteTags[CTagName("ARTISTSORT",Track.Number())]=Track.ArtistSort();
 				}
 
 				m_WriteTags[CTagName("ALBUM")]=ThisAlbum.Name();
 				m_WriteTags[CTagName("ARTIST")]=ThisAlbum.Artist();
-				
+				m_WriteTags[CTagName("ARTISTSORT")]=ThisAlbum.ArtistSort();
+				m_WriteTags[CTagName("ALBUMARTIST")]=ThisAlbum.Artist();
+								
 				if (!ThisAlbum.Date().empty())
 				{
 					m_WriteTags.erase(CTagName("YEAR"));				
 					m_WriteTags.erase(CTagName("DATE"));				
 					
 					m_WriteTags[CTagName("YEAR")]=ThisAlbum.Date();
+				}
+				
+				if (ThisAlbum.DiskNumber()!=-1)
+				{
+					std::stringstream os;
+					os << ThisAlbum.DiskNumber();
+					m_WriteTags[CTagName("DISCNUMBER")]=os.str();
 				}
 				
 				if (ThisAlbum.Artist()=="Various Artists")
@@ -245,23 +255,9 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 		
 	m_FlacTags=m_FlacInfo.Tags();
 	m_FlacCuesheet=m_FlacInfo.Cuesheet();
+
 	CDiskIDCalculate Calc(m_FlacCuesheet);
-	
-/*
-	tTagMapConstIterator DiskIDTag=m_FlacTags.find(CTagName("DISKID"));
-	if (m_FlacTags.end()!=DiskIDTag)
-	{
-		DiskID=(*DiskIDTag).second;
-		printf ("Read DiskID is %s\n",DiskID.c_str());
-	}
-	else
-	{
-*/
-		DiskID=Calc.DiskID();
-		printf ("Calculated DiskID is %s\n",DiskID.c_str());
-/*
-	}
-*/
+	DiskID=Calc.DiskID();
 	
 	m_WriteTags=m_FlacTags;
 	
@@ -272,15 +268,20 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 		
 		m_WriteTags[CTagName("ALBUM")]="";
 		m_WriteTags[CTagName("ARTIST")]="";
+		m_WriteTags[CTagName("ARTISTSORT")]="";
 		m_WriteTags[CTagName("YEAR")]="";
+		m_WriteTags[CTagName("DISCNUMBER")]="";
 		
 		for (int count=m_FlacCuesheet.FirstTrack();count<=m_FlacCuesheet.LastTrack();count++)
 		{
 			std::stringstream TagValue;
+			TagValue << count;
+			
 			m_WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
 			
 			m_WriteTags[CTagName("TITLE",count)]="";
 			m_WriteTags[CTagName("ARTIST",count)]="";
+			m_WriteTags[CTagName("ARTISTSORT",count)]="";
 		}
 	}
 	
@@ -307,27 +308,41 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 	
 				std::string AlbumName=o.Data(MBE_AlbumGetAlbumName);
 				std::string AlbumArtist=o.Data(MBE_AlbumGetAlbumArtistName);
-					
-				//printf("Album %s by %s \n",AlbumName.c_str(),AlbumArtist.c_str());
+				std::string AlbumArtistSort=o.Data(MBE_AlbumGetAlbumArtistSortName);
+				std::string AlbumAsin=o.Data(MBE_AlbumGetAmazonAsin);
 
+				CAlbum Album;
+				
+				std::string::size_type DiskNumPos=AlbumName.find(" (disc ");
+				if (std::string::npos!=DiskNumPos)
+				{
+					int DiskNumber;
+					std::string NumStr=AlbumName.substr(DiskNumPos+7);
+					AlbumName=AlbumName.substr(0,DiskNumPos);
+					std::stringstream os;
+					os << NumStr;
+					os >> DiskNumber;
+					Album.SetDiskNumber(DiskNumber);
+				}
+				
+				Album.SetName(AlbumName);
+				Album.SetArtist(AlbumArtist);
+				Album.SetArtistSort(AlbumArtistSort);
+				Album.SetAsin(AlbumAsin);
+	
 		    int NumTracks=o.DataInt(MBE_AlbumGetNumTracks);
 
-				//printf ("%s - %s (%s)\n",AlbumName.c_str(),AlbumArtist.c_str(),AlbumDate.c_str());
-				
-				CAlbum Album(AlbumName,AlbumArtist);
-	
 		    o.Select(MBS_SelectAlbum, count+1);
 	
 				for (int i=1; i<=NumTracks; i++)
 		    {
-/*
-		    	printf("Track %d is %s by %s\n",
-		    							i,
-		    							o.Data(MBE_AlbumGetTrackName,i).c_str(),
-		    							o.Data(MBE_AlbumGetArtistName,i).c_str());
-*/
-		    							
-		    	CTrack Track(i,o.Data(MBE_AlbumGetTrackName,i),o.Data(MBE_AlbumGetArtistName,i));
+		    	CTrack Track;
+		    	
+		    	Track.SetNumber(i);
+		    	Track.SetName(o.Data(MBE_AlbumGetTrackName,i));
+		    	Track.SetArtist(o.Data(MBE_AlbumGetArtistName,i));
+		    	Track.SetArtistSort(o.Data(MBE_AlbumGetArtistSortName,i));
+		    	
 					Album.AddTrack(Track);
 				}
 
@@ -338,7 +353,8 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 				if (std::string::npos!=MinusPos)
 					AlbumDate=AlbumDate.substr(0,MinusPos);
 
-				Album.SetDate(AlbumDate);
+				if (!AlbumDate.empty())
+					Album.SetDate(AlbumDate);
 				
 				m_Albums.push_back(Album);
 			}

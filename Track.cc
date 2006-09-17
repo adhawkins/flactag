@@ -1,9 +1,7 @@
 #include "Track.h"
 
-CTrack::CTrack(int Number, const std::string& Name, const std::string& Artist)
-:	m_Number(Number),
-	m_Name(Name),
-	m_Artist(Artist)
+CTrack::CTrack()
+:	m_Number(255)
 {
 }
 
@@ -17,7 +15,31 @@ std::string CTrack::Name() const
 	return m_Name;
 }
 
-int CTrack::Number() const
+FLAC__byte CTrack::Number() const
 {
 	return m_Number;
+}
+
+std::string CTrack::ArtistSort() const
+{
+	return m_ArtistSort;
+}
+	
+void CTrack::SetNumber(FLAC__byte Number)
+{
+	m_Number=Number;
+}
+
+void CTrack::SetName(const std::string& Name)
+{
+	m_Name=Name;
+}
+
+void CTrack::SetArtist(const std::string& Artist)
+{
+	m_Artist=Artist;
+}
+void CTrack::SetArtistSort(const std::string& ArtistSort)
+{
+	m_ArtistSort=ArtistSort;
 }
