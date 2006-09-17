@@ -1,32 +1,39 @@
-FLACTAG v0.01
-
+<!doctype linuxdoc system>
+<article>
+<title>FLACTAG v0.01
+<author>Andy Hawkins <url url="mailto:andy@gently.org.uk" name="andy@gently.org.uk">
+<abstract>
 A utility for tagging single album FLAC files with embedded CUE sheets 
-using data from the MusicBrainz service (http://www.musicbrainz.org)
-
-REQUIREMENTS
-
-libmusicbrainz - http://musicbrainz.org/doc/libmusicbrainzDownload (I used version 2.1.4)
-libflac++ - http://flac.sourceforge.net/download.html (I used version 1.1.1)
-S-Lang - http://www.s-lang.org/download.html (I used version 1.4.9)
-
-BUILDING
-
+using data from the <url url="http://www.musicbrainz.org" name="MusicBrainz service">.
+</abstract>
+<toc>
+<sect>Downloading
+<p>
+The latest version of flactag can always be found <url url="http://www.gently.org.uk/flactag" name="here">.
+<sect>Requirements
+<p>
+<itemize>
+<item><url url="http://musicbrainz.org/doc/libmusicbrainzDownload" name="libmusicbrainz"> (I used version 2.1.4)
+<item><url url="http://flac.sourceforge.net/download.html" name="libflac++"> (I used version 1.1.1)
+<item><url url="http://www.s-lang.org/download.html" name="S-Lang"> (I used version 1.4.9)
+</itemize>
+<sect>Building
+<p>
 To build the software, simply run 'make' in the directory you have extracted the 
 archive into. The build process should complete with no errors. You will be left 
 with the following executables:
-
-flactag - The main application
-discid - A test utility to read the disc ID from a CD
-
-USING FLACTAG
-
+<itemize>
+<item>flactag - The main application
+<item>discid - A test utility to read the disc ID from a CD
+</itemize>
+<sect>Using flactag
+<p>
 flactac should be executed from a linux console prompt, giving the path to the 
 FLAC file to tag as its only argument as follows
 
-./flactag /music/Divine\ Comedy/Victory\ For\ The\ Comic\ Muse/Victory\ For\ The\ Comic\ Muse.flac
+<tt>./flactag /music/Divine\ Comedy/Victory\ For\ The\ Comic\ Muse/Victory\ For\ The\ Comic\ Muse.flac</tt>
 
-(filenames can be quoted if they contain special characters to avoid having to 
-'escape' these characters)
+(filenames can be quoted if they contain special characters to avoid having to 'escape' these characters).
 
 If the flactag utility does not find information for your CD, a URL will be 
 provided to submit information for your CD. Often the MusicBrainz server will 
@@ -39,16 +46,18 @@ MusicBrainz service.
 If the flactag utility finds information for your CD at the musicbrainz server, 
 the application's main window will be shown. This contains three main areas:
 
-1. The 'Albums' window. This will contain a list of albums that match the DiskID 
+<enum>
+<item>The 'Albums' window. This will contain a list of albums that match the DiskID 
 	 for your FLAC file.
 
-2. The 'Tracks' window. This contains a list of all the tracks on the currently selected album.
+<item>The 'Tracks' window. This contains a list of all the tracks on the currently selected album.
 
-3. The 'Tags' window. At startup, this will contain a list of the tags currently 
+<item>The 'Tags' window. At startup, this will contain a list of the tags currently 
    found in your FLAC file. If there are no tags present, then an empty set 
    appropriate for the album will be displayed. If you make changes to these tags, an 
    asterisk ('*') will be displayed to indicate that this information has been 
    changed.
+</enum>
    
 The currently active window will be highlighted by the border and window title 
 changing colour. To switch between the three windows, press the 'TAB' key. To 
@@ -62,17 +71,23 @@ file by pressing the 'w' key.
 
 The application can be exited by pressing the 'q' key.
 
-BUGS / LIMITATIONS / POSSIBLE ENHANCEMENTS
-
-Once changes are written to the FLAC file, there is now way of reverting back to 
+<sect>Bugs / Limitations / Future Enhancements
+<p>
+<itemize>
+<item>Once changes are written to the FLAC file, there is no way of reverting back to 
 the original tags.
 
-There is no way to 'rename' a FLAC file based on its new tags.
+<item>There is no way to 'rename' a FLAC file based on its new tags.
 
-PROBLEMS / SUGGESTIONS
+<item>flactag should retrieve more information (ARTISTSORT etc) where available.
 
+<item>Currently there is no mechanism for handling multi-disk albums (the MusicBrainz 
+server doesn't indicate that an album is part of a multi-disk set, so flactag 
+will have to determine this from the album name).
+<item>flactag should download cover art if available.
+</itemize>
+<sect>Problems / Suggestions
+<p>
 If you have any problems with the software, or suggestions for improvements or 
 new features, then please drop me an e-mail.
-
-Andy Hawkins
-andy@gently.org.uk
+</article>
