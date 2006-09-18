@@ -13,11 +13,11 @@ CDiskIDCalculate::CDiskIDCalculate(const CCuesheet& Cuesheet)
 	sha_init(&sha);
 	
 	char Temp[100];
-	
-	sprintf(Temp,"%02X",m_Cuesheet.FirstTrack());
+
+	sprintf(Temp,"%02X",(int)m_Cuesheet.FirstTrack());
 	sha_update(&sha, (unsigned char *)Temp, strlen(Temp));
 	
-	sprintf(Temp,"%02X",m_Cuesheet.LastTrack());
+	sprintf(Temp,"%02X",(int)m_Cuesheet.LastTrack());
 	sha_update(&sha, (unsigned char *)Temp, strlen(Temp));
 
 	sprintf(Temp,"%08lX",(unsigned long)m_Cuesheet.Leadout());
@@ -62,10 +62,10 @@ std::string CDiskIDCalculate::SubmitURL() const
 		
 	os << "?id=" << m_DiskID;
 	
-	os << "&tracks=", m_Cuesheet.LastTrack(); 
+	os << "&tracks=", (int)m_Cuesheet.LastTrack(); 
 
-	os << "&toc=" << m_Cuesheet.FirstTrack() << 
-				"+" << m_Cuesheet.LastTrack() << "+" << m_Cuesheet.Leadout();
+	os << "&toc=" << (int)m_Cuesheet.FirstTrack() << 
+				"+" << (int)m_Cuesheet.LastTrack() << "+" << m_Cuesheet.Leadout();
 	
 	for (int count=1;count<=m_Cuesheet.LastTrack();count++)
 	{

@@ -249,7 +249,7 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 
 	if (!m_FlacInfo.CuesheetFound())
 	{
-		printf("No CUESHEET found\n");
+		printf("No CUESHEET found for '%s'\n",FlacFile.c_str());
 		exit(1);
 	}
 		
@@ -361,7 +361,7 @@ void CFlacTag::LoadData(const std::string& FlacFile)
 		}
 		else
 		{
-			printf("No albums found\n");
+			printf("No albums found for file '%s'\n",FlacFile.c_str());
 			printf("Please submit the DiskID using the following URL:\n%s\n",Calc.SubmitURL().c_str());
 			exit(1);
 		}

@@ -1,4 +1,4 @@
-VERSION=0.02
+VERSION=0.03
 
 CXXFLAGS=-Wall -Werror
 
