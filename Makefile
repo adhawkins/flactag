@@ -12,11 +12,11 @@ SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc)
 
 all: flactag discid flactag.txt flactag.html
 
-flactag.txt: flactag.sgml
+flactag.txt: flactag.sgml Makefile
 	sgml2txt --pass="-P-bc" --blanks=1 flactag.sgml
 	
-flactag.html: flactag.sgml
-	sgml2html --split=0 flactag.sgml
+flactag.html: flactag.sgml Makefile
+	sgml2html --split=0 --toc=1 flactag.sgml
 	
 clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.txt flactag.html *.d *.bak *~ *.tar.gz flactag discid
@@ -27,6 +27,7 @@ flactag-$(VERSION).tar.gz: all
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag
 	cp flactag.html /auto/gentlyweb/flactag/index.html
+	cp flactag.html /auto/gentlyweb/flactag/
 	cp flactag-$(VERSION).tar.gz  /auto/gentlyweb/flactag
 	
 %.d: %.cc

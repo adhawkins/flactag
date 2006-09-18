@@ -16,6 +16,7 @@ The latest version of flactag can always be found <url url="http://www.gently.or
 <item><url url="http://musicbrainz.org/doc/libmusicbrainzDownload" name="libmusicbrainz"> (I used version 2.1.4)
 <item><url url="http://flac.sourceforge.net/download.html" name="libflac++"> (I used version 1.1.1)
 <item><url url="http://www.s-lang.org/download.html" name="S-Lang"> (I used version 1.4.9)
+<item><url url="http://http-fetcher.sourceforge.net/downloads.html" name="http-fetcher"> (I used version 1.0.1)
 </itemize>
 <sect>Building
 <p>
@@ -26,6 +27,33 @@ with the following executables:
 <item>flactag - The main application
 <item>discid - A test utility to read the disc ID from a CD
 </itemize>
+<sect>Ripping CDs to FLAC
+<p>
+I use the following script to rip my CDs to a single FLAC:
+<code>
+#!/bin/sh
+
+if [ $1 ]
+then
+
+        FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
+        cdrdao read-cd --device /dev/hdc --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
+        cueconvert $FILENAME.toc $FILENAME.cue
+        if nice flac -8 --replay-gain --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
+        then
+                rm -f $FILENAME.bin
+                rm -f $FILENAME.toc
+                rm -f $FILENAME.cue
+        fi
+else
+        echo "Usage: $0 cdname"
+fi
+</code>
+
+This script accepts one argument, the 'base' name of the CD you're ripping. The 
+current date and time are appended to this base name. You will end up with a 
+FLAC file ready to be read by flactag.
+
 <sect>Using flactag
 <p>
 flactac should be executed from a linux console prompt, giving the path to the 
@@ -41,7 +69,8 @@ have information about the tracks and artist, but cannot match this up to your
 CD. In these circumstances, it is simply a matter of 'associating' your CDs 
 DiskID with the correct album data on the MusicBrainz server. In other 
 instances, you may be required to enter the track and album information into the 
-MusicBrainz service.
+MusicBrainz service. Once you have entered this information, you can re-run 
+flactag, and the data should be downloaded from the MusicBrainz server.
 
 If the flactag utility finds information for your CD at the musicbrainz server, 
 the application's main window will be shown. This contains three main areas:
@@ -84,5 +113,17 @@ the original tags.
 improvements or new features, then please use the 
 <url url="http://bugtracker.gently.org.uk/" name="Bug Tracking System"> to report 
 them.
-
+<sect>Version History
+<sect1>v0.02 - 18th September 2006
+<p>
+<itemize>
+<item>Correctly handle multi-album disc sets
+<item>Include ARTISTSORT tag
+<item>Retrieve Amazon ASIN in preparation for downloading cover art
+</itemize>
+<sect1>v0.01 - 16th September 2006
+<p>
+<itemize>
+<item>Initial version
+</itemize>
 </article>
