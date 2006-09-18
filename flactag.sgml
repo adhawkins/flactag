@@ -79,10 +79,10 @@ the original tags.
 
 <item>There is no way to 'rename' a FLAC file based on its new tags.
 
-<item>flactag should download cover art if available.
-</itemize>
-<sect>Problems / Suggestions
-<p>
-If you have any problems with the software, or suggestions for improvements or 
-new features, then please drop me an e-mail.
+<item>flactag should download cover art if available. </itemize> <sect>Problems 
+/ Suggestions <p> If you have any problems with the software, or suggestions for 
+improvements or new features, then please use the 
+<url url="http://bugtracker.gently.org.uk/" name="Bug Tracking System"> to report 
+them.
+
 </article>
