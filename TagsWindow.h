@@ -2,27 +2,20 @@
 #define _TAGS_WINDOW_H
 
 #include "TagName.h"
+#include "ScrollableWindow.h"
 
-class CTagsWindow
+class CTagsWindow: public CScrollableWindow
 {
 public:
 	CTagsWindow(int Left, int Top, int Width, int Height);
 	
-	void Draw();
-	bool NextLine();
-	bool PreviousLine();
-	void SetSelected(bool Selected);
-	void SetModified(bool Modified);
 	void SetTags(const tTagMap& Tags);
-	
+	void SetModified(bool Modified);
+		
+	virtual int NumLines() const;
+	virtual std::string GetLine(int Line) const;
+		
 private:
-	int m_Left;
-	int m_Top;
-	int m_Width;
-	int m_Height;
-	int m_TopVisible;
-	int m_CurrentLine;
-	bool m_Selected;
 	tTagMap m_Tags;
 	bool m_Modified;
 };
