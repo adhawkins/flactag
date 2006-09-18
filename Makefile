@@ -1,4 +1,4 @@
-VERSION=0.01
+VERSION=0.02
 
 CXXFLAGS=-Wall -Werror
 
@@ -24,9 +24,10 @@ clean:
 flactag-$(VERSION).tar.gz: all
 	cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt flactag/flactag.html flactag/flactag.sgml
 
-install-webpages: flactag-$(VERSION).tar.gz index.html
+install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag
-	cp flactag.html flactag-$(VERSION).tar.gz /auto/gentlyweb/flactag/index.html
+	cp flactag.html /auto/gentlyweb/flactag/index.html
+	cp flactag-$(VERSION).tar.gz  /auto/gentlyweb/flactag
 	
 %.d: %.cc
 	@echo DEPEND $< $@
