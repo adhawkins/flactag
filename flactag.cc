@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include <slang.h>
 
@@ -11,6 +13,7 @@
 #include "FlacInfo.h"
 #include "TagsWindow.h"
 #include "MusicBrainzInfo.h"
+#include "FileNameBuilder.h"
 
 #include <vector>
 #include <sstream>
@@ -39,10 +42,17 @@ CFlacTag::CFlacTag(const std::string& FlacFile)
 		printf("Creating default config file\n");
 		m_ConfigFile.SaveFile(ConfigPath);
 	}
-	
+
 	if (!LoadData())
 		exit(1);
 		
+	CFileNameBuilder FileNameBuilder(m_FlacTags,
+													m_ConfigFile.Value("BasePath"),
+													m_ConfigFile.Value("SingleDiskFileName"),
+													m_ConfigFile.Value("MultiDiskFileName"));
+													
+	m_RenameFile=FileNameBuilder.FileName();
+
 	MainLoop();
 }
 
@@ -115,9 +125,7 @@ void CFlacTag::MainLoop()
 			SLsmg_write_string("rite ");
 		}
 
-		if (!m_ConfigFile.Value("BasePath").empty() && 
-				!m_ConfigFile.Value("SingleDiskFileName").empty() && 
-				!m_ConfigFile.Value("MultiDiskFileName").empty())
+		if (m_RenameFile!=m_FlacFile)
 		{
 			SLsmg_reverse_video();
 			SLsmg_write_string("R");
@@ -242,6 +250,11 @@ void CFlacTag::MainLoop()
 					
 				break;
 								
+			case 'r':
+			case 'R':
+				RenameFile();
+				break;
+				
 			case 'q':
 			case 'Q':
 				Quit=true;
@@ -307,5 +320,198 @@ bool CFlacTag::LoadData()
 	else
 		RetVal=false;
 		
+	return RetVal;
+}
+
+bool CFlacTag::MakeDirectoryTree(const std::string& Directory) const
+{
+	bool RetVal=true;
+	std::vector<std::string> Components;
+
+	std::string::size_type LastSlashPos=0;
+	std::string::size_type SlashPos=Directory.find("/");
+	bool First=true;
+	while (std::string::npos!=SlashPos)
+	{
+		if (SlashPos!=0)
+		{
+			if (First)
+				Components.push_back(Directory.substr(LastSlashPos,SlashPos-LastSlashPos));
+			else
+				Components.push_back(Directory.substr(LastSlashPos+1,SlashPos-LastSlashPos-1));
+				
+			First=false;
+		}
+				
+		LastSlashPos=SlashPos;
+		SlashPos=Directory.find("/",SlashPos+1);
+	}
+	
+	if (RetVal && LastSlashPos!=Directory.length())
+		Components.push_back(Directory.substr(LastSlashPos+1));
+
+	std::vector<std::string>::const_iterator ThisComponent=Components.begin();
+	std::string MakePath;
+	First=true;
+		
+	while (RetVal && Components.end()!=ThisComponent)
+	{
+		if (First)
+			MakePath=(*ThisComponent);
+		else
+			MakePath+="/"+(*ThisComponent);
+			
+		First=false;
+		
+		RetVal=CheckMakeDirectory(MakePath);
+		
+		++ThisComponent;
+	}	
+	
+	if (RetVal)
+	{
+		ThisComponent=Components.begin();
+		MakePath="";
+		First=true;
+			
+		int Mode;
+		std::stringstream os;
+		os << m_ConfigFile.Value("DirectoryCreatePermissions");
+		os >> std::oct >> Mode;
+
+		while (RetVal && Components.end()!=ThisComponent)
+		{
+			if (First)
+				MakePath=(*ThisComponent);
+			else
+				MakePath+="/"+(*ThisComponent);
+				
+			First=false;
+			
+			RetVal=MakeDirectory(MakePath,Mode);
+			
+			++ThisComponent;
+		}	
+	}
+	return RetVal;
+}
+
+bool CFlacTag::CheckMakeDirectory(const std::string& Directory) const
+{
+	bool RetVal=true;
+	
+	struct stat Stat;
+	
+	if (0==stat(Directory.c_str(),&Stat) && !S_ISDIR(Stat.st_mode))
+		RetVal=false;
+	
+	return RetVal;
+}
+
+bool CFlacTag::MakeDirectory(const std::string& Directory, mode_t Mode) const
+{
+	bool RetVal=false;
+	
+	struct stat Stat;
+
+	if (0!=stat(Directory.c_str(),&Stat))
+		RetVal=(0==mkdir(Directory.c_str(),Mode));
+	else
+		RetVal=true;
+	
+	return RetVal;
+}
+
+void CFlacTag::RenameFile()
+{
+	std::string::size_type LastSlash=m_RenameFile.rfind("/");
+	if (std::string::npos!=LastSlash)
+	{
+		std::string Directory=m_RenameFile.substr(0,LastSlash);
+		if (MakeDirectoryTree(Directory))
+		{
+			if (0==rename(m_FlacFile.c_str(),m_RenameFile.c_str()))
+			{
+				m_FlacFile=m_RenameFile;
+				LoadData();
+			}
+			else
+			{
+				if (EXDEV==errno)
+				{
+					if (CopyFile(m_FlacFile,m_RenameFile) && 0==unlink(m_FlacFile.c_str()))
+					{
+						m_FlacFile=m_RenameFile;
+						LoadData();
+					}
+				}
+			}
+		}
+	}
+}
+
+bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) const
+{
+	printf("In CopyFile\n");
+	
+	bool RetVal=false;
+	
+	struct stat Stat;
+	if (0==stat(Source.c_str(),&Stat))
+	{
+		int SrcFD,DestFD;
+		
+		SrcFD=open(Source.c_str(),O_RDONLY);
+		if (-1!=SrcFD)
+		{
+			DestFD=open(Dest.c_str(),O_WRONLY|O_CREAT, Stat.st_mode);
+			if (-1!=DestFD)
+			{
+				RetVal=true;
+				
+				bool Done=false;
+				char Buffer[4096];
+				
+				while(!Done && RetVal)
+				{
+					ssize_t Read;
+	
+					Read=read(SrcFD,Buffer,sizeof(Buffer));
+					if (0==Read)
+						Done=true;
+					else if (Read>0)
+					{
+						ssize_t Written=write(DestFD,Buffer,Read);
+						if (Written!=Read)
+						{
+							perror("write");
+							RetVal=false;
+						}
+					}
+					else
+					{
+						perror("read");
+						RetVal=false;
+					}
+				}
+				
+				if (RetVal)
+				{
+					if (0!=fchown(DestFD,Stat.st_uid,Stat.st_gid))
+						RetVal=false;
+				}
+
+				close(DestFD);
+
+				if (!RetVal)				
+					unlink(Dest.c_str());
+			}
+			else
+				perror("open");
+			
+			close(SrcFD);
+		}
+	}
+	
 	return RetVal;
 }

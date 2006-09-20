@@ -4,7 +4,7 @@ CXXFLAGS=-Wall -Werror
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiskIDCalculate.o \
-						sha1.o base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.cc \
+						sha1.o base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o
 						
 DISCIDOBJS=discid.o

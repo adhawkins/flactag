@@ -10,6 +10,8 @@ class CCuesheet
 public:
 	CCuesheet();
 	
+	void Clear();
+	
 	void AddTrack(const CCuesheetTrack& Track);
 	FLAC__byte NumTracks() const;
 	CCuesheetTrack Track(FLAC__byte TrackNum) const;

@@ -1,12 +1,19 @@
 #include "Cuesheet.h"
 
 CCuesheet::CCuesheet()
-:	m_Leadout((FLAC__uint64)-1),
-	m_FirstTrack(255),
-	m_LastTrack(255)
 {
+	Clear();
 }
 
+void CCuesheet::Clear()
+{
+	m_Leadout=(FLAC__uint64)-1;
+	m_FirstTrack=255;
+	m_LastTrack=255;
+	
+	m_Tracks.clear();
+}
+	
 void CCuesheet::AddTrack(const CCuesheetTrack& Track)
 {
 	m_Tracks[Track.Number()]=Track;

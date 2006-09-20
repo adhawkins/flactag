@@ -23,7 +23,10 @@ void CFlacInfo::SetFileName(const std::string& FileName)
 {
 	if (m_TagBlock)
 		delete m_TagBlock;
-		
+
+	m_Tags.clear();
+	m_Cuesheet.Clear();
+			
 	m_TagBlock=0;
 	
 	m_FileName=FileName;
