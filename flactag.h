@@ -7,6 +7,7 @@
 #include "TagName.h"
 #include "Cuesheet.h"
 #include "FlacInfo.h"
+#include "ConfigFile.h"
 
 class CFlacTag
 {
@@ -22,14 +23,16 @@ public:
 		
 private:
 	void MainLoop();
-	void LoadData(const std::string& FlacFile);
+	bool LoadData();
 
+	std::string m_FlacFile;
 	std::vector<CAlbum> m_Albums;
 	CFlacInfo m_FlacInfo;			
 	tTagMap m_FlacTags;
 	CCuesheet m_FlacCuesheet;
 	tTagMap m_WriteTags;
 	tWindowType m_SelectedWindow;
+	CConfigFile m_ConfigFile;
 };
 
 #endif
