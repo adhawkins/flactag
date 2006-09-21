@@ -38,21 +38,11 @@ CFlacTag::CFlacTag(const std::string& FlacFile)
 	ConfigPath+="/.flactag";
 	
 	if (!m_ConfigFile.LoadFile(ConfigPath))
-	{
-		printf("Creating default config file\n");
 		m_ConfigFile.SaveFile(ConfigPath);
-	}
 
 	if (!LoadData())
 		exit(1);
 		
-	CFileNameBuilder FileNameBuilder(m_FlacTags,
-													m_ConfigFile.Value("BasePath"),
-													m_ConfigFile.Value("SingleDiskFileName"),
-													m_ConfigFile.Value("MultiDiskFileName"));
-													
-	m_RenameFile=FileNameBuilder.FileName();
-
 	MainLoop();
 }
 
@@ -246,8 +236,9 @@ void CFlacTag::MainLoop()
 			case 'w':
 			case 'W':
 				if (m_FlacInfo.WriteTags(m_WriteTags))
-					m_WriteTags=m_FlacInfo.Tags();
-					
+					LoadData();
+				
+				TagsWindow.SetTags(m_WriteTags);
 				break;
 								
 			case 'r':
@@ -290,6 +281,13 @@ bool CFlacTag::LoadData()
 
 	m_WriteTags=m_FlacTags;
 	
+	CFileNameBuilder FileNameBuilder(m_FlacTags,
+													m_ConfigFile.Value("BasePath"),
+													m_ConfigFile.Value("SingleDiskFileName"),
+													m_ConfigFile.Value("MultiDiskFileName"));
+													
+	m_RenameFile=FileNameBuilder.FileName();
+
 	if (m_WriteTags.end()==m_WriteTags.find(CTagName("ALBUM")) &&
 			m_WriteTags.end()==m_WriteTags.find(CTagName("ARTIST")))
 	{
@@ -452,8 +450,6 @@ void CFlacTag::RenameFile()
 
 bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) const
 {
-	printf("In CopyFile\n");
-	
 	bool RetVal=false;
 	
 	struct stat Stat;
