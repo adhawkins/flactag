@@ -10,6 +10,8 @@ using data from the <url url="http://www.musicbrainz.org" name="MusicBrainz serv
 <sect>Downloading
 <p>
 The latest version of flactag can always be found <url url="http://www.gently.org.uk/flactag" name="here">.
+
+The current version is <url url="flactag-0.03.tar.gz" name="v0.03">.
 <sect>Requirements
 <p>
 <itemize>
