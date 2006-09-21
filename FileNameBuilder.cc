@@ -39,7 +39,11 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 	
 	tTagMap::const_iterator ThisTag=m_Tags.find(CTagName(ReplaceTag));
 	if (m_Tags.end()!=ThisTag)
-		Replace=(*ThisTag).second;
+	{
+		std::string Value=(*ThisTag).second;
+		if (!Value.empty())
+			Replace=Value;
+	}
 	
 	//printf("'%s': Replacing '%s' with '%s' (%s)\n",m_FileName.c_str(),Search.c_str(),ReplaceTag.c_str(),Replace.c_str());
 	
