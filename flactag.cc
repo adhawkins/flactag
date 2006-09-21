@@ -14,6 +14,7 @@
 #include "TagsWindow.h"
 #include "MusicBrainzInfo.h"
 #include "FileNameBuilder.h"
+#include "ErrorLog.h"
 
 #include <vector>
 #include <sstream>
@@ -25,8 +26,14 @@ int main(int argc, const char *argv[])
 		CFlacTag FlacTag(argv[1]);
 	}
 	else
-		printf("Usage: %s flacfile\n",argv[0]);	
-		
+	{
+		std::stringstream os;
+		os << "Usage: " << argv[0] << " flacfile";
+		CErrorLog::Log(os.str());	
+	}
+
+	CErrorLog::DumpLog();
+				
 	return 0;
 }
 
@@ -272,7 +279,9 @@ bool CFlacTag::LoadData()
 
 	if (!m_FlacInfo.CuesheetFound())
 	{
-		printf("No CUESHEET found for '%s'\n",m_FlacFile.c_str());
+		std::stringstream os;
+		os << "No CUESHEET found for '" << m_FlacFile << "'";
+		CErrorLog::Log(os.str());
 		RetVal=false;
 	}
 		
@@ -443,6 +452,12 @@ void CFlacTag::RenameFile()
 						LoadData();
 					}
 				}
+				else
+				{
+					std::stringstream os;
+					os << "rename: " << strerror(errno);
+					CErrorLog::Log(os.str());
+				}
 			}
 		}
 	}
@@ -480,13 +495,17 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 						ssize_t Written=write(DestFD,Buffer,Read);
 						if (Written!=Read)
 						{
-							perror("write");
+							std::stringstream os;
+							os << "write: " << strerror(errno);
+							CErrorLog::Log(os.str());
 							RetVal=false;
 						}
 					}
 					else
 					{
-						perror("read");
+						std::stringstream os;
+						os << "read: " << strerror(errno);
+						CErrorLog::Log(os.str());
 						RetVal=false;
 					}
 				}
@@ -494,7 +513,13 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 				if (RetVal)
 				{
 					if (0!=fchown(DestFD,Stat.st_uid,Stat.st_gid))
+					{
+						std::stringstream os;
+						os << "chown: " << strerror(errno);
+						CErrorLog::Log(os.str());
+
 						RetVal=false;
+					}
 				}
 
 				close(DestFD);
@@ -503,9 +528,19 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 					unlink(Dest.c_str());
 			}
 			else
-				perror("open");
+			{
+				std::stringstream os;
+				os << "open dest: " << strerror(errno);
+				CErrorLog::Log(os.str());
+			}
 			
 			close(SrcFD);
+		}
+		else
+		{
+			std::stringstream os;
+			os << "open source: " << strerror(errno);
+			CErrorLog::Log(os.str());
 		}
 	}
 	

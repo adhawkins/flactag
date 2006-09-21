@@ -2,6 +2,8 @@
 
 #include <slang.h>
 
+#include "ErrorLog.h"
+
 CScrollableWindow::CScrollableWindow(int Left, int Top, int Width, int Height, const std::string& Title)
 :	m_Left(Left),
 	m_Top(Top),
@@ -60,6 +62,8 @@ void CScrollableWindow::Draw()
 
 bool CScrollableWindow::NextLine()
 {
+	CErrorLog::Log("In CScrollableWindow::NextLine");
+		
 	bool RetVal=false;
 	
 	if (m_CurrentLine<NumLines()-1)

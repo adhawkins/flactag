@@ -45,16 +45,12 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 			Replace=FixString(Value);
 	}
 	
-	//printf("'%s': Replacing '%s' with '%s' (%s)\n",m_FileName.c_str(),Search.c_str(),ReplaceTag.c_str(),Replace.c_str());
-	
 	std::string::size_type SearchPos=m_FileName.find(Search);
 	while(std::string::npos!=SearchPos)
 	{
 		m_FileName=m_FileName.substr(0,SearchPos)+Replace+m_FileName.substr(SearchPos+Search.length());
 		SearchPos=m_FileName.find(Search);
 	}
-		
-	//printf("'%s'\n",m_FileName.c_str());
 }
 
 std::string CFileNameBuilder::FixString(const std::string& String) const

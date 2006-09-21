@@ -43,8 +43,6 @@ bool CTagName::operator <(const CTagName& Other) const
 	else if (SpecialTag()==Other.SpecialTag() && m_Number==Other.m_Number && m_Name!="TRACKNUMBER" && Other.m_Name!="TRACKNUMBER" && m_Name<Other.m_Name)
 		RetVal=true;
 	
-	//printf("%s < %s = %d\n",String().c_str(),Other.String().c_str(),RetVal);
-		
 	return RetVal;
 }
 

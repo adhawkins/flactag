@@ -5,6 +5,7 @@
 #include <musicbrainz/musicbrainz.h>
 
 #include "DiskIDCalculate.h"
+#include "ErrorLog.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const CCuesheet& Cuesheet)
 :	m_Cuesheet(Cuesheet)
@@ -96,8 +97,12 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 		}
 		else
 		{
-			printf("No albums found for file '%s'\n",FlacFile.c_str());
-			printf("Please submit the DiskID using the following URL:\n%s\n",Calc.SubmitURL().c_str());
+			std::stringstream os;
+			os << "No albums found for file '" << FlacFile << "'";
+			CErrorLog::Log(os.str());
+			
+			CErrorLog::Log("Please submit the DiskID using the following URL:");
+			CErrorLog::Log(Calc.SubmitURL());
 		}
   }
   else
@@ -105,7 +110,10 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
   	std::string Error;
   		
 		o.GetQueryError(Error);
-		printf("Query failed: %s\n", Error.c_str());
+		
+		std::stringstream os;
+		os << "Query failed: " << Error;
+		CErrorLog::Log(os.str());
 	}
 
 	return RetVal;
