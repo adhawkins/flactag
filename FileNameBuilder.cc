@@ -42,7 +42,7 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 	{
 		std::string Value=(*ThisTag).second;
 		if (!Value.empty())
-			Replace=Value;
+			Replace=FixString(Value);
 	}
 	
 	//printf("'%s': Replacing '%s' with '%s' (%s)\n",m_FileName.c_str(),Search.c_str(),ReplaceTag.c_str(),Replace.c_str());
@@ -55,4 +55,18 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 	}
 		
 	//printf("'%s'\n",m_FileName.c_str());
+}
+
+std::string CFileNameBuilder::FixString(const std::string& String) const
+{
+	std::string Fixed=String;
+	std::string BadChars="/:\"'`;?";
+			
+	for (std::string::size_type count=0;count<Fixed.length();count++)
+	{
+		if (BadChars.find(Fixed[count])!=std::string::npos)
+			Fixed.replace(count,1,"-");
+	}
+	
+	return Fixed;
 }
