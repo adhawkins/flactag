@@ -1,4 +1,4 @@
-VERSION=0.03
+VERSION=0.04
 
 CXXFLAGS=-Wall -Werror
 
@@ -23,7 +23,9 @@ clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.txt flactag.html *.d *.bak *~ *.tar.gz flactag discid
 
 flactag-$(VERSION).tar.gz: all
-	cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt flactag/flactag.html flactag/flactag.sgml
+	svn update && cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz \
+							flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt \
+							flactag/flactag.html flactag/flactag.sgml flactag/COPYING
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag

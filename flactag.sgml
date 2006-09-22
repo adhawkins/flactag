@@ -1,6 +1,6 @@
 <!doctype linuxdoc system>
 <article>
-<title>FLACTAG v0.03
+<title>FLACTAG v0.04
 <author>Andy Hawkins <url url="mailto:andy@gently.org.uk" name="andy@gently.org.uk">
 <abstract>
 A utility for tagging single album FLAC files with embedded CUE sheets 
@@ -11,7 +11,7 @@ using data from the <url url="http://www.musicbrainz.org" name="MusicBrainz serv
 <p>
 The latest version of flactag can always be found <url url="http://www.gently.org.uk/flactag" name="here">.
 
-The current version is <url url="flactag-0.03.tar.gz" name="v0.03">.
+The current version is <url url="flactag-0.04.tar.gz" name="v0.04">.
 <sect>Requirements
 <p>
 <itemize>
@@ -116,6 +116,12 @@ improvements or new features, then please use the
 <url url="http://bugtracker.gently.org.uk/" name="Bug Tracking System"> to report 
 them.
 <sect>Version History
+<sect1>v0.04 - xxx September 2006
+<p>
+<itemize>
+<item>Add ability to rename file after tagging
+<item>Add logging capability (all log messages are queued and display on exit)
+</itemize>
 <sect1>v0.03 - 18th September 2006
 <p>
 <itemize>
