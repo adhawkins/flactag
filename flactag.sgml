@@ -104,10 +104,12 @@ Once the appropriate album has been selected, pressing '<bf>c</bf>' will copy th
 for that album into the 'Tags' window. These tags can then be saved to the FLAC 
 file by pressing the '<bf>w</bf>' key.
 
-Pressing '<bf>r</bf>' will rename the file based on the settings in the configuration file (
-/.flactag). Note that this uses the tags that are actually written to the file, so should 
-generally be performed after the new tags have been written to the file. This option will
-be unavailable if the filename and location are already correct.
+Pressing '<bf>r</bf>' will rename the file based on the settings in the 
+configuration file (~/.flactag - this file is created automatically the first 
+time you run <bf>flactag</bf>). Note that this facility uses the tags that are 
+actually written to the file, so should generally be performed after the new 
+tags have been written to the file. This option will be unavailable if the 
+filename and location are already correct.
 
 The following entries affect file renaming:
 <itemize>
