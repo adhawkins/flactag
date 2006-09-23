@@ -184,8 +184,9 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 		{
 			CTagName Name=(*ThisTag).first;
 			std::string Value=(*ThisTag).second;
-				
-			SetTag(Name,Value);
+
+			if (!Value.empty())				
+				SetTag(Name,Value);
 			
 			++ThisTag;
 		}

@@ -39,7 +39,7 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ -o $@ -lslang -lmusicbrainz -lFLAC++ $^
+	g++ -o $@ -lslang -lmusicbrainz -lFLAC++ -lhttp_fetcher $^
 	
 discid: $(DISCIDOBJS)
 	g++ -o $@ -lmusicbrainz $^

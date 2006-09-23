@@ -74,7 +74,7 @@ CFlacTag::CFlacTag(const std::string& FlacFile)
 		m_ConfigFile.SaveFile(ConfigPath);
 
 	if (!LoadData())
-		exit(1);
+		return;
 		
 	MainLoop();
 }
@@ -86,20 +86,20 @@ void CFlacTag::MainLoop()
 	if (-1==SLkp_init())
 	{
 		SLang_doerror ("SLkp_init failed.");
-		exit (1);
+		return;
 	}
 		
 	if (-1==SLang_init_tty(7,0,0))
 	{
 		SLang_doerror ("SLang_init_tty.");
-		exit (1);
+		return;
 	}
 	
 	SLang_set_abort_signal(NULL);
 	if (-1==SLsmg_init_smg())
 	{
 		SLang_doerror("Error initialising SLmsg\n");
-		exit(1);
+		return;
 	}
 	
 	SLsmg_cls();
@@ -154,6 +154,14 @@ void CFlacTag::MainLoop()
 			SLsmg_write_string("R");
 			SLsmg_normal_video();
 			SLsmg_write_string("ename ");
+		}
+
+		if (!m_Albums[AlbumWindow.GetCurrentAlbum()].ASIN().empty())
+		{
+			SLsmg_reverse_video();
+			SLsmg_write_string("A");
+			SLsmg_normal_video();
+			SLsmg_write_string("lbum art");
 		}
 		
 		SLsmg_gotorc(SLtt_Screen_Rows-1,SLtt_Screen_Cols-2);
@@ -237,12 +245,17 @@ void CFlacTag::MainLoop()
 					m_WriteTags[CTagName("TITLE",Track.Number())]=Track.Name();
 					m_WriteTags[CTagName("ARTIST",Track.Number())]=Track.Artist();
 					m_WriteTags[CTagName("ARTISTSORT",Track.Number())]=Track.ArtistSort();
+					m_WriteTags[CTagName("MUSICBRAINZ_ARTISTID",Track.Number())]=Track.ArtistID();
 				}
 
 				m_WriteTags[CTagName("ALBUM")]=ThisAlbum.Name();
 				m_WriteTags[CTagName("ARTIST")]=ThisAlbum.Artist();
 				m_WriteTags[CTagName("ARTISTSORT")]=ThisAlbum.ArtistSort();
 				m_WriteTags[CTagName("ALBUMARTIST")]=ThisAlbum.Artist();
+				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMARTISTID")]=ThisAlbum.ArtistID();
+				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMID")]=ThisAlbum.AlbumID();
+				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMSTATUS")]=ThisAlbum.Status();
+				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMTYPE")]=ThisAlbum.Type();
 								
 				if (!ThisAlbum.Date().empty())
 				{
@@ -258,7 +271,10 @@ void CFlacTag::MainLoop()
 					os << ThisAlbum.DiskNumber();
 					m_WriteTags[CTagName("DISCNUMBER")]=os.str();
 				}
-				
+
+				if (!ThisAlbum.ASIN().empty())
+					m_WriteTags[CTagName("ASIN")]=ThisAlbum.ASIN();
+									
 				if (ThisAlbum.Artist()=="Various Artists")
 					m_WriteTags[CTagName("COMPILATION")]="1";
 						
@@ -277,6 +293,11 @@ void CFlacTag::MainLoop()
 			case 'r':
 			case 'R':
 				RenameFile();
+				break;
+				
+			case 'a':
+			case 'A':
+				GetAlbumArt(AlbumWindow.GetCurrentAlbum());
 				break;
 				
 			case 'q':
@@ -436,7 +457,12 @@ bool CFlacTag::CheckMakeDirectory(const std::string& Directory) const
 	struct stat Stat;
 	
 	if (0==stat(Directory.c_str(),&Stat) && !S_ISDIR(Stat.st_mode))
+	{
+		std::stringstream os;
+		os << "Cannot create " << Directory << ", already exists and is not a directory";
+		CErrorLog::Log(os.str());
 		RetVal=false;
+	}
 	
 	return RetVal;
 }
@@ -448,7 +474,16 @@ bool CFlacTag::MakeDirectory(const std::string& Directory, mode_t Mode) const
 	struct stat Stat;
 
 	if (0!=stat(Directory.c_str(),&Stat))
-		RetVal=(0==mkdir(Directory.c_str(),Mode));
+	{
+		if (0==mkdir(Directory.c_str(),Mode))
+			RetVal=true;
+		else
+		{
+			std::stringstream os;
+			os << "mkdir: " << strerror(errno);
+			CErrorLog::Log(os.str());
+		}
+	}
 	else
 		RetVal=true;
 	
@@ -571,4 +606,33 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 	}
 	
 	return RetVal;
+}
+
+void CFlacTag::GetAlbumArt(int Album) const
+{
+	std::string ASIN=m_Albums[Album].ASIN();
+	std::string URL="http://images.amazon.com/images/P/" + ASIN + ".02.LZZZZZZZ.jpg";
+		
+	char *Buffer=0;
+	int Bytes=http_fetch(URL.c_str(),&Buffer);
+	if (Bytes>0)
+	{
+		std::string::size_type SlashPos=m_FlacFile.rfind("/");
+		std::string CoverFile="cover.jpg";
+			
+		if (std::string::npos!=SlashPos)
+			CoverFile=m_FlacFile.substr(0,SlashPos)+"/cover.jpg";
+
+		FILE *fptr=fopen(CoverFile.c_str(),"wb");
+		if (fptr)
+		{
+			fwrite(Buffer,Bytes,1,fptr);
+			fclose(fptr);
+		}
+	}
+	else
+		CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
+	
+	if (Buffer)
+		free(Buffer);
 }

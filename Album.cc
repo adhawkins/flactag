@@ -51,9 +51,9 @@ void CAlbum::SetArtistSort(const std::string& ArtistSort)
 	m_ArtistSort=ArtistSort;
 }
 
-void CAlbum::SetAsin(const std::string& Asin)
+void CAlbum::SetASIN(const std::string& ASIN)
 {
-	m_Asin=Asin;
+	m_ASIN=ASIN;
 }
 
 void CAlbum::SetDate(const std::string& Date)
@@ -91,12 +91,53 @@ std::vector<CTrack> CAlbum::Tracks() const
 	return m_Tracks;
 }
 
-std::string CAlbum::Asin() const
+std::string CAlbum::ASIN() const
 {
-	return m_Asin;
+	return m_ASIN;
 }
 
 int CAlbum::DiskNumber() const
 {
 	return m_DiskNumber;
 }
+
+std::string CAlbum::ArtistID() const
+{
+	return m_ArtistID;
+}
+
+std::string CAlbum::AlbumID() const
+{
+	return m_AlbumID;
+}
+
+std::string CAlbum::Status() const
+{
+	return m_Status;
+}
+
+std::string CAlbum::Type() const
+{
+	return m_Type;
+}
+
+void CAlbum::SetArtistID(const std::string& ArtistID)
+{
+	m_ArtistID=ArtistID;
+}
+
+void CAlbum::SetAlbumID(const std::string& AlbumID)
+{
+	m_AlbumID=AlbumID;
+}
+
+void CAlbum::SetStatus(const std::string& Status)
+{
+	m_Status=Status;
+}
+
+void CAlbum::SetType(const std::string& Type)
+{
+	m_Type=Type;
+}
+

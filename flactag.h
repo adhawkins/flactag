@@ -29,6 +29,11 @@
 
 #include <string>
 
+extern "C"
+{
+#include <http_fetcher.h>
+}
+
 #include "Album.h"
 #include "TagName.h"
 #include "Cuesheet.h"
@@ -55,6 +60,7 @@ private:
 	bool MakeDirectory(const std::string& Directory, mode_t Mode) const;
 	void RenameFile();
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
+	void GetAlbumArt(int AlbumNumber) const;
 	
 	std::string m_FlacFile;
 	std::vector<CAlbum> m_Albums;

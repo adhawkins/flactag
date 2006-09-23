@@ -68,13 +68,9 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	    {
 		    o.Select(MBS_SelectAlbum, count+1);
 	
-				std::string AlbumName=o.Data(MBE_AlbumGetAlbumName);
-				std::string AlbumArtist=o.Data(MBE_AlbumGetAlbumArtistName);
-				std::string AlbumArtistSort=o.Data(MBE_AlbumGetAlbumArtistSortName);
-				std::string AlbumAsin=o.Data(MBE_AlbumGetAmazonAsin);
-
 				CAlbum Album;
 				
+				std::string AlbumName=o.Data(MBE_AlbumGetAlbumName);
 				std::string::size_type DiskNumPos=AlbumName.find(" (disc ");
 				if (std::string::npos!=DiskNumPos)
 				{
@@ -88,9 +84,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				}
 				
 				Album.SetName(AlbumName);
-				Album.SetArtist(AlbumArtist);
-				Album.SetArtistSort(AlbumArtistSort);
-				Album.SetAsin(AlbumAsin);
+				Album.SetArtist(o.Data(MBE_AlbumGetAlbumArtistName));
+				Album.SetArtistSort(o.Data(MBE_AlbumGetAlbumArtistSortName));
+				Album.SetASIN(o.Data(MBE_AlbumGetAmazonAsin));
+				Album.SetArtistID(o.Data(MBE_AlbumGetAlbumArtistId));
+				Album.SetAlbumID(o.Data(MBE_AlbumGetAlbumId));
+				Album.SetStatus(o.Data(MBE_AlbumGetAlbumStatus));
+				Album.SetType(o.Data(MBE_AlbumGetAlbumType));
 	
 		    int NumTracks=o.DataInt(MBE_AlbumGetNumTracks);
 
@@ -104,6 +104,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 		    	Track.SetName(o.Data(MBE_AlbumGetTrackName,i));
 		    	Track.SetArtist(o.Data(MBE_AlbumGetArtistName,i));
 		    	Track.SetArtistSort(o.Data(MBE_AlbumGetArtistSortName,i));
+		    	Track.SetArtistID(o.Data(MBE_AlbumGetArtistId,1));
 		    	
 					Album.AddTrack(Track);
 				}

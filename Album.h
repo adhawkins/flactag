@@ -42,16 +42,24 @@ public:
 	std::string Artist() const;
 	std::string ArtistSort() const;
 	std::string Date() const;
-	std::string Asin() const;
+	std::string ASIN() const;
 	std::vector<CTrack> Tracks() const;
+	std::string ArtistID() const;
+	std::string AlbumID() const;
+	std::string Status() const;
+	std::string Type() const;
 	int DiskNumber() const;
 		
 	void SetDate(const std::string& Date);
 	void SetName(const std::string& Name);
 	void SetArtist(const std::string& Artist);
 	void SetArtistSort(const std::string& ArtistSort);
-	void SetAsin(const std::string& Asin);
+	void SetASIN(const std::string& ASIN);
+	void SetArtistID(const std::string& ArtistID);
+	void SetAlbumID(const std::string& AlbumID);
 	void SetDiskNumber(int DiskNumber);
+	void SetStatus(const std::string& Status);
+	void SetType(const std::string& Type);
 	
 private:
 	std::vector<CTrack> m_Tracks;
@@ -59,7 +67,11 @@ private:
 	std::string m_Artist;
 	std::string m_ArtistSort;
 	std::string m_Date;
-	std::string m_Asin;
+	std::string m_ASIN;
+	std::string m_ArtistID;
+	std::string m_AlbumID;
+	std::string m_Status;
+	std::string m_Type;
 	int m_DiskNumber;
 };
 
