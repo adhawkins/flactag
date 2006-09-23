@@ -324,56 +324,58 @@ bool CFlacTag::LoadData()
 	m_FlacInfo.SetFileName(m_FlacFile);
 	m_FlacInfo.Read();
 
-	if (!m_FlacInfo.CuesheetFound())
+	if (m_FlacInfo.CuesheetFound())
+	{		
+		m_FlacTags=m_FlacInfo.Tags();
+		m_FlacCuesheet=m_FlacInfo.Cuesheet();
+	
+		m_WriteTags=m_FlacTags;
+		
+		CFileNameBuilder FileNameBuilder(m_FlacTags,
+														m_ConfigFile.Value("BasePath"),
+														m_ConfigFile.Value("SingleDiskFileName"),
+														m_ConfigFile.Value("MultiDiskFileName"));
+														
+		m_RenameFile=FileNameBuilder.FileName();
+	
+		if (m_WriteTags.end()==m_WriteTags.find(CTagName("ALBUM")) &&
+				m_WriteTags.end()==m_WriteTags.find(CTagName("ARTIST")))
+		{
+			//Populate write tags with empty tags
+			
+			m_WriteTags[CTagName("ALBUM")]="";
+			m_WriteTags[CTagName("ARTIST")]="";
+			m_WriteTags[CTagName("ARTISTSORT")]="";
+			m_WriteTags[CTagName("YEAR")]="";
+			m_WriteTags[CTagName("DISCNUMBER")]="";
+			
+			for (int count=m_FlacCuesheet.FirstTrack();count<=m_FlacCuesheet.LastTrack();count++)
+			{
+				std::stringstream TagValue;
+				TagValue << count;
+				
+				m_WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
+				
+				m_WriteTags[CTagName("TITLE",count)]="";
+				m_WriteTags[CTagName("ARTIST",count)]="";
+				m_WriteTags[CTagName("ARTISTSORT",count)]="";
+			}
+		}
+		
+		CMusicBrainzInfo Info(m_FlacCuesheet);
+		if (Info.LoadInfo(m_FlacFile))
+			m_Albums=Info.Albums();
+		else
+			RetVal=false;
+	}
+	else
 	{
 		std::stringstream os;
 		os << "No CUESHEET found for '" << m_FlacFile << "'";
 		CErrorLog::Log(os.str());
 		RetVal=false;
 	}
-		
-	m_FlacTags=m_FlacInfo.Tags();
-	m_FlacCuesheet=m_FlacInfo.Cuesheet();
-
-	m_WriteTags=m_FlacTags;
-	
-	CFileNameBuilder FileNameBuilder(m_FlacTags,
-													m_ConfigFile.Value("BasePath"),
-													m_ConfigFile.Value("SingleDiskFileName"),
-													m_ConfigFile.Value("MultiDiskFileName"));
-													
-	m_RenameFile=FileNameBuilder.FileName();
-
-	if (m_WriteTags.end()==m_WriteTags.find(CTagName("ALBUM")) &&
-			m_WriteTags.end()==m_WriteTags.find(CTagName("ARTIST")))
-	{
-		//Populate write tags with empty tags
-		
-		m_WriteTags[CTagName("ALBUM")]="";
-		m_WriteTags[CTagName("ARTIST")]="";
-		m_WriteTags[CTagName("ARTISTSORT")]="";
-		m_WriteTags[CTagName("YEAR")]="";
-		m_WriteTags[CTagName("DISCNUMBER")]="";
-		
-		for (int count=m_FlacCuesheet.FirstTrack();count<=m_FlacCuesheet.LastTrack();count++)
-		{
-			std::stringstream TagValue;
-			TagValue << count;
-			
-			m_WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
-			
-			m_WriteTags[CTagName("TITLE",count)]="";
-			m_WriteTags[CTagName("ARTIST",count)]="";
-			m_WriteTags[CTagName("ARTISTSORT",count)]="";
-		}
-	}
-	
-	CMusicBrainzInfo Info(m_FlacCuesheet);
-	if (Info.LoadInfo(m_FlacFile))
-		m_Albums=Info.Albums();
-	else
-		RetVal=false;
-		
+				
 	return RetVal;
 }
 
