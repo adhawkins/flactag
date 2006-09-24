@@ -56,6 +56,11 @@ std::string CTrack::ArtistID() const
 	return m_ArtistID;
 }
 
+std::string CTrack::TrackID() const
+{
+	return m_TrackID;
+}
+
 void CTrack::SetNumber(FLAC__byte Number)
 {
 	m_Number=Number;
@@ -78,4 +83,9 @@ void CTrack::SetArtistSort(const std::string& ArtistSort)
 void CTrack::SetArtistID(const std::string& ArtistID)
 {
 	m_ArtistID=ArtistID;
+}
+
+void CTrack::SetTrackID(const std::string& TrackID)
+{
+	m_TrackID=TrackID;
 }

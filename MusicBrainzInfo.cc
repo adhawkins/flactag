@@ -87,15 +87,19 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				Album.SetArtist(o.Data(MBE_AlbumGetAlbumArtistName));
 				Album.SetArtistSort(o.Data(MBE_AlbumGetAlbumArtistSortName));
 				Album.SetASIN(o.Data(MBE_AlbumGetAmazonAsin));
-				Album.SetArtistID(o.Data(MBE_AlbumGetAlbumArtistId));
-				Album.SetAlbumID(o.Data(MBE_AlbumGetAlbumId));
 				Album.SetStatus(o.Data(MBE_AlbumGetAlbumStatus));
 				Album.SetType(o.Data(MBE_AlbumGetAlbumType));
 	
+				std::string ArtistID;
+				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumArtistId),ArtistID);
+				Album.SetArtistID(ArtistID);
+				
+				std::string AlbumID;
+				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumId),AlbumID);
+				Album.SetAlbumID(AlbumID);
+
 		    int NumTracks=o.DataInt(MBE_AlbumGetNumTracks);
 
-		    o.Select(MBS_SelectAlbum, count+1);
-	
 				for (int i=1; i<=NumTracks; i++)
 		    {
 		    	CTrack Track;
@@ -104,7 +108,14 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 		    	Track.SetName(o.Data(MBE_AlbumGetTrackName,i));
 		    	Track.SetArtist(o.Data(MBE_AlbumGetArtistName,i));
 		    	Track.SetArtistSort(o.Data(MBE_AlbumGetArtistSortName,i));
-		    	Track.SetArtistID(o.Data(MBE_AlbumGetArtistId,1));
+		    	
+		    	std::string ArtistID;
+		    	o.GetIDFromURL(o.Data(MBE_AlbumGetArtistId,i),ArtistID);
+		    	Track.SetArtistID(ArtistID);
+		    	
+		    	std::string TrackID;
+		    	o.GetIDFromURL(o.Data(MBE_AlbumGetTrackId,i),TrackID);
+		    	Track.SetTrackID(TrackID);
 		    	
 					Album.AddTrack(Track);
 				}
@@ -120,6 +131,8 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					Album.SetDate(AlbumDate);
 				
 				m_Albums.push_back(Album);
+
+				o.Select(MBS_Rewind);
 			}
 		}
 		else

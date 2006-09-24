@@ -246,6 +246,7 @@ void CFlacTag::MainLoop()
 					m_WriteTags[CTagName("ARTIST",Track.Number())]=Track.Artist();
 					m_WriteTags[CTagName("ARTISTSORT",Track.Number())]=Track.ArtistSort();
 					m_WriteTags[CTagName("MUSICBRAINZ_ARTISTID",Track.Number())]=Track.ArtistID();
+					m_WriteTags[CTagName("MUSICBRAINZ_TRACKID",Track.Number())]=Track.TrackID();
 				}
 
 				m_WriteTags[CTagName("ALBUM")]=ThisAlbum.Name();

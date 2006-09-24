@@ -41,12 +41,14 @@ public:
 	std::string Artist() const;
 	std::string ArtistSort() const;
 	std::string ArtistID() const;
+	std::string TrackID() const;
 		
 	void SetNumber(FLAC__byte Number);
 	void SetName(const std::string& Name);
 	void SetArtist(const std::string& Artist);
 	void SetArtistSort(const std::string& ArtistSort);
 	void SetArtistID(const std::string& ArtistID);
+	void SetTrackID(const std::string& TrackID);
 		
 		
 private:
@@ -55,6 +57,7 @@ private:
 	std::string m_Artist;
 	std::string m_ArtistSort;
 	std::string m_ArtistID;
+	std::string m_TrackID;
 };
 
 #endif
