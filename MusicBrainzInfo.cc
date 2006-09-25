@@ -87,8 +87,14 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				Album.SetArtist(o.Data(MBE_AlbumGetAlbumArtistName));
 				Album.SetArtistSort(o.Data(MBE_AlbumGetAlbumArtistSortName));
 				Album.SetASIN(o.Data(MBE_AlbumGetAmazonAsin));
-				Album.SetStatus(o.Data(MBE_AlbumGetAlbumStatus));
-				Album.SetType(o.Data(MBE_AlbumGetAlbumType));
+				
+				std::string AlbumStatus;
+				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),AlbumStatus);
+				Album.SetStatus(AlbumStatus);
+				
+				std::string AlbumType;
+				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),AlbumType);
+				Album.SetType(AlbumType);
 	
 				std::string ArtistID;
 				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumArtistId),ArtistID);
