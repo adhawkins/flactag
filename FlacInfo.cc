@@ -178,6 +178,9 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 	
 	if (m_TagBlock)
 	{
+		while (m_TagBlock->get_num_comments())
+			m_TagBlock->delete_comment(0);
+			
 		tTagMapConstIterator ThisTag=Tags.begin();
 		
 		while (Tags.end()!=ThisTag)
@@ -186,7 +189,14 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 			std::string Value=(*ThisTag).second;
 
 			if (!Value.empty())				
-				SetTag(Name,Value);
+			{
+				FLAC::Metadata::VorbisComment::Entry NewEntry;
+					
+				NewEntry.set_field_name(Name.String().c_str());
+				NewEntry.set_field_value(Value.c_str(),Value.length());
+				
+				m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry);
+			}
 			
 			++ThisTag;
 		}
@@ -200,33 +210,20 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 void CFlacInfo::SetTag(const CTagName& Name, const std::string& Value)
 {
 	bool Found=false;
-	bool Inserted=false;
 	
 	for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
 	{
 		FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
 		std::string ThisField=Entry.get_field_name();
 			
-		if (ThisField==Name.String() ||
-			((ThisField=="DATE" || ThisField=="YEAR") && (Name.String()=="YEAR" || Name.String()=="DATE")))
-		{
+		if (ThisField==Name.String())
 			Found=true;
-		}
 			
 		if (Found)
 		{
-			if (!Inserted)
-			{
-				Inserted=true;
-				Entry.set_field_name(Name.String().c_str());
-				Entry.set_field_value(Value.c_str(),Value.length());
-				m_TagBlock->set_comment(count,Entry);
-			}
-			else
-			{
-				m_TagBlock->delete_comment(count);
-				count--;
-			}
+			Entry.set_field_name(Name.String().c_str());
+			Entry.set_field_value(Value.c_str(),Value.length());
+			m_TagBlock->set_comment(count,Entry);
 		}
 	}
 	
