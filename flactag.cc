@@ -41,16 +41,22 @@
 #include "MusicBrainzInfo.h"
 #include "FileNameBuilder.h"
 #include "ErrorLog.h"
+#include "CommandLine.h"
+
+extern "C"
+{
+#include <http_fetcher.h>
+}
 
 #include <vector>
 #include <sstream>
 
-int main(int argc, const char *argv[])
+int main(int argc, char *const argv[])
 {
-	if (argc==2)
-	{
-		CFlacTag FlacTag(argv[1]);
-	}
+	CCommandLine CmdLine(argc,argv);
+	
+	if (!CmdLine.FileName().empty())
+		CFlacTag FlacTag(CmdLine);
 	else
 	{
 		std::stringstream os;
@@ -63,10 +69,12 @@ int main(int argc, const char *argv[])
 	return 0;
 }
 
-CFlacTag::CFlacTag(const std::string& FlacFile)
-:	m_FlacFile(FlacFile),
+CFlacTag::CFlacTag(const CCommandLine& CommandLine)
+:	m_CommandLine(CommandLine),
 	m_SelectedWindow(eWindow_Albums)
 {
+	m_FlacFile=m_CommandLine.FileName();
+	
 	std::string ConfigPath=getenv("HOME");
 	ConfigPath+="/.flactag";
 	
@@ -75,8 +83,26 @@ CFlacTag::CFlacTag(const std::string& FlacFile)
 
 	if (!LoadData())
 		return;
-		
-	MainLoop();
+	
+	if (CommandLine.Check() || CommandLine.Apply())
+	{
+		CopyTags(0);
+		if (m_WriteTags!=m_FlacTags)
+		{
+			printf("%s: Tags differ\n",m_FlacFile.c_str());
+			if (CommandLine.Apply())
+			{
+				if (m_FlacInfo.WriteTags(m_WriteTags))
+					printf("%s: Tags written\n",m_FlacFile.c_str());
+				else
+					printf("%s: Error writing tags\n",m_FlacFile.c_str());
+			}
+		}
+		else
+			printf("%s: Tags match\n",m_FlacFile.c_str());
+	}
+	else
+		MainLoop();
 }
 
 void CFlacTag::MainLoop()
@@ -230,58 +256,9 @@ void CFlacTag::MainLoop()
 
 			case 'c':
 			case 'C':
-			{
-				CAlbum ThisAlbum=m_Albums[AlbumWindow.GetCurrentAlbum()];
-				std::vector<CTrack> Tracks=ThisAlbum.Tracks();
-				
-				for (std::vector<CTrack>::size_type count=0;count<Tracks.size();count++)
-				{
-					CTrack Track=Tracks[count];
-					
-					std::stringstream os;
-					os << (int)Track.Number();
-					
-					m_WriteTags[CTagName("TRACKNUMBER",Track.Number())]=os.str();
-					m_WriteTags[CTagName("TITLE",Track.Number())]=Track.Name();
-					m_WriteTags[CTagName("ARTIST",Track.Number())]=Track.Artist();
-					m_WriteTags[CTagName("ARTISTSORT",Track.Number())]=Track.ArtistSort();
-					m_WriteTags[CTagName("MUSICBRAINZ_ARTISTID",Track.Number())]=Track.ArtistID();
-					m_WriteTags[CTagName("MUSICBRAINZ_TRACKID",Track.Number())]=Track.TrackID();
-				}
-
-				m_WriteTags[CTagName("ALBUM")]=ThisAlbum.Name();
-				m_WriteTags[CTagName("ARTIST")]=ThisAlbum.Artist();
-				m_WriteTags[CTagName("ARTISTSORT")]=ThisAlbum.ArtistSort();
-				m_WriteTags[CTagName("ALBUMARTIST")]=ThisAlbum.Artist();
-				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMARTISTID")]=ThisAlbum.ArtistID();
-				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMID")]=ThisAlbum.AlbumID();
-				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMSTATUS")]=ThisAlbum.Status();
-				m_WriteTags[CTagName("MUSICBRAINZ_ALBUMTYPE")]=ThisAlbum.Type();
-								
-				if (!ThisAlbum.Date().empty())
-				{
-					m_WriteTags.erase(CTagName("YEAR"));				
-					m_WriteTags.erase(CTagName("DATE"));				
-					
-					m_WriteTags[CTagName("DATE")]=ThisAlbum.Date();
-				}
-				
-				if (ThisAlbum.DiskNumber()!=-1)
-				{
-					std::stringstream os;
-					os << ThisAlbum.DiskNumber();
-					m_WriteTags[CTagName("DISCNUMBER")]=os.str();
-				}
-
-				if (!ThisAlbum.ASIN().empty())
-					m_WriteTags[CTagName("ASIN")]=ThisAlbum.ASIN();
-									
-				if (ThisAlbum.Artist()=="Various Artists")
-					m_WriteTags[CTagName("COMPILATION")]="1";
-						
+				CopyTags(AlbumWindow.GetCurrentAlbum());
 				TagsWindow.SetTags(m_WriteTags);			
 				break;
-			}
 			
 			case 'w':
 			case 'W':
@@ -638,4 +615,57 @@ void CFlacTag::GetAlbumArt(int Album) const
 	
 	if (Buffer)
 		free(Buffer);
+}
+
+void CFlacTag::CopyTags(int AlbumNumber)
+{
+	CAlbum ThisAlbum=m_Albums[AlbumNumber];
+	std::vector<CTrack> Tracks=ThisAlbum.Tracks();
+	
+	for (std::vector<CTrack>::size_type count=0;count<Tracks.size();count++)
+	{
+		CTrack Track=Tracks[count];
+		
+		std::stringstream os;
+		os << (int)Track.Number();
+		
+		SetTag(m_WriteTags,CTagName("TRACKNUMBER",Track.Number()),os.str());
+		SetTag(m_WriteTags,CTagName("TITLE",Track.Number()),Track.Name());
+		SetTag(m_WriteTags,CTagName("ARTIST",Track.Number()),Track.Artist());
+		SetTag(m_WriteTags,CTagName("ARTISTSORT",Track.Number()),Track.ArtistSort());
+		SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ARTISTID",Track.Number()),Track.ArtistID());
+		SetTag(m_WriteTags,CTagName("MUSICBRAINZ_TRACKID",Track.Number()),Track.TrackID());
+	}
+	
+	SetTag(m_WriteTags,CTagName("ALBUM"),ThisAlbum.Name());
+	SetTag(m_WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
+	SetTag(m_WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
+	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
+	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMARTISTID"),ThisAlbum.ArtistID());
+	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMID"),ThisAlbum.AlbumID());
+	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMSTATUS"),ThisAlbum.Status());
+	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMTYPE"),ThisAlbum.Type());
+					
+	m_WriteTags.erase(CTagName("YEAR"));				
+	m_WriteTags.erase(CTagName("DATE"));				
+	
+	SetTag(m_WriteTags,CTagName("DATE"),ThisAlbum.Date());
+	
+	if (ThisAlbum.DiskNumber()!=-1)
+	{
+		std::stringstream os;
+		os << ThisAlbum.DiskNumber();
+		SetTag(m_WriteTags,CTagName("DISCNUMBER"),os.str());
+	}
+	
+	SetTag(m_WriteTags,CTagName("ASIN"),ThisAlbum.ASIN());
+						
+	if (ThisAlbum.Artist()=="Various Artists")
+		SetTag(m_WriteTags,CTagName("COMPILATION"),"1");
+}
+
+void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const std::string& TagValue)
+{
+	if (!TagValue.empty())
+		Tags[TagName]=TagValue;
 }

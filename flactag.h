@@ -29,16 +29,12 @@
 
 #include <string>
 
-extern "C"
-{
-#include <http_fetcher.h>
-}
-
 #include "Album.h"
 #include "TagName.h"
 #include "Cuesheet.h"
 #include "FlacInfo.h"
 #include "ConfigFile.h"
+#include "CommandLine.h"
 
 class CFlacTag
 {
@@ -50,7 +46,7 @@ public:
 		eWindow_Tags,
 	} tWindowType;
 	
-	CFlacTag(const std::string& FlacFile);
+	CFlacTag(const CCommandLine& CommandLine);
 		
 private:
 	void MainLoop();
@@ -61,7 +57,10 @@ private:
 	void RenameFile();
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
 	void GetAlbumArt(int AlbumNumber) const;
+	void CopyTags(int AlbumNumber);
+	void SetTag(tTagMap& Tags, const CTagName& TagName, const std::string& TagValue);
 	
+	CCommandLine m_CommandLine;
 	std::string m_FlacFile;
 	std::vector<CAlbum> m_Albums;
 	CFlacInfo m_FlacInfo;			

@@ -44,7 +44,9 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	
 	CDiskIDCalculate Calc(m_Cuesheet);
 	std::string DiskID=Calc.DiskID();
-	
+	//CErrorLog::Log("DiskID: " + DiskID);
+	//CErrorLog::Log("Sumbmit: " + Calc.SubmitURL());
+			
   MusicBrainz o;
   bool Ret;
 
