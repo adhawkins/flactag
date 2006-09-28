@@ -49,14 +49,14 @@ public:
 	CFlacTag(const CCommandLine& CommandLine);
 		
 private:
-	void MainLoop();
+	void Interactive();
 	bool LoadData();
 	bool MakeDirectoryTree(const std::string& Directory) const;
 	bool CheckMakeDirectory(const std::string& Directory) const;
 	bool MakeDirectory(const std::string& Directory, mode_t Mode) const;
-	void RenameFile();
+	bool RenameFile();
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
-	void GetAlbumArt(int AlbumNumber) const;
+	bool GetAlbumArt(int AlbumNumber) const;
 	void CopyTags(int AlbumNumber);
 	void SetTag(tTagMap& Tags, const CTagName& TagName, const std::string& TagValue);
 	

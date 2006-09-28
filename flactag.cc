@@ -55,14 +55,8 @@ int main(int argc, char *const argv[])
 {
 	CCommandLine CmdLine(argc,argv);
 	
-	if (!CmdLine.FileName().empty())
+	if (CmdLine.Valid())
 		CFlacTag FlacTag(CmdLine);
-	else
-	{
-		std::stringstream os;
-		os << "Usage: " << argv[0] << " flacfile";
-		CErrorLog::Log(os.str());	
-	}
 
 	CErrorLog::DumpLog();
 				
@@ -84,28 +78,68 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 	if (!LoadData())
 		return;
 	
-	if (CommandLine.Check() || CommandLine.Apply())
+	if (CommandLine.Check() || CommandLine.Write() || CommandLine.Cover() || CommandLine.Rename())
 	{
-		CopyTags(0);
-		if (m_WriteTags!=m_FlacTags)
+		bool Abort=false;
+		
+		if (m_Albums.size()>1)
 		{
-			printf("%s: Tags differ\n",m_FlacFile.c_str());
-			if (CommandLine.Apply())
+			if (CommandLine.ForceMulti())
+				printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
+			else
 			{
-				if (m_FlacInfo.WriteTags(m_WriteTags))
-					printf("%s: Tags written\n",m_FlacFile.c_str());
-				else
-					printf("%s: Error writing tags\n",m_FlacFile.c_str());
+				printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
+				Abort=true;
 			}
 		}
-		else
-			printf("%s: Tags match\n",m_FlacFile.c_str());
+		
+		if (!Abort)
+		{
+			CopyTags(0);
+			if (m_WriteTags!=m_FlacTags)
+			{
+				printf("%s: Tags differ\n",m_FlacFile.c_str());
+				if (CommandLine.Write())
+				{
+					if (m_FlacInfo.WriteTags(m_WriteTags))
+					{
+						LoadData();
+						printf("%s: Tags written\n",m_FlacFile.c_str());
+					}
+					else
+						printf("%s: Error writing tags\n",m_FlacFile.c_str());
+				}
+			}
+			else
+				printf("%s: Tags match\n",m_FlacFile.c_str());
+				
+			if (CommandLine.Rename())
+			{
+					if (RenameFile())
+						printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+					else
+						printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+			}
+			
+			if (CommandLine.Cover())
+			{
+				if (!m_Albums[0].ASIN().empty())
+				{
+					if (GetAlbumArt(0))
+						printf("%s: Downloaded cover art\n",m_FlacFile.c_str());
+					else
+						printf("%s: Error downloading cover art\n",m_FlacFile.c_str());
+				}
+				else
+					printf("%s: No cover art available\n",m_FlacFile.c_str());
+			}
+		}
 	}
 	else
-		MainLoop();
+		Interactive();
 }
 
-void CFlacTag::MainLoop()
+void CFlacTag::Interactive()
 {
 	SLtt_get_terminfo();
 	
@@ -256,26 +290,46 @@ void CFlacTag::MainLoop()
 
 			case 'c':
 			case 'C':
-				CopyTags(AlbumWindow.GetCurrentAlbum());
-				TagsWindow.SetTags(m_WriteTags);			
+				if (m_Albums.size())
+				{
+					CopyTags(AlbumWindow.GetCurrentAlbum());
+					TagsWindow.SetTags(m_WriteTags);			
+				}
+				else
+					SLtt_beep();
+
 				break;
 			
 			case 'w':
 			case 'W':
-				if (m_FlacInfo.WriteTags(m_WriteTags))
-					LoadData();
-				
-				TagsWindow.SetTags(m_WriteTags);
+				if (m_FlacTags!=m_WriteTags)
+				{
+					if (m_FlacInfo.WriteTags(m_WriteTags))
+						LoadData();
+					
+					TagsWindow.SetTags(m_WriteTags);
+				}
+				else
+					SLtt_beep();
+
 				break;
 								
 			case 'r':
 			case 'R':
-				RenameFile();
+				if (m_RenameFile!=m_FlacFile)
+					RenameFile();
+				else
+					SLtt_beep();
+				
 				break;
 				
 			case 'a':
 			case 'A':
-				GetAlbumArt(AlbumWindow.GetCurrentAlbum());
+				if (!m_Albums[AlbumWindow.GetCurrentAlbum()].ASIN().empty())
+					GetAlbumArt(AlbumWindow.GetCurrentAlbum());
+				else
+					SLtt_beep();
+					
 				break;
 				
 			case 'q':
@@ -470,8 +524,10 @@ bool CFlacTag::MakeDirectory(const std::string& Directory, mode_t Mode) const
 	return RetVal;
 }
 
-void CFlacTag::RenameFile()
+bool CFlacTag::RenameFile()
 {
+	bool RetVal=false;
+	
 	std::string::size_type LastSlash=m_RenameFile.rfind("/");
 	if (std::string::npos!=LastSlash)
 	{
@@ -480,6 +536,8 @@ void CFlacTag::RenameFile()
 		{
 			if (0==rename(m_FlacFile.c_str(),m_RenameFile.c_str()))
 			{
+				RetVal=true;
+				
 				m_FlacFile=m_RenameFile;
 				LoadData();
 			}
@@ -489,6 +547,8 @@ void CFlacTag::RenameFile()
 				{
 					if (CopyFile(m_FlacFile,m_RenameFile) && 0==unlink(m_FlacFile.c_str()))
 					{
+						RetVal=true;
+						
 						m_FlacFile=m_RenameFile;
 						LoadData();
 					}
@@ -502,6 +562,8 @@ void CFlacTag::RenameFile()
 			}
 		}
 	}
+	
+	return RetVal;
 }
 
 bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) const
@@ -588,8 +650,10 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 	return RetVal;
 }
 
-void CFlacTag::GetAlbumArt(int Album) const
+bool CFlacTag::GetAlbumArt(int Album) const
 {
+	bool RetVal=false;
+	
 	std::string ASIN=m_Albums[Album].ASIN();
 	std::string URL="http://images.amazon.com/images/P/" + ASIN + ".02.LZZZZZZZ.jpg";
 		
@@ -606,6 +670,8 @@ void CFlacTag::GetAlbumArt(int Album) const
 		FILE *fptr=fopen(CoverFile.c_str(),"wb");
 		if (fptr)
 		{
+			RetVal=true;
+			
 			fwrite(Buffer,Bytes,1,fptr);
 			fclose(fptr);
 		}
@@ -615,6 +681,8 @@ void CFlacTag::GetAlbumArt(int Album) const
 	
 	if (Buffer)
 		free(Buffer);
+		
+	return RetVal;
 }
 
 void CFlacTag::CopyTags(int AlbumNumber)
