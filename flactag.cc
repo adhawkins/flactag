@@ -96,23 +96,27 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 		if (!Abort)
 		{
 			CopyTags(0);
-			if (m_WriteTags!=m_FlacTags)
+			
+			if (CommandLine.Check() || CommandLine.Write())
 			{
-				printf("%s: Tags differ\n",m_FlacFile.c_str());
-				if (CommandLine.Write())
+				if (m_WriteTags!=m_FlacTags)
 				{
-					if (m_FlacInfo.WriteTags(m_WriteTags))
+					printf("%s: Tags differ\n",m_FlacFile.c_str());
+					if (CommandLine.Write())
 					{
-						LoadData();
-						printf("%s: Tags written\n",m_FlacFile.c_str());
+						if (m_FlacInfo.WriteTags(m_WriteTags))
+						{
+							LoadData();
+							printf("%s: Tags written\n",m_FlacFile.c_str());
+						}
+						else
+							printf("%s: Error writing tags\n",m_FlacFile.c_str());
 					}
-					else
-						printf("%s: Error writing tags\n",m_FlacFile.c_str());
 				}
+				else
+					printf("%s: Tags match\n",m_FlacFile.c_str());
 			}
-			else
-				printf("%s: Tags match\n",m_FlacFile.c_str());
-				
+							
 			if (CommandLine.Rename())
 			{
 					if (RenameFile())
