@@ -93,7 +93,7 @@ bool CCommandLine::Write() const
 
 bool CCommandLine::Cover() const
 {
-	return m_Write;
+	return m_Cover;
 }
 
 bool CCommandLine::Rename() const
