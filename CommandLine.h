@@ -2,6 +2,7 @@
 #define _COMMAND_LINE_H
 
 #include <string>
+#include <vector>
 
 class CCommandLine
 {
@@ -14,7 +15,7 @@ public:
 	bool Cover() const;
 	bool Rename() const;
 	bool ForceMulti() const;
-	std::string FileName() const;
+	std::vector<std::string> FileNames() const;
 	
 private:
 	bool m_Valid;
@@ -23,7 +24,7 @@ private:
 	bool m_Cover;
 	bool m_Rename;
 	bool m_ForceMulti;
-	std::string m_FileName;
+	std::vector<std::string> m_FileNames;
 		
 	void Usage(const std::string& ProgName) const;
 };

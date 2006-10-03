@@ -67,80 +67,84 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 :	m_CommandLine(CommandLine),
 	m_SelectedWindow(eWindow_Albums)
 {
-	m_FlacFile=m_CommandLine.FileName();
-	
-	std::string ConfigPath=getenv("HOME");
-	ConfigPath+="/.flactag";
-	
-	if (!m_ConfigFile.LoadFile(ConfigPath))
-		m_ConfigFile.SaveFile(ConfigPath);
-
-	if (!LoadData())
-		return;
-	
-	if (CommandLine.Check() || CommandLine.Write() || CommandLine.Cover() || CommandLine.Rename())
+	std::vector<std::string> Files=m_CommandLine.FileNames();
+	for (std::vector<std::string>::size_type count=0;count<Files.size();count++)
 	{
-		bool Abort=false;
+		m_FlacFile=Files[count];
 		
-		if (m_Albums.size()>1)
-		{
-			if (CommandLine.ForceMulti())
-				printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
-			else
-			{
-				printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
-				Abort=true;
-			}
-		}
+		std::string ConfigPath=getenv("HOME");
+		ConfigPath+="/.flactag";
 		
-		if (!Abort)
+		if (!m_ConfigFile.LoadFile(ConfigPath))
+			m_ConfigFile.SaveFile(ConfigPath);
+	
+		if (!LoadData())
+			return;
+		
+		if (CommandLine.Check() || CommandLine.Write() || CommandLine.Cover() || CommandLine.Rename())
 		{
-			CopyTags(0);
+			bool Abort=false;
 			
-			if (CommandLine.Check() || CommandLine.Write())
+			if (m_Albums.size()>1)
 			{
-				if (m_WriteTags!=m_FlacTags)
+				if (CommandLine.ForceMulti())
+					printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
+				else
 				{
-					printf("%s: Tags differ\n",m_FlacFile.c_str());
-					if (CommandLine.Write())
+					printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
+					Abort=true;
+				}
+			}
+			
+			if (!Abort)
+			{
+				CopyTags(0);
+				
+				if (CommandLine.Check() || CommandLine.Write())
+				{
+					if (m_WriteTags!=m_FlacTags)
 					{
-						if (m_FlacInfo.WriteTags(m_WriteTags))
+						printf("%s: Tags differ\n",m_FlacFile.c_str());
+						if (CommandLine.Write())
 						{
-							LoadData();
-							printf("%s: Tags written\n",m_FlacFile.c_str());
+							if (m_FlacInfo.WriteTags(m_WriteTags))
+							{
+								LoadData();
+								printf("%s: Tags written\n",m_FlacFile.c_str());
+							}
+							else
+								printf("%s: Error writing tags\n",m_FlacFile.c_str());
 						}
-						else
-							printf("%s: Error writing tags\n",m_FlacFile.c_str());
 					}
-				}
-				else
-					printf("%s: Tags match\n",m_FlacFile.c_str());
-			}
-							
-			if (CommandLine.Rename())
-			{
-					if (RenameFile())
-						printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
 					else
-						printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
-			}
-			
-			if (CommandLine.Cover())
-			{
-				if (!m_Albums[0].ASIN().empty())
+						printf("%s: Tags match\n",m_FlacFile.c_str());
+				}
+								
+				if (CommandLine.Rename())
 				{
-					if (GetAlbumArt(0))
-						printf("%s: Downloaded cover art\n",m_FlacFile.c_str());
-					else
-						printf("%s: Error downloading cover art\n",m_FlacFile.c_str());
+						if (RenameFile())
+							printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+						else
+							printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
 				}
-				else
-					printf("%s: No cover art available\n",m_FlacFile.c_str());
+				
+				if (CommandLine.Cover())
+				{
+					if (!m_Albums[0].ASIN().empty())
+					{
+						if (GetAlbumArt(0))
+							printf("%s: Downloaded cover art\n",m_FlacFile.c_str());
+						else
+							printf("%s: Error downloading cover art\n",m_FlacFile.c_str());
+					}
+					else
+						printf("%s: No cover art available\n",m_FlacFile.c_str());
+				}
 			}
 		}
+		else
+			Interactive();
 	}
-	else
-		Interactive();
 }
 
 void CFlacTag::Interactive()

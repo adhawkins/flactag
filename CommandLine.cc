@@ -66,9 +66,15 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 
 	if (m_Valid)
 	{	
-		if (argc!=optind)
-			m_FileName=argv[optind];
-		else
+		int LastArg=optind;
+		
+		while (LastArg!=argc)
+		{
+			m_FileNames.push_back(argv[LastArg]);
+			LastArg++;
+		}
+		
+		if (m_FileNames.empty())
 			m_Valid=false;
 	}
 	
@@ -106,13 +112,14 @@ bool CCommandLine::ForceMulti() const
 	return m_ForceMulti;
 }
 
-std::string CCommandLine::FileName() const
+std::vector<std::string> CCommandLine::FileNames() const
 {
-	return m_FileName;
+	return m_FileNames;
 }
 
 void CCommandLine::Usage(const std::string& ProgName) const
 {
 	printf("Usage: %s [ --check | -c ] [ --write | -w ] [ --rename | -r ]\n"
-					"\t\t[ --cover | -v ] [ --force-multi | -m ] flacfile\n",ProgName.c_str());
+					"\t\t[ --cover | -v ] [ --force-multi | -m ]\n"
+					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }
