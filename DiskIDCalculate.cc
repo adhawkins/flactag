@@ -66,13 +66,21 @@ CDiskIDCalculate::CDiskIDCalculate(const CCuesheet& Cuesheet)
 	
 	sha_final(Digest, &sha);
 	
-	unsigned long Size;
-	unsigned char *Base64=rfc822_binary(Digest,20,&Size);
-	char DiskID[100];
-	memcpy(DiskID,(const char *)Base64,Size);
-	DiskID[Size]='\0';
-	m_DiskID=DiskID;
-	free(Base64);
+	m_DiskID=rfc822_binary(Digest,20);
+
+	//Convert a 'true' base64 string into one compatible with MusicBrainz
+	
+	for (std::string::size_type count=0;count<m_DiskID.length();count++)
+	{
+		if (m_DiskID[count]=='+')
+			m_DiskID[count]='.';
+
+		if (m_DiskID[count]=='/')
+			m_DiskID[count]='_';
+
+		if (m_DiskID[count]=='=')
+			m_DiskID[count]='-';
+	}
 }
 
 std::string CDiskIDCalculate::DiskID() const
