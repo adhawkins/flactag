@@ -38,6 +38,8 @@ CFlacInfo::~CFlacInfo()
 {
 	if (m_TagBlock)
 		delete m_TagBlock;
+	
+	m_TagBlock=0;
 }
 
 bool CFlacInfo::CuesheetFound() const
@@ -49,14 +51,14 @@ void CFlacInfo::SetFileName(const std::string& FileName)
 {
 	if (m_TagBlock)
 		delete m_TagBlock;
+	
+	m_TagBlock=0;
 
 	m_Tags.clear();
 	m_Cuesheet.Clear();
 			
-	m_TagBlock=0;
-	
 	m_FileName=FileName;
-	m_CuesheetFound=0;
+	m_CuesheetFound=false;
 }
 
 bool CFlacInfo::Read()
@@ -93,21 +95,26 @@ bool CFlacInfo::Read()
 								
 							case FLAC__METADATA_TYPE_VORBIS_COMMENT:
 								m_TagBlock=(FLAC::Metadata::VorbisComment *)Iterator.get_block();
-	
-								for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
+
+								if (m_TagBlock->is_valid())
 								{
-									char Name[1024];
-									char Value[1024];
-									
-									FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
-										
-									strncpy(Name,Entry.get_field_name(),Entry.get_field_name_length());
-									Name[Entry.get_field_name_length()]='\0';
-	
-									strncpy(Value,Entry.get_field_value(),Entry.get_field_value_length());
-									Value[Entry.get_field_value_length()]='\0';
-	
-									m_Tags[CTagName(Name)]=Value;
+									for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
+									{
+										FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
+											
+										char *Name=new char[Entry.get_field_name_length()+1];
+										strncpy(Name,Entry.get_field_name(),Entry.get_field_name_length());
+										Name[Entry.get_field_name_length()]='\0';
+		
+										char *Value=new char[Entry.get_field_value_length()+1];
+										strncpy(Value,Entry.get_field_value(),Entry.get_field_value_length());
+										Value[Entry.get_field_value_length()]='\0';
+		
+										m_Tags[CTagName(Name)]=Value;
+
+										delete[] Name;
+										delete[] Value;										
+									}
 								}
 								
 								break;
@@ -132,7 +139,6 @@ bool CFlacInfo::Read()
 							case FLAC__METADATA_TYPE_UNDEFINED:  
 								break;
 						}
-						
 					} while (Iterator.next());
 				}
 			}

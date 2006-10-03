@@ -31,6 +31,7 @@
 #include <vector>
 
 #include "Track.h"
+#include "CoverArt.h"
 
 class CAlbum
 {
@@ -49,6 +50,7 @@ public:
 	std::string Status() const;
 	std::string Type() const;
 	int DiskNumber() const;
+	CCoverArt CoverArt() const;
 		
 	void SetDate(const std::string& Date);
 	void SetName(const std::string& Name);
@@ -60,6 +62,7 @@ public:
 	void SetDiskNumber(int DiskNumber);
 	void SetStatus(const std::string& Status);
 	void SetType(const std::string& Type);
+	void SetCoverArt(const CCoverArt& CoverArt);
 	
 private:
 	std::vector<CTrack> m_Tracks;
@@ -73,6 +76,7 @@ private:
 	std::string m_Status;
 	std::string m_Type;
 	int m_DiskNumber;
+	CCoverArt m_CoverArt;
 };
 
 #endif

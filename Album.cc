@@ -141,3 +141,13 @@ void CAlbum::SetType(const std::string& Type)
 	m_Type=Type;
 }
 
+void CAlbum::SetCoverArt(const CCoverArt& CoverArt)
+{
+	m_CoverArt=CoverArt;
+}
+
+CCoverArt CAlbum::CoverArt() const
+{
+	return m_CoverArt;
+}
+

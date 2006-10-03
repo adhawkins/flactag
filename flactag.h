@@ -56,7 +56,6 @@ private:
 	bool MakeDirectory(const std::string& Directory, mode_t Mode) const;
 	bool RenameFile();
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
-	bool GetAlbumArt(int AlbumNumber) const;
 	void CopyTags(int AlbumNumber);
 	void SetTag(tTagMap& Tags, const CTagName& TagName, const std::string& TagValue);
 	

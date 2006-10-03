@@ -5,14 +5,18 @@ CXXFLAGS=-Wall -Werror
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiskIDCalculate.o \
 						sha1.o base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
-						FileNameBuilder.o ErrorLog.o CommandLine.o
+						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o
 						
 DISCIDOBJS=discid.o
 
 SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
-all: flactag discid flactag.txt flactag.html
+all: flactag discid flactag.txt flactag.html flactag.man
 
+flactag.man: manpage.sgml Makefile
+	sgml2txt -man manpage.sgml
+	mv manpage.man flactag.man
+	
 flactag.txt: flactag.sgml Makefile
 	sgml2txt --pass="-P-bc" --blanks=1 flactag.sgml
 	

@@ -12,7 +12,6 @@ public:
 	bool Valid() const;
 	bool Check() const;
 	bool Write() const;
-	bool Cover() const;
 	bool Rename() const;
 	bool ForceMulti() const;
 	std::vector<std::string> FileNames() const;
@@ -21,7 +20,6 @@ private:
 	bool m_Valid;
 	bool m_Check;
 	bool m_Write;
-	bool m_Cover;
 	bool m_Rename;
 	bool m_ForceMulti;
 	std::vector<std::string> m_FileNames;

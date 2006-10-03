@@ -30,6 +30,13 @@
 
 #include <musicbrainz/musicbrainz.h>
 
+extern "C"
+{
+#include <http_fetcher.h>
+}
+
+#include "base64.h"
+
 #include "DiskIDCalculate.h"
 #include "ErrorLog.h"
 
@@ -45,7 +52,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	CDiskIDCalculate Calc(m_Cuesheet);
 	std::string DiskID=Calc.DiskID();
 	//CErrorLog::Log("DiskID: " + DiskID);
-	//CErrorLog::Log("Sumbmit: " + Calc.SubmitURL());
+	//CErrorLog::Log("Submit: " + Calc.SubmitURL());
 			
   MusicBrainz o;
   bool Ret;
@@ -89,6 +96,35 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				Album.SetArtist(o.Data(MBE_AlbumGetAlbumArtistName));
 				Album.SetArtistSort(o.Data(MBE_AlbumGetAlbumArtistSortName));
 				Album.SetASIN(o.Data(MBE_AlbumGetAmazonAsin));
+
+				if (!Album.ASIN().empty())
+				{				
+					std::string URL="http://images.amazon.com/images/P/" + Album.ASIN() + ".02.LZZZZZZZ.jpg";
+												
+					char *Buffer=0;
+					
+					int Bytes=http_fetch(URL.c_str(),&Buffer);
+					if (Bytes<1000)
+					{
+						free(Buffer);
+						Buffer=0;
+						URL="http://images.amazon.com/images/P/" + Album.ASIN() + ".02.MZZZZZZZ.jpg";
+						Bytes=http_fetch(URL.c_str(),&Buffer);
+					}
+
+					if (Bytes>0)
+					{
+						if (Bytes<1000)
+							CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+						else
+							Album.SetCoverArt(CCoverArt((const unsigned char *)Buffer,Bytes));
+					}
+					else
+						CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
+					
+					if (Buffer)
+						free(Buffer);
+				}
 				
 				std::string AlbumStatus;
 				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),AlbumStatus);

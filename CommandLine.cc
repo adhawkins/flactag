@@ -10,7 +10,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 :	m_Valid(true),
 	m_Check(false),
 	m_Write(false),
-	m_Cover(false),
 	m_Rename(false),
 	m_ForceMulti(false)
 {
@@ -18,7 +17,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	{
 		{"force-multi", no_argument, 0, 'm'},
 		{"rename", no_argument, 0, 'r'},
-		{"cover", no_argument, 0, 'v'},
 		{"write", no_argument, 0, 'w'},
 		{"check", no_argument, 0, 'c'},
 		{0, 0, 0, 0}
@@ -31,7 +29,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"mrvwc",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"mrwc",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
 			case 'm':
@@ -40,10 +38,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 				
 			case 'r':
 				m_Rename=true;
-				break;
-				
-			case 'v':
-				m_Cover=true;
 				break;
 				
 			case 'w':
@@ -97,11 +91,6 @@ bool CCommandLine::Write() const
 	return m_Write;
 }
 
-bool CCommandLine::Cover() const
-{
-	return m_Cover;
-}
-
 bool CCommandLine::Rename() const
 {
 	return m_Rename;
@@ -120,6 +109,5 @@ std::vector<std::string> CCommandLine::FileNames() const
 void CCommandLine::Usage(const std::string& ProgName) const
 {
 	printf("Usage: %s [ --check | -c ] [ --write | -w ] [ --rename | -r ]\n"
-					"\t\t[ --cover | -v ] [ --force-multi | -m ]\n"
-					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
+					"\t\t[ --force-multi | -m ] flacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }
