@@ -67,6 +67,8 @@
 #ifndef BASE64_H
 #define BASE64_H
 
-unsigned char *rfc822_binary (void *src,unsigned long srcl,unsigned long *len);
+#include <string>
+
+std::string rfc822_binary (void *src, unsigned long srcl);
 
 #endif
