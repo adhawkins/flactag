@@ -33,7 +33,7 @@
 class CAlbumWindow: public CScrollableWindow
 {
 public:
-	CAlbumWindow(int Left, int Top, int Width, int Height, const std::vector<CAlbum>& Albums);
+	CAlbumWindow(const std::vector<CAlbum>& Albums);
 	
 	int GetCurrentAlbum() const;
 	

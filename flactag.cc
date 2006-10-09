@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <signal.h>
 
 #include <slang.h>
 
@@ -45,6 +46,19 @@
 
 #include <vector>
 #include <sstream>
+
+bool ScreenSizeChanged=false;
+
+static void sigwinch_handler (int sig)
+{
+	ScreenSizeChanged=true;
+	SLsignal (SIGWINCH, sigwinch_handler);
+}
+
+int intr_hook (void)
+{
+  return (-1);
+}
 
 int main(int argc, char *const argv[])
 {
@@ -154,20 +168,39 @@ void CFlacTag::Interactive()
 	
 	SLsmg_cls();
 	
-	int WindowHeight=(SLtt_Screen_Rows-5)/2;
-	CAlbumWindow AlbumWindow(0,0,SLtt_Screen_Cols,5,m_Albums);
-	CTrackWindow TrackWindow(0,5,SLtt_Screen_Cols,WindowHeight,m_Albums);
-	CTagsWindow TagsWindow(0,5+WindowHeight,SLtt_Screen_Cols,SLtt_Screen_Rows-WindowHeight-6);
+	CAlbumWindow AlbumWindow(m_Albums);
+	CTrackWindow TrackWindow(m_Albums);
+	CTagsWindow TagsWindow;
 	
 	AlbumWindow.SetSelected(true);
 	TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 	
 	TagsWindow.SetTags(m_WriteTags);
 	
+	SLsignal (SIGWINCH, sigwinch_handler);
+	SLang_getkey_intr_hook = intr_hook;
+	
+	SLsmg_init_smg ();
+
 	bool Quit=false;
+	bool First=true;
 	
 	while (!Quit)
 	{
+		if (ScreenSizeChanged || First)
+		{
+			ScreenSizeChanged=false;
+			First=false;
+			
+			SLtt_get_screen_size ();
+			SLsmg_reinit_smg ();
+			
+			int WindowHeight=(SLtt_Screen_Rows-5)/2;
+			AlbumWindow.SetDimensions(0,0,SLtt_Screen_Cols,5);
+			TrackWindow.SetDimensions(0,5,SLtt_Screen_Cols,WindowHeight);
+			TagsWindow.SetDimensions(0,5+WindowHeight,SLtt_Screen_Cols,SLtt_Screen_Rows-WindowHeight-6);
+		}
+			
 		TagsWindow.SetModified(m_FlacTags!=m_WriteTags);
 		
 		AlbumWindow.Draw();
@@ -211,7 +244,8 @@ void CFlacTag::Interactive()
 
 		SLsmg_refresh();
 		
-		switch (SLkp_getkey())
+		int Key=SLkp_getkey();
+		switch (Key)
 		{
 			case SL_KEY_DOWN:
 				switch (m_SelectedWindow)
@@ -309,7 +343,11 @@ void CFlacTag::Interactive()
 			case 'Q':
 				Quit=true;
 				break;
-				
+
+			case SLANG_GETKEY_ERROR:				
+				//Just ignore errors for now (probably caused by a signal)
+				break;
+			
 			default:
 				SLtt_beep();
 				break;

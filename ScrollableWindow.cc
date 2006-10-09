@@ -28,11 +28,11 @@
 
 #include <slang.h>
 
-CScrollableWindow::CScrollableWindow(int Left, int Top, int Width, int Height, const std::string& Title)
-:	m_Left(Left),
-	m_Top(Top),
-	m_Width(Width),
-	m_Height(Height),
+CScrollableWindow::CScrollableWindow(const std::string& Title)
+:	m_Left(0),
+	m_Top(0),
+	m_Width(SLtt_Screen_Rows),
+	m_Height(SLtt_Screen_Cols),
 	m_Title(Title),
 	m_TopVisible(0),
 	m_CurrentLine(0),
@@ -42,6 +42,14 @@ CScrollableWindow::CScrollableWindow(int Left, int Top, int Width, int Height, c
 
 CScrollableWindow::~CScrollableWindow()
 {
+}
+
+void CScrollableWindow::SetDimensions(int Left, int Top, int Width, int Height)
+{
+	m_Left=Left;
+	m_Top=Top;
+	m_Width=Width;
+	m_Height=Height;
 }
 
 void CScrollableWindow::SetCurrentLine(int Line)

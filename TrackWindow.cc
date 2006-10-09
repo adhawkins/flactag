@@ -29,8 +29,8 @@
 #include <sstream>
 #include <iomanip>
 
-CTrackWindow::CTrackWindow(int Left, int Top, int Width, int Height, const std::vector<CAlbum>& Albums)
-:	CScrollableWindow(Left,Top,Width,Height,"Tracks"),
+CTrackWindow::CTrackWindow(const std::vector<CAlbum>& Albums)
+:	CScrollableWindow("Tracks"),
 	m_CurrentAlbum(-1),
 	m_Albums(Albums)
 {

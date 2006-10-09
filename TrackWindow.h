@@ -35,7 +35,7 @@
 class CTrackWindow: public CScrollableWindow
 {
 public:
-	CTrackWindow(int Left, int Top, int Width, int Height, const std::vector<CAlbum>& Albums);
+	CTrackWindow(const std::vector<CAlbum>& Albums);
 	
 	void SetCurrentAlbum(std::vector<CAlbum>::size_type Album);
 	

@@ -33,7 +33,7 @@
 class CTagsWindow: public CScrollableWindow
 {
 public:
-	CTagsWindow(int Left, int Top, int Width, int Height);
+	CTagsWindow();
 	
 	void SetTags(const tTagMap& Tags);
 	void SetModified(bool Modified);

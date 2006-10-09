@@ -32,7 +32,7 @@
 class CScrollableWindow
 {
 public:
-	CScrollableWindow(int Left, int Top, int Width, int Height, const std::string& Title);
+	CScrollableWindow(const std::string& Title);
 	virtual ~CScrollableWindow();
 	
 	void Draw();
@@ -42,6 +42,7 @@ public:
 	void SetTitle(const std::string& Title);
 	void SetCurrentLine(int Line);
 	void SetTopVisible(int Line);
+	void SetDimensions(int Left, int Top, int Width, int Height);
 
 	int CurrentLine() const;
 	

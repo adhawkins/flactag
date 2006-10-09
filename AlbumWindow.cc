@@ -29,8 +29,8 @@
 #include <sstream>
 #include <iomanip>
 
-CAlbumWindow::CAlbumWindow(int Left, int Top, int Width, int Height, const std::vector<CAlbum>& Albums)
-:	CScrollableWindow(Left,Top,Width,Height,"Albums"),
+CAlbumWindow::CAlbumWindow(const std::vector<CAlbum>& Albums)
+:	CScrollableWindow("Albums"),
 	m_Albums(Albums)
 {
 }

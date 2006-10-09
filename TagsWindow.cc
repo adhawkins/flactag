@@ -29,8 +29,8 @@
 #include <sstream>
 #include <iomanip>
 
-CTagsWindow::CTagsWindow(int Left, int Top, int Width, int Height)
-:	CScrollableWindow(Left,Top,Width,Height,"Tags"),
+CTagsWindow::CTagsWindow()
+:	CScrollableWindow("Tags"),
 	m_Modified(false)
 {
 }
