@@ -1,6 +1,6 @@
-VERSION=0.04
+VERSION=1.0-RC1
 
-CXXFLAGS=-Wall -Werror
+CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiskIDCalculate.o \

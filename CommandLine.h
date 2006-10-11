@@ -14,6 +14,7 @@ public:
 	bool Write() const;
 	bool Rename() const;
 	bool ForceMulti() const;
+	bool Version() const;
 	std::vector<std::string> FileNames() const;
 	
 private:
@@ -22,6 +23,7 @@ private:
 	bool m_Write;
 	bool m_Rename;
 	bool m_ForceMulti;
+	bool m_Version;
 	std::vector<std::string> m_FileNames;
 		
 	void Usage(const std::string& ProgName) const;

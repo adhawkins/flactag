@@ -76,69 +76,76 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 :	m_CommandLine(CommandLine),
 	m_SelectedWindow(eWindow_Albums)
 {
-	std::vector<std::string> Files=m_CommandLine.FileNames();
-	for (std::vector<std::string>::size_type count=0;count<Files.size();count++)
+	if (CommandLine.Version())
 	{
-		m_FlacFile=Files[count];
-		
-		std::string ConfigPath=getenv("HOME");
-		ConfigPath+="/.flactag";
-		
-		if (!m_ConfigFile.LoadFile(ConfigPath))
-			m_ConfigFile.SaveFile(ConfigPath);
-	
-		if (LoadData())
+		printf("flactag: Version " VERSION "\n");
+	}
+	else
+	{
+		std::vector<std::string> Files=m_CommandLine.FileNames();
+		for (std::vector<std::string>::size_type count=0;count<Files.size();count++)
 		{
-			if (CommandLine.Check() || CommandLine.Write() || CommandLine.Rename())
+			m_FlacFile=Files[count];
+			
+			std::string ConfigPath=getenv("HOME");
+			ConfigPath+="/.flactag";
+			
+			if (!m_ConfigFile.LoadFile(ConfigPath))
+				m_ConfigFile.SaveFile(ConfigPath);
+		
+			if (LoadData())
 			{
-				bool Abort=false;
-				
-				if (m_Albums.size()>1)
+				if (CommandLine.Check() || CommandLine.Write() || CommandLine.Rename())
 				{
-					if (CommandLine.ForceMulti())
-						printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
-					else
-					{
-						printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
-						Abort=true;
-					}
-				}
-				
-				if (!Abort)
-				{
-					CopyTags(0);
+					bool Abort=false;
 					
-					if (CommandLine.Check() || CommandLine.Write())
+					if (m_Albums.size()>1)
 					{
-						if (m_WriteTags!=m_FlacTags)
-						{
-							printf("%s: Tags differ\n",m_FlacFile.c_str());
-							if (CommandLine.Write())
-							{
-								if (m_FlacInfo.WriteTags(m_WriteTags))
-								{
-									LoadData();
-									printf("%s: Tags written\n",m_FlacFile.c_str());
-								}
-								else
-									printf("%s: Error writing tags\n",m_FlacFile.c_str());
-							}
-						}
+						if (CommandLine.ForceMulti())
+							printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
 						else
-							printf("%s: Tags match\n",m_FlacFile.c_str());
+						{
+							printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
+							Abort=true;
+						}
 					}
-									
-					if (CommandLine.Rename())
+					
+					if (!Abort)
 					{
-							if (RenameFile())
-								printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+						CopyTags(0);
+						
+						if (CommandLine.Check() || CommandLine.Write())
+						{
+							if (m_WriteTags!=m_FlacTags)
+							{
+								printf("%s: Tags differ\n",m_FlacFile.c_str());
+								if (CommandLine.Write())
+								{
+									if (m_FlacInfo.WriteTags(m_WriteTags))
+									{
+										LoadData();
+										printf("%s: Tags written\n",m_FlacFile.c_str());
+									}
+									else
+										printf("%s: Error writing tags\n",m_FlacFile.c_str());
+								}
+							}
 							else
-								printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+								printf("%s: Tags match\n",m_FlacFile.c_str());
+						}
+										
+						if (CommandLine.Rename())
+						{
+								if (RenameFile())
+									printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+								else
+									printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+						}
 					}
 				}
+				else
+					Interactive();
 			}
-			else
-				Interactive();
 		}
 	}
 }
@@ -660,46 +667,6 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 	
 	return RetVal;
 }
-
-/*
-bool CFlacTag::GetAlbumArt(int Album)
-{
-	bool RetVal=false;
-	
-	std::string ASIN=m_Albums[Album].ASIN();
-	std::string URL="http://images.amazon.com/images/P/" + ASIN + ".02.LZZZZZZZ.jpg";
-		
-	char *Buffer=0;
-	int Bytes=http_fetch(URL.c_str(),&Buffer);
-	if (Bytes>0)
-	{
-		std::string Base64=rfc822_binary(Buffer,Bytes);
-		m_WriteTags[CTagName("COVERART")]=Base64;
-			
-		std::string::size_type SlashPos=m_FlacFile.rfind("/");
-		std::string CoverFile="cover.jpg";
-			
-		if (std::string::npos!=SlashPos)
-			CoverFile=m_FlacFile.substr(0,SlashPos)+"/cover.jpg";
-
-		FILE *fptr=fopen(CoverFile.c_str(),"wb");
-		if (fptr)
-		{
-			RetVal=true;
-			
-			fwrite(Buffer,Bytes,1,fptr);
-			fclose(fptr);
-		}
-	}
-	else
-		CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
-	
-	if (Buffer)
-		free(Buffer);
-		
-	return RetVal;
-}
-*/
 
 void CFlacTag::CopyTags(int AlbumNumber)
 {
