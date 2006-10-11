@@ -126,13 +126,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 						free(Buffer);
 				}
 				
-				std::string AlbumStatus;
-				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),AlbumStatus);
-				Album.SetStatus(AlbumStatus);
+				std::string Status;
+				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),Status);
+				Album.SetStatus(AlbumStatus(Status));
 				
-				std::string AlbumType;
-				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),AlbumType);
-				Album.SetType(AlbumType);
+				std::string Type;
+				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),Type);
+				Album.SetType(AlbumType(Type));
 	
 				std::string ArtistID;
 				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumArtistId),ArtistID);
@@ -208,4 +208,53 @@ std::vector<CAlbum> CMusicBrainzInfo::Albums() const
 	return m_Albums;
 }
 
+std::string CMusicBrainzInfo::AlbumType(const std::string Type) const
+{
+	const char *AlbumTypeStrings[] = 
+	{ 
+		"album", "single", "EP", "compilation", "soundtrack", 
+		"spokenword", "interview", "audiobook", "live", "remix", "other", "\0" 
+	}; 
 	
+	std::string Ret;
+	
+	int i=0;
+	
+	while (AlbumTypeStrings[i][0]!='\0')
+	{
+		if (Type.length()>4 && strcasecmp(Type.substr(4).c_str(),AlbumTypeStrings[i])==0)
+		{
+			Ret=AlbumTypeStrings[i];
+			break;
+		}
+		
+		++i;
+	}	
+	
+	return Ret;
+}
+
+std::string CMusicBrainzInfo::AlbumStatus(const std::string Status) const
+{
+	const char *AlbumStatusStrings[] = 
+	{ 
+		"official", "promotion", "bootleg", "\0" 
+	}; 
+
+	std::string Ret;
+	
+	int i=0;
+	
+	while (AlbumStatusStrings[i][0]!='\0')
+	{
+		if (Status.length()>6 && strcasecmp(Status.substr(6).c_str(),AlbumStatusStrings[i])==0)
+		{
+			Ret=AlbumStatusStrings[i];
+			break;
+		}
+		
+		++i;
+	}	
+	
+	return Ret;
+}

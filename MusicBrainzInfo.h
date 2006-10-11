@@ -41,6 +41,9 @@ public:
 	std::vector<CAlbum> Albums() const;
 	
 private:
+	std::string AlbumType(const std::string Type) const;
+	std::string AlbumStatus(const std::string Status) const;
+
 	std::vector<CAlbum> m_Albums;
 	CCuesheet m_Cuesheet;
 };
