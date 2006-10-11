@@ -1,6 +1,6 @@
 <!doctype linuxdoc system>
 <article>
-<title>FLACTAG v0.04
+<title>FLACTAG v1.0-RC1
 <author>Andy Hawkins <url url="mailto:andy@gently.org.uk" name="andy@gently.org.uk">
 <abstract>
 A utility for tagging single album FLAC files with embedded CUE sheets 
@@ -11,7 +11,7 @@ using data from the <url url="http://www.musicbrainz.org" name="MusicBrainz"> se
 <p>
 The latest version of flactag can always be found <url url="http://www.gently.org.uk/flactag" name="here">.
 
-The current version is <url url="flactag-0.04.tar.gz" name="v0.04">.
+The current version is <url url="flactag-1.0-RC1.tar.gz" name="v1.0-RC1">.
 <sect>Requirements
 <p>
 <itemize>
@@ -39,9 +39,12 @@ if [ $1 ]
 then
 
         FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
-        cdrdao read-cd --device /dev/hdc --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
+        cdrdao read-cd --device /dev/hdc --driver generic-mmc \
+        		--datafile $FILENAME.bin $FILENAME.toc
         cueconvert $FILENAME.toc $FILENAME.cue
-        if nice flac -8 --replay-gain --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
+        if flac -8 --replay-gain --endian=big --sign=signed \
+        		--channels=2 --bps=16 --sample-rate=44100 \
+        		--cuesheet=$FILENAME.cue $FILENAME.bin
         then
                 rm -f $FILENAME.bin
                 rm -f $FILENAME.toc
@@ -57,11 +60,14 @@ current date and time are appended to this base name. You will end up with a
 FLAC file ready to be used with flactag.
 
 <sect>Using flactag
+
+<sect1>Interactive mode
+
 <p>
 flactac should be executed from a linux console prompt, giving the path to the 
-FLAC file to tag as its only argument as follows:
+FLAC files to tag as its arguments as follows:
 
-<tt>./flactag victory.flac</tt>
+<tt>./flactag victory.flac absent.flac</tt>
 
 (filenames can be quoted if they contain special characters to avoid having 
 to 'escape' these characters).
@@ -108,14 +114,71 @@ Pressing '<bf>r</bf>' will rename the file based on the settings in the
 configuration file (~/.flactag - this file is created automatically the first 
 time you run <bf>flactag</bf>). Note that this facility uses the tags that are 
 actually written to the file, so should generally be performed after the new 
-tags have been written to the file. This option will be unavailable if the 
-filename and location are already correct.
+tags have been written. This option will be unavailable if the filename and 
+location are already correct.
 
-The following entries affect file renaming:
+Pressing '<bf>q</bf>' will move to the next file specified on the command line. 
+If all files have been processed, the application will exit.
+
+<sect1>Batch mode
+
+<p>
+
+Alternatively, flactag can be used in 'batch' mode to automatically check tags, 
+write them and rename the file. Care should be taken when using these options.
+
+The following command line options are understood:
+
+<itemize>
+
+<item><bf>--check (-c)</bf> - This option will compare the file's tags against those 
+returned from the MusicBrainz service. A message will be displayed indicating 
+where the tags match or not.
+
+<item><bf>--write (-w)</bf> - This option implies <bf>--check</bf>. If the files tags differ 
+from those returned from the MusicBrainz service, the tags will be written to 
+the file.
+
+<item><bf>--rename (-r)</bf> - The filename will be compared with that specified by the 
+rename rules, and if it doesn't match, the file will be renamed.
+
+<item><bf>--force-multi (-m)</bf> - If the MusicBrainz service returns more than 
+one release for the DiskID of the FLAC file, then the software will not make any 
+changes unless this option is specified. This applies to <bf>--check</bf>, 
+<bf>--write</bf> and <bf>--rename</bf>. When multiple releases are returned, the 
+first release found will be used to update the tags and rename the file as 
+appropriate.
+
+</itemize>
+
+Example uses of these options could be as follows (note the use of -print0 and -
+0 to handle filenames containing spaces):
+
+<sect2>Report on the tags of all FLAC files
+
+<p>
+
+<code>
+find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --check
+</code>
+
+<sect2>Tag and rename all flac files
+
+<p>
+
+<code>
+find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --write --rename --force-multi
+</code>
+
+<sect1>File Renaming Details
+
+<p>
+
+The following configuration file (~/.flactag) entries affect file renaming:
 <itemize>
 
 <item><bf>BasePath</bf> - This is the 'root' directory of where your music files 
-should be stored.
+should be stored. (e.g. /var/spool/music)
 
 <item><bf>SingleDiskFileName</bf> - This template is used to rename disks that 
 are not part of a multi-disk set.
@@ -124,7 +187,7 @@ are not part of a multi-disk set.
 are part of a multi-disk set.
 
 <item><bf>DirectoryCreatePermissions</bf> - The permissions to be set on any 
-directory that is created.
+directory that is created (e.g. 0755).
 
 </itemize>
 
@@ -149,13 +212,6 @@ The FileName templates can accept the following parameters:
 If any item is used but does not have a value, then it will be stored as (for 
 example) NOGENRE (if the genre tag is empty).
 
-Pressing '<bf>a</bf>' will download album art from Amazon is it is available. The album 
-art will be stored as 'cover.jpg' in the same directory as the FLAC file. This 
-should generally be performed after the file has been renamed. This option will be unavailable
-if no Amazon ASIN is associated with the album on the MusicBrainz service.
-
-The application can be exited by pressing the 'q' key.
-
 <sect>Bugs / Limitations / Future Enhancements
 <p>
 
@@ -174,7 +230,23 @@ new features, then please use the <url url="http://bugtracker.gently.org.uk/"
 name="Bug Tracking System"> to report them. 
 
 <sect>Version History 
-<sect1>v0.04 - xxx September 2006 
+<sect1>v1.0-RC1 - xxx October 2006
+
+<p>
+
+<itemize>
+
+<item>Add command line options and ability to handle more than one FLAC file
+
+<item>Store coverart embedded into file tags
+
+<item>Handle console screen size changes
+
+<item>Retrieve more tags from MusicBrainz
+
+</itemize>
+
+<sect1>v0.04 - 23rd September 2006 
 
 <p> 
 
