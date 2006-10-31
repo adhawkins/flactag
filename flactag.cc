@@ -30,6 +30,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <errno.h>
 
 #include <slang.h>
 
@@ -119,6 +120,48 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							if (m_WriteTags!=m_FlacTags)
 							{
 								printf("%s: Tags differ\n",m_FlacFile.c_str());
+								
+								std::map<CTagName,std::string>::const_iterator ThisTag=m_WriteTags.begin();
+								while (m_WriteTags.end()!=ThisTag)
+								{
+									CTagName Name=(*ThisTag).first;
+									std::string Value=(*ThisTag).second;
+										
+									std::map<CTagName,std::string>::const_iterator OtherTag=m_FlacTags.find(Name);
+									if (OtherTag!=m_FlacTags.end())
+									{
+										std::string OtherValue=(*OtherTag).second;
+											
+										if (Value!=OtherValue)
+										{
+											if (Name.String()=="COVERART")
+												printf("%s: Value for %s has changed\n",m_FlacFile.c_str(),Name.String().c_str());
+											else
+												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),Value.c_str(),OtherValue.c_str());
+										}
+									}
+									else
+									{
+										printf("%s: Tag %s not found in Flac tags\n",m_FlacFile.c_str(),Name.String().c_str());
+									}
+									
+									++ThisTag;
+								}
+							
+								ThisTag=m_FlacTags.begin();
+								while (m_FlacTags.end()!=ThisTag)
+								{
+									CTagName Name=(*ThisTag).first;
+										
+									std::map<CTagName,std::string>::const_iterator OtherTag=m_WriteTags.find(Name);
+									if (OtherTag==m_FlacTags.end())
+									{
+										printf("%s: Tag %s not present in tags to be written\n",m_FlacFile.c_str(),Name.String().c_str());
+									}
+									
+									++ThisTag;
+								}
+							
 								if (CommandLine.Write())
 								{
 									if (m_FlacInfo.WriteTags(m_WriteTags))
