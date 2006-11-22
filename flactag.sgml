@@ -19,6 +19,7 @@ The current version is <url url="flactag-1.0-RC1.tar.gz" name="v1.0-RC1">.
 <item><url url="http://flac.sourceforge.net/download.html" name="libflac++"> (I used version 1.1.1)
 <item><url url="http://www.s-lang.org/download.html" name="S-Lang"> (I used version 1.4.9)
 <item><url url="http://http-fetcher.sourceforge.net/downloads.html" name="http-fetcher"> (I used version 1.0.1)
+<item><url url="http://www.nongnu.org/unac/" name="unac"> (I used version 1.8.0 from Debian)
 </itemize>
 <sect>Building
 <p>
