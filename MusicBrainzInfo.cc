@@ -51,6 +51,10 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	
 	CDiskIDCalculate Calc(m_Cuesheet);
 	std::string DiskID=Calc.DiskID();
+	
+	//Test Disk ID for album title containing extended characters
+	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
+	
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + Calc.SubmitURL());
 			
