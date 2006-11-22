@@ -82,7 +82,9 @@ MusicBrainz service. Once you have entered this information, you can re-run
 flactag, and the data should be downloaded from the MusicBrainz server.
 
 If the flactag utility finds information for your CD at the musicbrainz server, 
-the application's main window will be shown. This contains three main areas:
+the application's main window will be shown (see <url 
+url="http://www.gently.org.uk/flactag/flactag.jpg" name="here">). This contains 
+three main areas:
 
 <enum> 
 
@@ -238,7 +240,7 @@ name="Bug Tracking System"> to report them.
 
 <item>Add command line options and ability to handle more than one FLAC file
 
-<item>Store coverart embedded into file tags
+<item>Store cover art embedded into file tags
 
 <item>Handle console screen size changes
 
