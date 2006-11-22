@@ -12,10 +12,12 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_Write(false),
 	m_Rename(false),
 	m_ForceMulti(false),
-	m_Version(false)
+	m_Version(false),
+	m_DiscID(false)
 {
 	struct option LongOptions[] =
 	{
+		{"discid", no_argument, 0, 'd'},
 		{"version", no_argument, 0, 'v'},
 		{"force-multi", no_argument, 0, 'm'},
 		{"rename", no_argument, 0, 'r'},
@@ -31,9 +33,13 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"vmrwc",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"dvmrwc",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
+			case 'd':
+				m_DiscID=true;
+				break;
+				
 			case 'v':
 				m_Version=true;
 				break;
@@ -73,11 +79,14 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 			m_FileNames.push_back(argv[LastArg]);
 			LastArg++;
 		}
-		
-		if (m_FileNames.empty() && !m_Version)
-			m_Valid=false;
 	}
 	
+	if (m_FileNames.empty() && !m_Version)
+		m_Valid=false;
+
+	if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceMulti))
+		m_Valid=false;
+		
 	if (!m_Valid)
 		Usage(argv[0]);
 }
@@ -112,6 +121,11 @@ bool CCommandLine::Version() const
 	return m_Version;
 }
 
+bool CCommandLine::DiscID() const
+{
+	return m_DiscID;
+}
+
 std::vector<std::string> CCommandLine::FileNames() const
 {
 	return m_FileNames;
@@ -119,7 +133,8 @@ std::vector<std::string> CCommandLine::FileNames() const
 
 void CCommandLine::Usage(const std::string& ProgName) const
 {
-	printf("Usage: %s [ --version | -v ] [ --check | -c ] [ --write | -w ]\n"
-					"\t\t[ --rename | -r ] [ --force-multi | -m ]\n"
+	printf("Usage: %s [ --version | -v ] [ --discid | -d] [ --check | -c ]\n"
+					"\t\t[ --write | -w ] [ --rename | -r ]\n"
+					"\t\t[ --force-multi | -m ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }

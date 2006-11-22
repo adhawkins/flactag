@@ -15,6 +15,7 @@ public:
 	bool Rename() const;
 	bool ForceMulti() const;
 	bool Version() const;
+	bool DiscID() const;
 	std::vector<std::string> FileNames() const;
 	
 private:
@@ -24,6 +25,7 @@ private:
 	bool m_Rename;
 	bool m_ForceMulti;
 	bool m_Version;
+	bool m_DiscID;
 	std::vector<std::string> m_FileNames;
 		
 	void Usage(const std::string& ProgName) const;

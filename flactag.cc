@@ -44,6 +44,7 @@
 #include "FileNameBuilder.h"
 #include "ErrorLog.h"
 #include "CommandLine.h"
+#include "DiskIDCalculate.h"
 
 #include <vector>
 #include <sstream>
@@ -81,6 +82,25 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 	{
 		printf("flactag: Version " VERSION "\n");
 	}
+	else if (CommandLine.DiscID())
+	{
+		std::vector<std::string> Files=m_CommandLine.FileNames();
+		for (std::vector<std::string>::size_type count=0;count<Files.size();count++)
+		{
+			m_FlacFile=Files[count];
+			
+			m_FlacInfo.SetFileName(m_FlacFile);
+			m_FlacInfo.Read();
+		
+			if (m_FlacInfo.CuesheetFound())
+			{		
+				m_FlacCuesheet=m_FlacInfo.Cuesheet();
+				CDiskIDCalculate Calc(m_FlacCuesheet);
+				std::string DiskID=Calc.DiskID();
+				printf("%s\n",DiskID.c_str());
+			}
+		}
+	}	
 	else
 	{
 		std::vector<std::string> Files=m_CommandLine.FileNames();
