@@ -42,7 +42,7 @@ public:
 	
 	std::string Name() const;
 	int Number() const;	
-	std::string CTagName::String() const;
+	std::string String() const;
 
 private:
 	std::string m_Name;
