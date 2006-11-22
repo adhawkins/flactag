@@ -32,27 +32,42 @@ with the following executables:
 </itemize>
 <sect>Ripping CDs to FLAC
 <p>
-I use the following script to rip my CDs to a single FLAC:
+I use the following script (included in the download) to rip my CDs to a single FLAC:
 <code>
 #!/bin/sh
 
+CDROM=/dev/hdc
+
 if [ $1 ]
 then
+	FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
+	cdrdao read-cd --device $CDROM --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
+	sed -f tocfix.sed $FILENAME.toc > ${FILENAME}-fixed.toc
+	cueconvert ${FILENAME}-fixed.toc $FILENAME.cue
+	if nice flac --replay-gain --endian=big --sign=signed --channels=2 --bps=16 \
+		--sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
+	then
+		rm -f $FILENAME.bin
+		rm -f ${FILENAME}-fixed.toc
+		rm -f $FILENAME.toc
+		rm -f $FILENAME.cue
 
-        FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
-        cdrdao read-cd --device /dev/hdc --driver generic-mmc \
-        		--datafile $FILENAME.bin $FILENAME.toc
-        cueconvert $FILENAME.toc $FILENAME.cue
-        if flac -8 --replay-gain --endian=big --sign=signed \
-        		--channels=2 --bps=16 --sample-rate=44100 \
-        		--cuesheet=$FILENAME.cue $FILENAME.bin
-        then
-                rm -f $FILENAME.bin
-                rm -f $FILENAME.toc
-                rm -f $FILENAME.cue
-        fi
+		CDID=`./discid $CDROM`
+		FLACID=`./flactag --discid $FILENAME.flac`
+
+		if [ "$FLACID" != "$CDID" ]
+		then
+			echo "**********"
+			echo "**********"
+			echo "**********"
+			echo "********** Disc ID of FLAC doesn't match Disc ID of CD **********"
+			echo "**********"
+			echo "**********"
+			echo "**********"
+		fi
+	fi
 else
-        echo "Usage: $0 cdname"
+	echo "Usage: $0 cdname"
 fi
 </code>
 
@@ -133,6 +148,9 @@ write them and rename the file. Care should be taken when using these options.
 The following command line options are understood:
 
 <itemize>
+
+<item><bf>--discid (-d)</bf> - Display the calculated disc ID for the specified FLAC
+file and exit.
 
 <item><bf>--check (-c)</bf> - This option will compare the file's tags against those 
 returned from the MusicBrainz service. A message will be displayed indicating 

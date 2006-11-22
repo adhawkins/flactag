@@ -11,14 +11,14 @@ data from the MusicBrainz service
 Just use it
 <sect1>DESCRIPTION
 <p>
-<bf>flactag</bf> is a utility for tagging single album FLAC files with embedded CUE sheets 
+<em>flactag</em> is a utility for tagging single album FLAC files with embedded CUE sheets 
 using data from the MusicBrainz service.
 <sect1>OPTIONS
+<sect2>--check | -c
 <p>
---check | -c
-Check tags against those currently in the file
+Check tags against those currently in the file. Let's see what happens if this is a really long sentence that is more than a line.
 
---write | -w
+<sect2>--write | -w
 Write tags to the file if they are different
 <sect1>INTERACTIVE MODE
 <p>

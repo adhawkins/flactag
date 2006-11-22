@@ -35,8 +35,6 @@ CFileNameBuilder::CFileNameBuilder(const tTagMap& Tags, const std::string& BaseP
 	m_MultiDiskFileName(MultiDiskFileName)
 {
 	BuildPath();
-	
-	printf("File name is %s\n",m_FileName.c_str());
 }
 	
 std::string CFileNameBuilder::FileName() const
