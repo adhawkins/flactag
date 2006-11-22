@@ -162,12 +162,12 @@ int CFlacInfo::CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) con
 {
 	FLAC__uint64 Offset=Track.get_offset();
 	FLAC__uint64 MaxIndexOffset=0;
-	
+
 	for (unsigned count=0;count<Track.get_num_indices();count++)
 	{
 		FLAC__StreamMetadata_CueSheet_Index Index=Track.get_index(count);
-		
-		if (Index.offset>MaxIndexOffset)
+
+		if (Index.number==1)
 			MaxIndexOffset=Index.offset;
 	}
 	
