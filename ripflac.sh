@@ -7,6 +7,7 @@ then
 
 	FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
 	#cdrdao read-cd --device $CDROM --driver generic-mmc --with-cddb --datafile $FILENAME.bin $FILENAME.toc
+	CDID=`./discid $CDROM`
 	cdrdao read-cd --device $CDROM --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
 	sed -f tocfix.sed $FILENAME.toc > ${FILENAME}-fixed.toc
 	cueconvert ${FILENAME}-fixed.toc $FILENAME.cue
@@ -17,7 +18,6 @@ then
 		rm -f $FILENAME.toc
 		rm -f $FILENAME.cue
 
-		CDID=`./discid $CDROM`
 		FLACID=`./flactag --discid $FILENAME.flac`
 
 		if [ "$FLACID" != "$CDID" ]
