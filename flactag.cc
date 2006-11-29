@@ -145,19 +145,19 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 								while (m_WriteTags.end()!=ThisTag)
 								{
 									CTagName Name=(*ThisTag).first;
-									std::string Value=(*ThisTag).second;
+									std::string WriteValue=(*ThisTag).second;
 										
-									std::map<CTagName,std::string>::const_iterator OtherTag=m_FlacTags.find(Name);
-									if (OtherTag!=m_FlacTags.end())
+									std::map<CTagName,std::string>::const_iterator FLACTag=m_FlacTags.find(Name);
+									if (FLACTag!=m_FlacTags.end())
 									{
-										std::string OtherValue=(*OtherTag).second;
+										std::string FLACValue=(*FLACTag).second;
 											
-										if (Value!=OtherValue)
+										if (WriteValue!=FLACValue)
 										{
 											if (Name.String()=="COVERART")
 												printf("%s: Value for %s has changed\n",m_FlacFile.c_str(),Name.String().c_str());
 											else
-												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),Value.c_str(),OtherValue.c_str());
+												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),FLACValue.c_str(),WriteValue.c_str());
 										}
 									}
 									else
@@ -301,7 +301,10 @@ void CFlacTag::Interactive()
 			SLsmg_write_string("rite ");
 		}
 
-		if (m_RenameFile!=m_FlacFile)
+		char RealPath[256];
+		realpath(m_FlacFile.c_str(),RealPath);
+			
+		if (m_RenameFile!=RealPath)
 		{
 			SLsmg_reverse_video();
 			SLsmg_write_string("R");
@@ -402,7 +405,7 @@ void CFlacTag::Interactive()
 								
 			case 'r':
 			case 'R':
-				if (m_RenameFile!=m_FlacFile)
+				if (m_RenameFile!=RealPath)
 					RenameFile();
 				else
 					SLtt_beep();
