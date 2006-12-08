@@ -5,7 +5,8 @@ CDROM=/dev/hdc
 if [ $1 ]
 then
 
-	FILENAME="$1-`date +"%Y-%m-%d.%H:%M:%S"`-$$"
+	FILENAME=$1
+
 	#cdrdao read-cd --device $CDROM --driver generic-mmc --with-cddb --datafile $FILENAME.bin $FILENAME.toc
 	CDID=`./discid $CDROM`
 	cdrdao read-cd --device $CDROM --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
