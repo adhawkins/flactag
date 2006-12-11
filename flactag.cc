@@ -57,11 +57,6 @@ static void sigwinch_handler (int sig)
 	SLsignal (SIGWINCH, sigwinch_handler);
 }
 
-int intr_hook (void)
-{
-  return (-1);
-}
-
 int main(int argc, char *const argv[])
 {
 	CCommandLine CmdLine(argc,argv);
@@ -246,7 +241,6 @@ void CFlacTag::Interactive()
 	TagsWindow.SetTags(m_WriteTags);
 	
 	SLsignal (SIGWINCH, sigwinch_handler);
-	SLang_getkey_intr_hook = intr_hook;
 	
 	SLsmg_init_smg ();
 
@@ -314,114 +308,153 @@ void CFlacTag::Interactive()
 		SLsmg_write_string(" ");
 
 		SLsmg_refresh();
-		
-		int Key=SLkp_getkey();
-		switch (Key)
-		{
-			case SL_KEY_DOWN:
-				switch (m_SelectedWindow)
-				{
-					case eWindow_Albums:
-						AlbumWindow.NextLine();
-						TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
-						break;
-						
-					case eWindow_Tracks:
-						TrackWindow.NextLine();
-						break;
-						
-					case eWindow_Tags:
-						TagsWindow.NextLine();
-						break;
-				}
-				break;
-				
-			case SL_KEY_UP:
-				switch (m_SelectedWindow)
-				{
-					case eWindow_Albums:
-						AlbumWindow.PreviousLine();
-						TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
-						break;
-						
-					case eWindow_Tracks:
-						TrackWindow.PreviousLine();
-						break;
-						
-					case eWindow_Tags:
-						TagsWindow.PreviousLine();
-						break;
-				}
-				break;
-				
-			case 9:
-				switch (m_SelectedWindow)
-				{
-					case eWindow_Albums:
-						m_SelectedWindow=eWindow_Tracks;
-						break;
-						
-					case eWindow_Tracks:
-						m_SelectedWindow=eWindow_Tags;
-						break;
-						
-					case eWindow_Tags:
-						m_SelectedWindow=eWindow_Albums;
-						break;
-				}
-				
-				AlbumWindow.SetSelected(m_SelectedWindow==eWindow_Albums);
-				TrackWindow.SetSelected(m_SelectedWindow==eWindow_Tracks);
-				TagsWindow.SetSelected(m_SelectedWindow==eWindow_Tags);
-				break;
+	
+		if (SLang_input_pending(5))
+		{	
+			int Key=SLkp_getkey();
+			switch (Key)
+			{
+				case SL_KEY_NPAGE:
+					switch (m_SelectedWindow)
+					{
+						case eWindow_Albums:
+							AlbumWindow.PageDown();
+							TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+							break;
+							
+						case eWindow_Tracks:
+							TrackWindow.PageDown();
+							break;
+							
+						case eWindow_Tags:
+							TagsWindow.PageDown();
+							break;
+					}
+					break;
 
-			case 'c':
-			case 'C':
-				if (m_Albums.size())
-				{
-					CopyTags(AlbumWindow.GetCurrentAlbum());
-					TagsWindow.SetTags(m_WriteTags);			
-				}
-				else
-					SLtt_beep();
+				case SL_KEY_PPAGE:
+					switch (m_SelectedWindow)
+					{
+						case eWindow_Albums:
+							AlbumWindow.PageUp();
+							TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+							break;
+							
+						case eWindow_Tracks:
+							TrackWindow.PageUp();
+							break;
+							
+						case eWindow_Tags:
+							TagsWindow.PageUp();
+							break;
+					}
+					break;
 
-				break;
-			
-			case 'w':
-			case 'W':
-				if (m_FlacTags!=m_WriteTags)
-				{
-					if (m_FlacInfo.WriteTags(m_WriteTags))
-						LoadData();
+				case SL_KEY_DOWN:
+					switch (m_SelectedWindow)
+					{
+						case eWindow_Albums:
+							AlbumWindow.NextLine();
+							TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+							break;
+							
+						case eWindow_Tracks:
+							TrackWindow.NextLine();
+							break;
+							
+						case eWindow_Tags:
+							TagsWindow.NextLine();
+							break;
+					}
+					break;
 					
-					TagsWindow.SetTags(m_WriteTags);
-				}
-				else
-					SLtt_beep();
-
-				break;
-								
-			case 'r':
-			case 'R':
-				if (m_RenameFile!=RealPath)
-					RenameFile();
-				else
-					SLtt_beep();
+				case SL_KEY_UP:
+					switch (m_SelectedWindow)
+					{
+						case eWindow_Albums:
+							AlbumWindow.PreviousLine();
+							TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+							break;
+							
+						case eWindow_Tracks:
+							TrackWindow.PreviousLine();
+							break;
+							
+						case eWindow_Tags:
+							TagsWindow.PreviousLine();
+							break;
+					}
+					break;
+					
+				case 9:
+					switch (m_SelectedWindow)
+					{
+						case eWindow_Albums:
+							m_SelectedWindow=eWindow_Tracks;
+							break;
+							
+						case eWindow_Tracks:
+							m_SelectedWindow=eWindow_Tags;
+							break;
+							
+						case eWindow_Tags:
+							m_SelectedWindow=eWindow_Albums;
+							break;
+					}
+					
+					AlbumWindow.SetSelected(m_SelectedWindow==eWindow_Albums);
+					TrackWindow.SetSelected(m_SelectedWindow==eWindow_Tracks);
+					TagsWindow.SetSelected(m_SelectedWindow==eWindow_Tags);
+					break;
+	
+				case 'c':
+				case 'C':
+					if (m_Albums.size())
+					{
+						CopyTags(AlbumWindow.GetCurrentAlbum());
+						TagsWindow.SetTags(m_WriteTags);			
+					}
+					else
+						SLtt_beep();
+	
+					break;
 				
-				break;
+				case 'w':
+				case 'W':
+					if (m_FlacTags!=m_WriteTags)
+					{
+						if (m_FlacInfo.WriteTags(m_WriteTags))
+							LoadData();
+						
+						TagsWindow.SetTags(m_WriteTags);
+					}
+					else
+						SLtt_beep();
+	
+					break;
+									
+				case 'r':
+				case 'R':
+					if (m_RenameFile!=RealPath)
+						RenameFile();
+					else
+						SLtt_beep();
+					
+					break;
+					
+				case 'q':
+				case 'Q':
+					Quit=true;
+					break;
+	
+				case SLANG_GETKEY_ERROR:				
+					//Just ignore errors for now (probably caused by a signal)
+					break;
 				
-			case 'q':
-			case 'Q':
-				Quit=true;
-				break;
-
-			case SLANG_GETKEY_ERROR:				
-				//Just ignore errors for now (probably caused by a signal)
-				break;
-			
-			default:
-				SLtt_beep();
-				break;
+				default:
+					SLtt_beep();
+					break;
+			}
 		}
 	}
 

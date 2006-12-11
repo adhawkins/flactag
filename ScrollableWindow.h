@@ -38,6 +38,10 @@ public:
 	void Draw();
 	bool NextLine();
 	bool PreviousLine();
+	bool End();
+	bool Home();
+	bool PageDown();
+	bool PageUp();
 	void SetSelected(bool Selected);
 	void SetTitle(const std::string& Title);
 	void SetCurrentLine(int Line);

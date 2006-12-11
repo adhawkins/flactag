@@ -126,6 +126,77 @@ bool CScrollableWindow::PreviousLine()
 	return RetVal;
 }
 
+bool CScrollableWindow::End()
+{
+	bool RetVal=false;
+	
+	if (m_CurrentLine!=NumLines()-1)
+	{
+		m_CurrentLine=NumLines()-1;
+		
+		if (m_TopVisible<m_CurrentLine-m_Height+3)
+			m_TopVisible=m_CurrentLine-m_Height+3;
+			
+		RetVal=true;
+	}
+	
+	return RetVal;
+}
+
+bool CScrollableWindow::Home()
+{
+	bool RetVal=false;
+	
+	if (m_CurrentLine!=0)
+	{
+		m_CurrentLine=0;
+		m_TopVisible=0;
+		
+		RetVal=true;
+	}
+	
+	return RetVal;
+}
+
+bool CScrollableWindow::PageDown()
+{
+	bool RetVal=false;
+	
+	if (m_CurrentLine<NumLines()-1)
+	{
+		m_CurrentLine+=(m_Height-2)/2;
+		if (m_CurrentLine>NumLines()-1)
+			m_CurrentLine=NumLines()-1;
+		
+		if (m_TopVisible<m_CurrentLine-m_Height+3)
+			m_TopVisible=m_CurrentLine-m_Height+3;
+			
+		RetVal=true;
+	}
+	
+	return RetVal;
+}
+
+bool CScrollableWindow::PageUp()
+{
+	bool RetVal=false;
+	
+	if (m_CurrentLine!=0)
+	{
+		m_CurrentLine-=(m_Height-2)/2;
+		
+		if (m_CurrentLine<0)
+			m_CurrentLine=0;
+		
+		if (m_CurrentLine<m_TopVisible)
+			m_TopVisible=m_CurrentLine;
+			
+		RetVal=true;
+	}
+	
+	return RetVal;
+}
+
 void CScrollableWindow::SetSelected(bool Selected)
 {
 	m_Selected=Selected;
