@@ -1,0 +1,246 @@
+FLACTAG v1.0-RC1
+================
+Andy Hawkins <andy@gently.org.uk>
+
+A utility for tagging single album FLAC files with embedded CUE sheets 
+using data from the http://www.musicbrainz.org[MusicBrainz] service.
+
+Downloading
+-----------
+
+The latest version of flactag can always be found http://www.gently.org.uk/flactag[here].
+
+The current version is link:flactag-1.0-RC1.tar.gz[v1.0-RC1].
+
+Requirements
+------------
+
+- http://musicbrainz.org/doc/libmusicbrainzDownload[libmusicbrainz] (I used version 2.1.4)
+- http://flac.sourceforge.net/download.html[libflac++] (I used version 1.1.1)
+- http://www.s-lang.org/download.html[S-Lang] (I used version 1.4.9)
+- http://http-fetcher.sourceforge.net/downloads.html[http-fetcher] (I used version 1.0.1)
+- http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
+
+Building
+--------
+
+To build the software, simply run '*make*' in the directory you have extracted the 
+archive into. The build process should complete with no errors. You will be left 
+with the following executables:
+
+- *flactag* - The main application
+- *discid* - A test utility to read the disc ID from a CD
+
+Ripping CDs to FLAC
+-------------------
+
+To rip a CD to flac, simply enter `ripflac.sh <filename>` (where filename is 
+used as the base name of the FLAC file you will be creating. The CD in the drive
+will be ripped, and a FLAC file created containing an embedded CUE sheet.
+
+If the original CD contains data tracks, then the FLAC conversion will fail. Should
+this happen, enter `ripdataflac.sh <filename> <range>` (where filename is the same
+one specified in the first rip attempt, and range is the range of tracks to rip (e.g.
+if the CD has 13 tracks, where track 13 is the data track, then the range would be 1-12).
+
+Both these scripts will compare the calculated discid of the FLAC file with the 
+discid of the CD in the drive. If they do not match, a warning will be issued. 
+
+Using flactag 
+-------------
+
+Interactive mode
+~~~~~~~~~~~~~~~~
+
+flactac should be executed from a linux console prompt, giving the path to the 
+FLAC files to tag as its arguments as follows:
+
+`flactag victory.flac absent.flac`
+
+(filenames can be quoted if they contain special characters to avoid having 
+to \'escape\' these characters).
+
+If the flactag utility does not find information for your CD, a URL will be 
+provided to submit information for your CD. Often the MusicBrainz server will 
+have information about the tracks and artist, but cannot match this up to your 
+CD. In these circumstances, it is simply a matter of \'associating\' your CDs 
+DiskID with the correct album data on the MusicBrainz server. In other 
+instances, you may be required to enter the track and album information into the 
+MusicBrainz service. Once you have entered this information, you can re-run 
+flactag, and the data should be downloaded from the MusicBrainz server.
+
+If the flactag utility finds information for your CD at the musicbrainz server, 
+the application's main window will be shown.
+
+image:flactag.jpg[flactag interactive mode]
+
+This contains three main areas:
+
+- The \'Albums\' window. This will contain a list of albums that match 
+the DiskID for your FLAC file.
+
+- The \'Tracks\' window. This contains a list of all the tracks on the 
+currently selected album.
+
+- The \'Tags\' window. At startup, this will contain a list of the tags 
+currently found in your FLAC file. If there are no tags present, then an empty 
+set appropriate for the album will be displayed. If you make changes to these 
+tags, an asterisk (\'*\') will be displayed to indicate that this information has 
+been changed. 
+
+The currently active window will be highlighted by the border and window title 
+changing colour. To switch between the three windows, press the *TAB* key. To 
+scroll around the active window, use the cursor UP and DOWN keys. Scolling in 
+the \'Albums\' window will update the information in the \'Tracks\' window 
+appropriately.
+
+Once the appropriate album has been selected, pressing *c* will copy the tags 
+for that album into the 'Tags' window. These tags can then be saved to the FLAC 
+file by pressing the *w* key.
+
+Pressing *r* will rename the file based on the settings in the 
+configuration file (~/.flactag - this file is created automatically the first 
+time you run *flactag*). Note that this facility uses the tags that are 
+actually written to the file, so should generally be performed after the new 
+tags have been written. This option will be unavailable if the filename and 
+location are already correct.
+
+Pressing *q* will move to the next file specified on the command line. 
+If all files have been processed, the application will exit.
+
+Batch mode
+~~~~~~~~~~
+
+Alternatively, flactag can be used in batch mode to automatically check tags, 
+write them and rename the file. Care should be taken when using these options.
+
+The following command line options are understood:
+
+- *--discid (-d)* - Display the calculated disc ID for the specified FLAC
+file and exit.
+
+- *--check (-c)* - This option will compare the file's tags against those 
+returned from the MusicBrainz service. A message will be displayed indicating 
+where the tags match or not.
+
+- *--write (-w)* - This option implies *--check*. If the files tags differ 
+from those returned from the MusicBrainz service, the tags will be written to 
+the file.
+
+- *--rename (-r)* - The filename will be compared with that specified by the 
+rename rules, and if it doesn't match, the file will be renamed.
+
+- *--force-multi (-m)* - If the MusicBrainz service returns more than 
+one release for the DiskID of the FLAC file, then the software will not make any 
+changes unless this option is specified. This applies to *--check*, 
+*--write* and *--rename*. When multiple releases are returned, the 
+first release found will be used to update the tags and rename the file as 
+appropriate.
+
+Example uses of these options could be as follows (note the use of the find 
+option \'-print0\' and the xargs option \'-0\' to handle filenames containing 
+spaces):
+
+Report on the tags of all FLAC files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --check`
+
+Tag and rename all flac files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --write --rename --force-multi`
+
+File Renaming Details
+---------------------
+
+The following configuration file (~/.flactag) entries affect file renaming:
+
+- *BasePath* - This is the 'root' directory of where your music files 
+should be stored. (e.g. /var/spool/music)
+
+- *SingleDiskFileName* - This template is used to rename disks that 
+are not part of a multi-disk set.
+
+- *MultiDiskFileName* - This template is used to rename disks that 
+are part of a multi-disk set.
+
+- *DirectoryCreatePermissions* - The permissions to be set on any 
+directory that is created (e.g. 0755).
+
+The FileName templates can accept the following parameters:
+
+- *%A* - This will be replaced with the artist name
+
+- *%S* - This will be replaced with the artist sort name
+
+- *%T* - This will be replaced with the album title
+
+- *%D* - This will be replaced with the disk number
+
+- *%Y* - This will be replaced with the year
+
+- *%G* - This will be replaced with the genre
+
+If any item is used but does not have a value, then it will be stored as (for 
+example) NOGENRE (if the genre tag is empty).
+
+Bugs / Limitations / Future Enhancements
+----------------------------------------
+
+- Once changes are written to the FLAC file, there is no way of reverting 
+back to the original tags.
+
+Problems / Suggestions 
+----------------------
+
+If you have any problems with the software, or suggestions for improvements or 
+new features, then please use the http://bugtracker.gently.org.uk/[Bug Tracking System] to 
+report them. 
+
+Version History 
+---------------
+
+v1.0-RC1 - 12th October 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Add command line options and ability to handle more than one FLAC file
+
+- Store cover art embedded into file tags
+
+- Handle console screen size changes
+
+- Retrieve more tags from MusicBrainz
+
+v0.04 - 23rd September 2006 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Software released under the GPL 
+
+- Add ability to rename file after tagging 
+
+- Add logging capability (all log messages are queued and display on exit) 
+
+- Add facility to download album cover art from Amazon 
+
+- Store more Musicbrainz related information in tags 
+
+v0.03 - 18th September 2006 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix serious  bug in generating submission URLs 
+
+v0.02 - 18th September 2006 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Correctly handle multi-album disc sets 
+
+- Include ARTISTSORT tag 
+
+- Retrieve Amazon ASIN in preparation for downloading cover art 
+
+v0.01 - 16th September 2006 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initial version 
+
