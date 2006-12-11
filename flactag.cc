@@ -174,10 +174,8 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 									CTagName Name=(*ThisTag).first;
 										
 									std::map<CTagName,std::string>::const_iterator OtherTag=m_WriteTags.find(Name);
-									if (OtherTag==m_FlacTags.end())
-									{
+									if (OtherTag==m_WriteTags.end())
 										printf("%s: Tag %s not present in tags to be written\n",m_FlacFile.c_str(),Name.String().c_str());
-									}
 									
 									++ThisTag;
 								}
@@ -219,20 +217,20 @@ void CFlacTag::Interactive()
 	
 	if (-1==SLkp_init())
 	{
-		SLang_doerror ("SLkp_init failed.");
+		SLang_verror (0, "SLkp_init failed.");
 		return;
 	}
 		
 	if (-1==SLang_init_tty(7,0,0))
 	{
-		SLang_doerror ("SLang_init_tty.");
+		SLang_verror (0, "SLang_init_tty.");
 		return;
 	}
 	
 	SLang_set_abort_signal(NULL);
 	if (-1==SLsmg_init_smg())
 	{
-		SLang_doerror("Error initialising SLmsg\n");
+		SLang_verror(0, "Error initialising SLmsg\n");
 		return;
 	}
 	
@@ -757,7 +755,8 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	SetTag(m_WriteTags,CTagName("ALBUM"),ThisAlbum.Name());
 	SetTag(m_WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
 	SetTag(m_WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
-	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
+	//SetTag(m_WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
+	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),"");
 	SetTag(m_WriteTags,CTagName("COVERART"),ThisAlbum.CoverArt());
 	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMARTISTID"),ThisAlbum.ArtistID());
 	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMID"),ThisAlbum.AlbumID());
@@ -786,4 +785,6 @@ void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const std::string&
 {
 	if (!TagValue.empty())
 		Tags[TagName]=TagValue;
+	else
+		Tags.erase(TagName);
 }
