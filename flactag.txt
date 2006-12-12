@@ -1,4 +1,4 @@
-FLACTAG v1.0-RC1
+FLACTAG v1.0-RC2
 ================
 Andy Hawkins <andy@gently.org.uk>
 
@@ -20,28 +20,51 @@ Requirements
 - http://www.s-lang.org/download.html[S-Lang] (I used version 1.4.9)
 - http://http-fetcher.sourceforge.net/downloads.html[http-fetcher] (I used version 1.0.1)
 - http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
+- http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 7.1.2 from Debian)
 
-Building
---------
+Building and Installing
+-----------------------
 
-To build the software, simply run '*make*' in the directory you have extracted the 
+Before installing, edit the INSTALLPATH directory in the Makefile to specify the 
+install location. Binaries and scripts will be placed in a `bin` directory under 
+this path.
+
+To build the software, simply run `*make*` in the directory you have extracted the 
 archive into. The build process should complete with no errors. You will be left 
 with the following executables:
 
 - *flactag* - The main application
 - *discid* - A test utility to read the disc ID from a CD
 
+To install the software and associated scripts, simply run `*make install*`. 
+This step will need to be run as `root` if the install is being done outside of 
+the user's home directory.
+
 Ripping CDs to FLAC
 -------------------
+
+*IMPORTANT: I think I found a bug in `cueconvert` which means that any FLAC 
+files generated from CDs that used INDEX marks to separate tracks that didn't 
+have any pre-gap would generate invalid disc IDs. I would urge you to use the 
+`checkflac.sh` script provided to compare any disks you may have ripped with 
+their FLAC files to ensure that the discids match correctly. Included in this 
+release is a SED script which will massage the TOC file of a CD to work around 
+this problem. Unfortunately, the only way to recover from this is to re-rip the 
+CD*
 
 To rip a CD to flac, simply enter `ripflac.sh <filename>` (where filename is 
 used as the base name of the FLAC file you will be creating. The CD in the drive
 will be ripped, and a FLAC file created containing an embedded CUE sheet.
 
-If the original CD contains data tracks, then the FLAC conversion will fail. Should
-this happen, enter `ripdataflac.sh <filename> <range>` (where filename is the same
-one specified in the first rip attempt, and range is the range of tracks to rip (e.g.
-if the CD has 13 tracks, where track 13 is the data track, then the range would be 1-12).
+If the original CD contains data tracks, then the FLAC conversion will fail. 
+Should this happen, enter `ripdataflac.sh <filename> <range>` (where filename is 
+the same one specified in the first rip attempt, and range is the range of 
+tracks to rip (e.g. if the CD has 13 tracks, where track 13 is the data track, 
+then the range would be 1-12). 
+
+During the ripping of the data CD, you will be provided with the CUE sheet in an 
+editor. You should delete the data track from this CUE sheet file and save it (I 
+will try to automate this process at some point).
 
 Both these scripts will compare the calculated discid of the FLAC file with the 
 discid of the CD in the drive. If they do not match, a warning will be issued. 
@@ -61,9 +84,9 @@ FLAC files to tag as its arguments as follows:
 to \'escape\' these characters).
 
 If the flactag utility does not find information for your CD, a URL will be 
-provided to submit information for your CD. Often the MusicBrainz server will 
+provided to submit information for it. Often the MusicBrainz server will 
 have information about the tracks and artist, but cannot match this up to your 
-CD. In these circumstances, it is simply a matter of \'associating\' your CDs 
+CD. In these circumstances, it is simply a matter of \'associating\' your CD's 
 DiskID with the correct album data on the MusicBrainz server. In other 
 instances, you may be required to enter the track and album information into the 
 MusicBrainz service. Once you have entered this information, you can re-run 
@@ -90,9 +113,10 @@ been changed.
 
 The currently active window will be highlighted by the border and window title 
 changing colour. To switch between the three windows, press the *TAB* key. To 
-scroll around the active window, use the cursor UP and DOWN keys. Scolling in 
-the \'Albums\' window will update the information in the \'Tracks\' window 
-appropriately.
+scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to 
+scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half 
+a page at a time). Scrolling in the \'Albums\' window will update the information 
+in the \'Tracks\' window appropriately.
 
 Once the appropriate album has been selected, pressing *c* will copy the tags 
 for that album into the 'Tags' window. These tags can then be saved to the FLAC 
@@ -198,10 +222,45 @@ If you have any problems with the software, or suggestions for improvements or
 new features, then please use the http://bugtracker.gently.org.uk/[Bug Tracking System] to 
 report them. 
 
+There are two mailing lists for 
+http://lists.gently.org.uk/mailman/listinfo/flactag-discuss[discussion] and 
+http://lists.gently.org.uk/mailman/listinfo/flactag-announce[announcements], 
+which would be a good place to start for any questions. These lists are gated 
+via http://www.gmane.org[GMane] as gmane.comp.audio.flactag.announce and 
+gmane.comp.audio.flactag.discuss respectively.
+
 Version History 
 ---------------
 
-v1.0-RC1 - 12th October 2006
+v1.0RC2 - xxth December 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Add install target to install application and associated scripts
+
+- Documentation now generated using asciidoc
+
+- Scripts for ripping now included (including modification of TOC files where necessary)
+
+- PAGE UP and PAGE DOWN can now be used for scrolling in windows
+
+- Always use index number 1 when calculating TOC for FLAC file
+
+- Convert accented characters to standard characters in filenames
+
+- Add --discid option to report calculated discid for FLAC file
+
+- Fix various compilation errors on some systems
+
+- Report differences in tags when using --check option
+
+- Compare real path of file (not path used in command line which could be 
+relative) to see if renaming should be allowed 
+
+- Don't write ALBUMARTIST tag (causes problems with artist sorting in current SlimServer software)
+
+- 
+
+v1.0-RC1 - 12th October 2006 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Add command line options and ability to handle more than one FLAC file
