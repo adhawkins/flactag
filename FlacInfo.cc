@@ -28,6 +28,10 @@
 
 #include "TagName.h"
 
+#include "ErrorLog.h"
+
+#include <sstream>
+
 CFlacInfo::CFlacInfo()
 :	m_TagBlock(0),
 	m_CuesheetFound(false)
@@ -198,10 +202,26 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 			{
 				FLAC::Metadata::VorbisComment::Entry NewEntry;
 					
-				NewEntry.set_field_name(Name.String().c_str());
-				NewEntry.set_field_value(Value.c_str(),Value.length());
+				if (!NewEntry.set_field_name(Name.String().c_str()))
+				{
+					std::stringstream os;
+					os << "Error setting field name: '" << Name.String() << "'";
+					CErrorLog::Log(os.str());
+				}
 				
-				m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry);
+				if (!NewEntry.set_field_value(Value.c_str(),Value.length()))
+				{
+					std::stringstream os;
+					os << "Error setting field value: '" << Value << "' for '" << Name.String() << "'";
+					CErrorLog::Log(os.str());
+				}
+				
+				if (!m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry))
+				{
+					std::stringstream os;
+					os << "Error inserting comment: '" << Value << "' for '" << Name.String() << "'";
+					CErrorLog::Log(os.str());
+				}
 			}
 			
 			++ThisTag;
