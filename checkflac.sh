@@ -6,21 +6,22 @@ if [ $# = "1" ]
 then
 	FILENAME="$1"
 	
-	CDID=`./discid $CDROM`
-	FLACID=`./flactag --discid "$FILENAME"`
+	CDID=`discid $CDROM`
+	FLACID=`flactag --discid "$FILENAME"`
 
 	if [ "$FLACID" != "$CDID" ]
 	then
 		echo "**********"
 		echo "**********"
 		echo "**********"
-		echo "********** Disc ID of FLAC doesn't match Disc ID of CD **********"
+		echo "********** Disc ID of FLAC doesn't match Disc ID of CD  **********"
+		echo "********** Please re-rip this CD and remove any invalid **********"
+		echo "********** disc IDs from the MusicBrainz service        **********"
 		echo "**********"
 		echo "**********"
 		echo "**********"
 	else
-		echo "IDs match, processing"
-		./flactag --write --rename "$FILENAME"
+		echo "IDs match, disk is OK"
 	fi
 else
 	echo "Usage: $0 flacfile"

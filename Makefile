@@ -1,4 +1,6 @@
-VERSION=1.0-RC1
+INSTALLPATH=/usr/local
+
+VERSION=1.0RC2
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
@@ -11,26 +13,30 @@ DISCIDOBJS=discid.o
 
 SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
-all: flactag discid flactag.txt flactag.html flactag.man
+all: flactag discid flactag.html
 
-flactag.man: manpage.sgml Makefile
-	sgml2txt -man manpage.sgml
-	mv manpage.man flactag.man
+install: all
+	mkdir -p $(INSTALLPATH)/bin
+	install -m 755 flactag $(INSTALLPATH)/bin
+	install -m 755 discid $(INSTALLPATH)/bin
+	install -m 755 tocfix.sed $(INSTALLPATH)/bin
+	install -m 755 ripdataflac.sh $(INSTALLPATH)/bin
+	install -m 755 checkflac.sh $(INSTALLPATH)/bin
+	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLPATH)/bin\2#" ripflac.sh > $(INSTALLPATH)/bin/ripflac.sh
+	chmod 755 ${INSTALLPATH}/bin/ripflac.sh
 	
-flactag.txt: flactag.sgml Makefile
-	sgml2txt --pass="-P-bc" --blanks=1 flactag.sgml
-	
-flactag.html: flactag.sgml Makefile
-	sgml2html --split=0 --toc=1 flactag.sgml
+flactag.html: flactag.txt Makefile
+	asciidoc -a numbered flactag.txt
 	
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.txt flactag.html *.d *.bak *~ *.tar.gz flactag discid
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man
 
 flactag-$(VERSION).tar.gz: all
 	svn update && cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz \
 							flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt \
 							flactag/flactag.html flactag/flactag.sgml flactag/COPYING \
-							flactag/ripflac.sh flactag/checkflac.sh flactag/fixtoc.sed
+							flactag/ripflac.sh flactag/ripdataflac.sh flactag/checkflac.sh \
+							flactag/fixtoc.sed
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag
