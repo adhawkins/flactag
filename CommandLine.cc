@@ -89,10 +89,11 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	
 	if (m_FileNames.empty() && !m_Version)
 		m_Valid=false;
-
-	if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceMulti))
+	else if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceMulti || m_ForceWrite))
 		m_Valid=false;
-		
+	else if (m_ForceWrite && !m_Write)
+		m_Valid=false;
+	
 	if (!m_Valid)
 		Usage(argv[0]);
 }
@@ -146,6 +147,6 @@ void CCommandLine::Usage(const std::string& ProgName) const
 {
 	printf("Usage: %s [ --version | -v ] [ --discid | -d] [ --check | -c ]\n"
 					"\t\t[ --write | -w ] [ --rename | -r ]\n"
-					"\t\t[ --force-multi | -m ]\n"
+					"\t\t[ --force-multi | -m ] [ --force-write | -f ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }
