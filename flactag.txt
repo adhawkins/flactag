@@ -151,6 +151,9 @@ where the tags match or not.
 from those returned from the MusicBrainz service, the tags will be written to 
 the file.
 
+- *--force-write (-f)* - If --write is specified then tags will be written even 
+if they appear to match those already in the file
+
 - *--rename (-r)* - The filename will be compared with that specified by the 
 rename rules, and if it doesn't match, the file will be renamed.
 
