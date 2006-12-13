@@ -261,7 +261,9 @@ relative) to see if renaming should be allowed
 
 - Don't write ALBUMARTIST tag (causes problems with artist sorting in current SlimServer software)
 
-- 
+- Add --force-write option
+
+- Correctly write UTF8 values for tags
 
 v1.0-RC1 - 12th October 2006 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
