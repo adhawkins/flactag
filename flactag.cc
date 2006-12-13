@@ -136,23 +136,23 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							{
 								printf("%s: Tags differ\n",m_FlacFile.c_str());
 								
-								std::map<CTagName,std::string>::const_iterator ThisTag=m_WriteTags.begin();
+								tTagMapConstIterator ThisTag=m_WriteTags.begin();
 								while (m_WriteTags.end()!=ThisTag)
 								{
 									CTagName Name=(*ThisTag).first;
-									std::string WriteValue=(*ThisTag).second;
+									CUTF8Tag WriteValue=(*ThisTag).second;
 										
-									std::map<CTagName,std::string>::const_iterator FLACTag=m_FlacTags.find(Name);
+									tTagMapConstIterator FLACTag=m_FlacTags.find(Name);
 									if (FLACTag!=m_FlacTags.end())
 									{
-										std::string FLACValue=(*FLACTag).second;
+										CUTF8Tag FLACValue=(*FLACTag).second;
 											
 										if (WriteValue!=FLACValue)
 										{
 											if (Name.String()=="COVERART")
 												printf("%s: Value for %s has changed\n",m_FlacFile.c_str(),Name.String().c_str());
 											else
-												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),FLACValue.c_str(),WriteValue.c_str());
+												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),FLACValue.ISO88591Value().c_str(),WriteValue.ISO88591Value().c_str());
 										}
 									}
 									else
@@ -168,14 +168,29 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 								{
 									CTagName Name=(*ThisTag).first;
 										
-									std::map<CTagName,std::string>::const_iterator OtherTag=m_WriteTags.find(Name);
+									tTagMapConstIterator OtherTag=m_WriteTags.find(Name);
 									if (OtherTag==m_WriteTags.end())
 										printf("%s: Tag %s not present in tags to be written\n",m_FlacFile.c_str(),Name.String().c_str());
 									
 									++ThisTag;
 								}
-							
-								if (CommandLine.Write())
+							}
+							else
+								printf("%s: Tags match\n",m_FlacFile.c_str());
+								
+							if (CommandLine.Write())
+							{
+								bool WriteTags=false;
+								
+								if (m_WriteTags!=m_FlacTags)
+									WriteTags=true;
+								else if (CommandLine.ForceWrite())
+								{
+									printf("%s: Writing tags forced by command line\n",m_FlacFile.c_str());
+									WriteTags=true;
+								}
+
+								if (WriteTags)
 								{
 									if (m_FlacInfo.WriteTags(m_WriteTags))
 									{
@@ -186,8 +201,6 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 										printf("%s: Error writing tags\n",m_FlacFile.c_str());
 								}
 							}
-							else
-								printf("%s: Tags match\n",m_FlacFile.c_str());
 						}
 										
 						if (CommandLine.Rename())
@@ -490,11 +503,11 @@ bool CFlacTag::LoadData()
 		{
 			//Populate write tags with empty tags
 			
-			m_WriteTags[CTagName("ALBUM")]="";
-			m_WriteTags[CTagName("ARTIST")]="";
-			m_WriteTags[CTagName("ARTISTSORT")]="";
-			m_WriteTags[CTagName("YEAR")]="";
-			m_WriteTags[CTagName("DISCNUMBER")]="";
+			m_WriteTags[CTagName("ALBUM")]=CUTF8Tag("");
+			m_WriteTags[CTagName("ARTIST")]=CUTF8Tag("");
+			m_WriteTags[CTagName("ARTISTSORT")]=CUTF8Tag("");
+			m_WriteTags[CTagName("YEAR")]=CUTF8Tag("");
+			m_WriteTags[CTagName("DISCNUMBER")]=CUTF8Tag("");
 			
 			for (int count=m_FlacCuesheet.FirstTrack();count<=m_FlacCuesheet.LastTrack();count++)
 			{
@@ -503,9 +516,9 @@ bool CFlacTag::LoadData()
 				
 				m_WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
 				
-				m_WriteTags[CTagName("TITLE",count)]="";
-				m_WriteTags[CTagName("ARTIST",count)]="";
-				m_WriteTags[CTagName("ARTISTSORT",count)]="";
+				m_WriteTags[CTagName("TITLE",count)]=CUTF8Tag("");
+				m_WriteTags[CTagName("ARTIST",count)]=CUTF8Tag("");
+				m_WriteTags[CTagName("ARTISTSORT",count)]=CUTF8Tag("");
 			}
 		}
 		
@@ -789,8 +802,8 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	SetTag(m_WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
 	SetTag(m_WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
 	//SetTag(m_WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
-	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),"");
-	SetTag(m_WriteTags,CTagName("COVERART"),ThisAlbum.CoverArt());
+	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),CUTF8Tag(""));
+	SetTag(m_WriteTags,CTagName("COVERART"),CUTF8Tag(ThisAlbum.CoverArt()));
 	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMARTISTID"),ThisAlbum.ArtistID());
 	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMID"),ThisAlbum.AlbumID());
 	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMSTATUS"),ThisAlbum.Status());
@@ -810,11 +823,11 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	
 	SetTag(m_WriteTags,CTagName("ASIN"),ThisAlbum.ASIN());
 						
-	if (ThisAlbum.Artist()=="Various Artists")
-		SetTag(m_WriteTags,CTagName("COMPILATION"),"1");
+	if (ThisAlbum.Artist()==CUTF8Tag("Various Artists"))
+		SetTag(m_WriteTags,CTagName("COMPILATION"),CUTF8Tag("1"));
 }
 
-void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const std::string& TagValue)
+void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& TagValue)
 {
 	if (!TagValue.empty())
 		Tags[TagName]=TagValue;

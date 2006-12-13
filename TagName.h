@@ -30,6 +30,8 @@
 #include <string>
 #include <map>
 
+#include "UTF8Tag.h"
+
 class CTagName
 {
 public:
@@ -51,7 +53,7 @@ private:
 	bool SpecialTag() const;
 };
 
-typedef std::map<CTagName,std::string> tTagMap;
+typedef std::map<CTagName,CUTF8Tag> tTagMap;
 typedef tTagMap::const_iterator tTagMapConstIterator;
 typedef tTagMap::iterator tTagMapIterator;
 

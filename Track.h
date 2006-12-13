@@ -27,7 +27,7 @@
 #ifndef _TRACK_H
 #define _TRACK_H
 
-#include <string>
+#include "UTF8Tag.h"
 
 #include <FLAC++/metadata.h>
 
@@ -37,27 +37,27 @@ public:
 	CTrack();
 
 	FLAC__byte Number() const;
-	std::string Name() const;
-	std::string Artist() const;
-	std::string ArtistSort() const;
-	std::string ArtistID() const;
-	std::string TrackID() const;
+	CUTF8Tag Name() const;
+	CUTF8Tag Artist() const;
+	CUTF8Tag ArtistSort() const;
+	CUTF8Tag ArtistID() const;
+	CUTF8Tag TrackID() const;
 		
 	void SetNumber(FLAC__byte Number);
-	void SetName(const std::string& Name);
-	void SetArtist(const std::string& Artist);
-	void SetArtistSort(const std::string& ArtistSort);
-	void SetArtistID(const std::string& ArtistID);
-	void SetTrackID(const std::string& TrackID);
+	void SetName(const CUTF8Tag& Name);
+	void SetArtist(const CUTF8Tag& Artist);
+	void SetArtistSort(const CUTF8Tag& ArtistSort);
+	void SetArtistID(const CUTF8Tag& ArtistID);
+	void SetTrackID(const CUTF8Tag& TrackID);
 		
 		
 private:
 	FLAC__byte m_Number;
-	std::string m_Name;
-	std::string m_Artist;
-	std::string m_ArtistSort;
-	std::string m_ArtistID;
-	std::string m_TrackID;
+	CUTF8Tag m_Name;
+	CUTF8Tag m_Artist;
+	CUTF8Tag m_ArtistSort;
+	CUTF8Tag m_ArtistID;
+	CUTF8Tag m_TrackID;
 };
 
 #endif

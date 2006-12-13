@@ -65,12 +65,12 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 {
 	std::string Replace="NO"+ReplaceTag;
 	
-	tTagMap::const_iterator ThisTag=m_Tags.find(CTagName(ReplaceTag));
+	tTagMapConstIterator ThisTag=m_Tags.find(CTagName(ReplaceTag));
 	if (m_Tags.end()!=ThisTag)
 	{
-		std::string Value=(*ThisTag).second;
+		CUTF8Tag Value=(*ThisTag).second;
 		if (!Value.empty())
-			Replace=FixString(Value);
+			Replace=FixString(Value.UTF8Value());
 	}
 	
 	std::string::size_type SearchPos=m_FileName.find(Search);
@@ -87,11 +87,14 @@ std::string CFileNameBuilder::FixString(const std::string& String) const
 	size_t out_length=0;
 	std::string Fixed=String;
 		
-	if (0==unac_string("ISO-8859-1",String.c_str(),String.length(),&out,&out_length))
+	if (0==unac_string("UTF-8",String.c_str(),String.length(),&out,&out_length))
 		Fixed=out;
 	else
 		perror("unac_string");
-		
+
+	if (out)
+		free(out);
+				
 	std::string BadChars="/:\"'`;?&,";
 		
 	for (std::string::size_type count=0;count<Fixed.length();count++)

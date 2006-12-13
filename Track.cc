@@ -31,12 +31,12 @@ CTrack::CTrack()
 {
 }
 
-std::string CTrack::Artist() const
+CUTF8Tag CTrack::Artist() const
 {
 	return m_Artist;
 }
 
-std::string CTrack::Name() const
+CUTF8Tag CTrack::Name() const
 {
 	return m_Name;
 }
@@ -46,17 +46,17 @@ FLAC__byte CTrack::Number() const
 	return m_Number;
 }
 
-std::string CTrack::ArtistSort() const
+CUTF8Tag CTrack::ArtistSort() const
 {
 	return m_ArtistSort;
 }
 	
-std::string CTrack::ArtistID() const
+CUTF8Tag CTrack::ArtistID() const
 {
 	return m_ArtistID;
 }
 
-std::string CTrack::TrackID() const
+CUTF8Tag CTrack::TrackID() const
 {
 	return m_TrackID;
 }
@@ -66,26 +66,26 @@ void CTrack::SetNumber(FLAC__byte Number)
 	m_Number=Number;
 }
 
-void CTrack::SetName(const std::string& Name)
+void CTrack::SetName(const CUTF8Tag& Name)
 {
 	m_Name=Name;
 }
 
-void CTrack::SetArtist(const std::string& Artist)
+void CTrack::SetArtist(const CUTF8Tag& Artist)
 {
 	m_Artist=Artist;
 }
-void CTrack::SetArtistSort(const std::string& ArtistSort)
+void CTrack::SetArtistSort(const CUTF8Tag& ArtistSort)
 {
 	m_ArtistSort=ArtistSort;
 }
 
-void CTrack::SetArtistID(const std::string& ArtistID)
+void CTrack::SetArtistID(const CUTF8Tag& ArtistID)
 {
 	m_ArtistID=ArtistID;
 }
 
-void CTrack::SetTrackID(const std::string& TrackID)
+void CTrack::SetTrackID(const CUTF8Tag& TrackID)
 {
 	m_TrackID=TrackID;
 }

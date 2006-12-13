@@ -36,27 +36,27 @@ void CAlbum::AddTrack(const CTrack& Track)
 	m_Tracks.push_back(Track);
 }
 
-void CAlbum::SetName(const std::string& Name)
+void CAlbum::SetName(const CUTF8Tag& Name)
 {
 	m_Name=Name;
 }
 
-void CAlbum::SetArtist(const std::string& Artist)
+void CAlbum::SetArtist(const CUTF8Tag& Artist)
 {
 	m_Artist=Artist;
 }
 
-void CAlbum::SetArtistSort(const std::string& ArtistSort)
+void CAlbum::SetArtistSort(const CUTF8Tag& ArtistSort)
 {
 	m_ArtistSort=ArtistSort;
 }
 
-void CAlbum::SetASIN(const std::string& ASIN)
+void CAlbum::SetASIN(const CUTF8Tag& ASIN)
 {
 	m_ASIN=ASIN;
 }
 
-void CAlbum::SetDate(const std::string& Date)
+void CAlbum::SetDate(const CUTF8Tag& Date)
 {
 	m_Date=Date;
 }
@@ -66,22 +66,22 @@ void CAlbum::SetDiskNumber(int DiskNumber)
 	m_DiskNumber=DiskNumber;
 }
 
-std::string CAlbum::Name() const
+CUTF8Tag CAlbum::Name() const
 {
 	return m_Name;
 }
 
-std::string CAlbum::Artist() const
+CUTF8Tag CAlbum::Artist() const
 {
 	return m_Artist;
 }
 
-std::string CAlbum::ArtistSort() const
+CUTF8Tag CAlbum::ArtistSort() const
 {
 	return m_ArtistSort;
 }
 
-std::string CAlbum::Date() const
+CUTF8Tag CAlbum::Date() const
 {
 	return m_Date;
 }
@@ -91,7 +91,7 @@ std::vector<CTrack> CAlbum::Tracks() const
 	return m_Tracks;
 }
 
-std::string CAlbum::ASIN() const
+CUTF8Tag CAlbum::ASIN() const
 {
 	return m_ASIN;
 }
@@ -101,42 +101,42 @@ int CAlbum::DiskNumber() const
 	return m_DiskNumber;
 }
 
-std::string CAlbum::ArtistID() const
+CUTF8Tag CAlbum::ArtistID() const
 {
 	return m_ArtistID;
 }
 
-std::string CAlbum::AlbumID() const
+CUTF8Tag CAlbum::AlbumID() const
 {
 	return m_AlbumID;
 }
 
-std::string CAlbum::Status() const
+CUTF8Tag CAlbum::Status() const
 {
 	return m_Status;
 }
 
-std::string CAlbum::Type() const
+CUTF8Tag CAlbum::Type() const
 {
 	return m_Type;
 }
 
-void CAlbum::SetArtistID(const std::string& ArtistID)
+void CAlbum::SetArtistID(const CUTF8Tag& ArtistID)
 {
 	m_ArtistID=ArtistID;
 }
 
-void CAlbum::SetAlbumID(const std::string& AlbumID)
+void CAlbum::SetAlbumID(const CUTF8Tag& AlbumID)
 {
 	m_AlbumID=AlbumID;
 }
 
-void CAlbum::SetStatus(const std::string& Status)
+void CAlbum::SetStatus(const CUTF8Tag& Status)
 {
 	m_Status=Status;
 }
 
-void CAlbum::SetType(const std::string& Type)
+void CAlbum::SetType(const CUTF8Tag& Type)
 {
 	m_Type=Type;
 }

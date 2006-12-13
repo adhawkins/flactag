@@ -114,7 +114,7 @@ bool CFlacInfo::Read()
 										strncpy(Value,Entry.get_field_value(),Entry.get_field_value_length());
 										Value[Entry.get_field_value_length()]='\0';
 		
-										m_Tags[CTagName(Name)]=Value;
+										m_Tags[CTagName(Name)]=CUTF8Tag(Value);
 
 										delete[] Name;
 										delete[] Value;										
@@ -196,7 +196,7 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 		while (Tags.end()!=ThisTag)
 		{
 			CTagName Name=(*ThisTag).first;
-			std::string Value=(*ThisTag).second;
+			CUTF8Tag Value=(*ThisTag).second;
 
 			if (!Value.empty())				
 			{
@@ -209,17 +209,17 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 					CErrorLog::Log(os.str());
 				}
 				
-				if (!NewEntry.set_field_value(Value.c_str(),Value.length()))
+				if (!NewEntry.set_field_value(Value.UTF8Value().c_str(),Value.UTF8Value().length()))
 				{
 					std::stringstream os;
-					os << "Error setting field value: '" << Value << "' for '" << Name.String() << "'";
+					os << "Error setting field value: '" << Value.ISO88591Value() << "' for '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
 				
 				if (!m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry))
 				{
 					std::stringstream os;
-					os << "Error inserting comment: '" << Value << "' for '" << Name.String() << "'";
+					os << "Error inserting comment: '" << Value.ISO88591Value() << "' for '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
 			}

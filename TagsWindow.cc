@@ -61,10 +61,10 @@ std::string CTagsWindow::GetLine(int Line) const
 		++ThisTag;
 		
 	CTagName Name=(*ThisTag).first;
-	std::string Value=(*ThisTag).second;
+	CUTF8Tag Value=(*ThisTag).second;
 	
 	std::stringstream os;
-	os << Name.String() << "=" << Value;
+	os << Name.String() << "=" << Value.ISO88591Value();
 	
 	return os.str();
 }

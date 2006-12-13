@@ -61,7 +61,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
   MusicBrainz o;
   bool Ret;
 
-  o.UseUTF8(false);
+  o.UseUTF8(true);
 
 	//o.SetDebug(1);
 	//o.SetDepth(5);
@@ -103,7 +103,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 				if (!Album.ASIN().empty())
 				{				
-					std::string URL="http://images.amazon.com/images/P/" + Album.ASIN() + ".02.LZZZZZZZ.jpg";
+					std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().ISO88591Value() + ".02.LZZZZZZZ.jpg";
 												
 					char *Buffer=0;
 					
@@ -112,7 +112,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					{
 						free(Buffer);
 						Buffer=0;
-						URL="http://images.amazon.com/images/P/" + Album.ASIN() + ".02.MZZZZZZZ.jpg";
+						URL="http://images.amazon.com/images/P/" + Album.ASIN().ISO88591Value() + ".02.MZZZZZZZ.jpg";
 						Bytes=http_fetch(URL.c_str(),&Buffer);
 					}
 

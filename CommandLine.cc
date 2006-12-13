@@ -13,10 +13,12 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_Rename(false),
 	m_ForceMulti(false),
 	m_Version(false),
-	m_DiscID(false)
+	m_DiscID(false),
+	m_ForceWrite(false)
 {
 	struct option LongOptions[] =
 	{
+		{"force-write", no_argument, 0, 'f'},
 		{"discid", no_argument, 0, 'd'},
 		{"version", no_argument, 0, 'v'},
 		{"force-multi", no_argument, 0, 'm'},
@@ -33,9 +35,13 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"dvmrwc",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"fdvmrwc",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
+			case 'f':
+				m_ForceWrite=true;
+				break;
+				
 			case 'd':
 				m_DiscID=true;
 				break;
@@ -124,6 +130,11 @@ bool CCommandLine::Version() const
 bool CCommandLine::DiscID() const
 {
 	return m_DiscID;
+}
+
+bool CCommandLine::ForceWrite() const
+{
+	return m_ForceWrite;
 }
 
 std::vector<std::string> CCommandLine::FileNames() const
