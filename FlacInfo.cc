@@ -212,14 +212,14 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 				if (!NewEntry.set_field_value(Value.UTF8Value().c_str(),Value.UTF8Value().length()))
 				{
 					std::stringstream os;
-					os << "Error setting field value: '" << Value.ISO88591Value() << "' for '" << Name.String() << "'";
+					os << "Error setting field value: '" << Value.DisplayValue() << "' for '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
 				
 				if (!m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry))
 				{
 					std::stringstream os;
-					os << "Error inserting comment: '" << Value.ISO88591Value() << "' for '" << Name.String() << "'";
+					os << "Error inserting comment: '" << Value.DisplayValue() << "' for '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
 			}

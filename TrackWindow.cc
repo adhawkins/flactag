@@ -66,7 +66,7 @@ std::string CTrackWindow::GetLine(int Line) const
 		std::vector<CTrack> Tracks=Album.Tracks();
 		
 		std::stringstream os;
-		os << std::setw(2) << std::setfill(' ') << Line+1 << ":" << Tracks[Line].Artist().ISO88591Value() << " - " << Tracks[Line].Name().ISO88591Value();
+		os << std::setw(2) << std::setfill(' ') << Line+1 << ":" << Tracks[Line].Artist().DisplayValue() << " - " << Tracks[Line].Name().DisplayValue();
 		
 		RetVal=os.str();
 	}

@@ -6,7 +6,7 @@
 class CUTF8Tag
 {
 public:
-	CUTF8Tag(const std::string& Value="");
+	CUTF8Tag(const std::string& UTF8Value="");
 	
 	bool operator ==(const CUTF8Tag& Other) const;
 	bool operator !=(const CUTF8Tag& Other) const;
@@ -14,10 +14,13 @@ public:
 	bool empty() const;
 	
 	std::string UTF8Value() const;
-	std::string ISO88591Value() const;
+	std::string DisplayValue() const;
 	
 protected:
-	std::string m_Value;
+	std::string m_UTF8Value;
+	std::string m_DisplayValue;
+		
+	void Convert();
 };
 
 #endif

@@ -1,48 +1,33 @@
 #include "UTF8Tag.h"
 
-CUTF8Tag::CUTF8Tag(const std::string& Value)
-:	m_Value(Value)
+#include <locale.h>
+#include <langinfo.h>
+
+CUTF8Tag::CUTF8Tag(const std::string& UTF8Value)
+:	m_UTF8Value(UTF8Value)
 {
+	Convert();
 }
 
-bool CUTF8Tag::operator ==(const CUTF8Tag& Other) const
+void CUTF8Tag::Convert()
 {
-	return m_Value==Other.m_Value;
-}
-
-bool CUTF8Tag::operator !=(const CUTF8Tag& Other) const
-{
-	return !(*this==Other);
-}
-
-bool CUTF8Tag::empty() const
-{
-	return m_Value.empty();
-}
-	
-std::string CUTF8Tag::UTF8Value() const
-{
-	return m_Value;
-}
-
-std::string CUTF8Tag::ISO88591Value() const
-{
-	std::string Ret;
-		
-	if (!m_Value.empty())
+	if (!m_UTF8Value.empty())
 	{
-		char *In=new char[m_Value.length()+1];
-		strcpy(In,m_Value.c_str());
+		setlocale(LC_ALL,  "" );
+		char *Codeset=nl_langinfo(CODESET);
+			
+		char *In=new char[m_UTF8Value.length()+1];
+		strcpy(In,m_UTF8Value.c_str());
 		
-		char *Out=new char[m_Value.length()+1];
-		memset(Out,0,m_Value.length()+1);
-		size_t InLeft=m_Value.length();
-		size_t OutLeft=m_Value.length();
+		char *Out=new char[m_UTF8Value.length()+1];
+		memset(Out,0,m_UTF8Value.length()+1);
+		size_t InLeft=m_UTF8Value.length();
+		size_t OutLeft=m_UTF8Value.length();
 		
 		char *InBuff=In;
 		char *OutBuff=Out;
 		
-		iconv_t Convert=iconv_open("ISO-8859-1","UTF-8");
+		iconv_t Convert=iconv_open(Codeset,"UTF-8");
 		if ((iconv_t)-1!=Convert)
 		{
 			if ((size_t)-1!=iconv(Convert,&InBuff,&InLeft,&OutBuff,&OutLeft))
@@ -50,7 +35,7 @@ std::string CUTF8Tag::ISO88591Value() const
 				if (OutLeft>=sizeof(char))
 				    *OutBuff='\0';
 	
-				Ret=Out;
+				m_DisplayValue=Out;
 			}		    
 			
 			iconv_close(Convert);
@@ -62,6 +47,29 @@ std::string CUTF8Tag::ISO88591Value() const
 		if (Out)
 			free(Out);
 	}
-		
-	return Ret;
+}
+
+bool CUTF8Tag::operator ==(const CUTF8Tag& Other) const
+{
+	return m_UTF8Value==Other.m_UTF8Value;
+}
+
+bool CUTF8Tag::operator !=(const CUTF8Tag& Other) const
+{
+	return !(*this==Other);
+}
+
+bool CUTF8Tag::empty() const
+{
+	return m_UTF8Value.empty();
+}
+	
+std::string CUTF8Tag::UTF8Value() const
+{
+	return m_UTF8Value;
+}
+
+std::string CUTF8Tag::DisplayValue() const
+{
+	return m_DisplayValue;
 }

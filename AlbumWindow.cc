@@ -45,7 +45,7 @@ int CAlbumWindow::GetCurrentAlbum() const
 std::string CAlbumWindow::GetLine(int Line) const
 {			
 	std::stringstream os;
-	os << std::setw(2) << std::setfill(' ') << Line+1 << ": " << m_Albums[Line].Artist().ISO88591Value() << " - " << m_Albums[Line].Name().ISO88591Value();
+	os << std::setw(2) << std::setfill(' ') << Line+1 << ": " << m_Albums[Line].Artist().DisplayValue() << " - " << m_Albums[Line].Name().DisplayValue();
 	if (-1!=m_Albums[Line].DiskNumber())
 		os << " (disc " << m_Albums[Line].DiskNumber() << ")";
 

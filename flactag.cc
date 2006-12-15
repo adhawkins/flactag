@@ -152,7 +152,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 											if (Name.String()=="COVERART")
 												printf("%s: Value for %s has changed\n",m_FlacFile.c_str(),Name.String().c_str());
 											else
-												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),FLACValue.ISO88591Value().c_str(),WriteValue.ISO88591Value().c_str());
+												printf("%s: Value for %s has changed from %s to %s\n",m_FlacFile.c_str(),Name.String().c_str(),FLACValue.DisplayValue().c_str(),WriteValue.DisplayValue().c_str());
 										}
 									}
 									else

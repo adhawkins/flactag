@@ -64,7 +64,7 @@ std::string CTagsWindow::GetLine(int Line) const
 	CUTF8Tag Value=(*ThisTag).second;
 	
 	std::stringstream os;
-	os << Name.String() << "=" << Value.ISO88591Value();
+	os << Name.String() << "=" << Value.DisplayValue();
 	
 	return os.str();
 }
