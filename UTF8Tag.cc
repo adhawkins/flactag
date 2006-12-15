@@ -1,3 +1,29 @@
+/* --------------------------------------------------------------------------
+
+   flactag -- A tagger for single album FLAC files with embedded CUE sheets
+   						using data retrieved from the MusicBrainz service
+
+   Copyright (C) 2006 Andrew Hawkins
+   
+   This file is part of flactag.
+   
+   Flactag is free software; you can redistribute it and/or
+   modify it under the terms of v2 of the GNU Lesser General Public
+   License as published by the Free Software Foundation.
+   
+   Flactag is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+   
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+     $Id: FileNameBuilder.cc 93 2006-12-13 13:12:28Z andy $
+
+----------------------------------------------------------------------------*/
+
 #include "UTF8Tag.h"
 
 #include <locale.h>
@@ -18,11 +44,11 @@ void CUTF8Tag::Convert()
 			
 		char *In=new char[m_UTF8Value.length()+1];
 		strcpy(In,m_UTF8Value.c_str());
-		
-		char *Out=new char[m_UTF8Value.length()+1];
-		memset(Out,0,m_UTF8Value.length()+1);
 		size_t InLeft=m_UTF8Value.length();
-		size_t OutLeft=m_UTF8Value.length();
+		
+		char *Out=new char[m_UTF8Value.length()*4];
+		memset(Out,0,m_UTF8Value.length()*4);
+		size_t OutLeft=m_UTF8Value.length()*4;
 		
 		char *InBuff=In;
 		char *OutBuff=Out;
