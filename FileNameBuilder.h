@@ -39,7 +39,7 @@ public:
 	std::string FileName() const;
 private:
 	void BuildPath();
-	void ReplaceString(const std::string& Search, const std::string& ReplaceTag);
+	void ReplaceString(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly);
 	std::string FixString(const std::string& String) const;
 
 	tTagMap m_Tags;

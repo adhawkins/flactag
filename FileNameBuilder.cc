@@ -28,6 +28,8 @@
 
 #include <unac.h>
 
+#include "ErrorLog.h"
+
 CFileNameBuilder::CFileNameBuilder(const tTagMap& Tags, const std::string& BasePath, const std::string& SingleDiskFileName, const std::string& MultiDiskFileName)
 :	m_Tags(Tags),
 	m_BasePath(BasePath),
@@ -53,15 +55,16 @@ void CFileNameBuilder::BuildPath()
 		
 	m_FileName=m_BasePath+"/"+Template;
 	
-	ReplaceString("%A","ARTIST");
-	ReplaceString("%S","ARTISTSORT");
-	ReplaceString("%T","ALBUM");
-	ReplaceString("%D","DISCNUMBER");
-	ReplaceString("%Y","YEAR");
-	ReplaceString("%G","GENRE");
+	ReplaceString("%A","ARTIST",false);
+	ReplaceString("%S","ARTISTSORT",false);
+	ReplaceString("%T","ALBUM",false);
+	ReplaceString("%D","DISCNUMBER",false);
+	ReplaceString("%Y","YEAR",false);
+	ReplaceString("%G","GENRE",false);
+	ReplaceString("%1","ARTISTSORT",true);
 }
 
-void CFileNameBuilder::ReplaceString(const std::string& Search, const std::string& ReplaceTag)
+void CFileNameBuilder::ReplaceString(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly)
 {
 	std::string Replace="NO"+ReplaceTag;
 	
@@ -72,7 +75,25 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 		if (!Value.empty())
 			Replace=FixString(Value.UTF8Value());
 	}
-	
+
+	if (FirstOnly)
+	{
+		bool Found=false;
+		
+		for (std::string::size_type count=0;count<Replace.length();count++)
+		{
+			if (isalnum(Replace[count]))
+			{
+				Replace=std::toupper(Replace[count]);
+				Found=true;
+				break;
+			}
+		}
+		
+		if (!Found)
+			Replace="extended";
+	}
+			
 	std::string::size_type SearchPos=m_FileName.find(Search);
 	while(std::string::npos!=SearchPos)
 	{
