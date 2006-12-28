@@ -205,10 +205,16 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 										
 						if (CommandLine.Rename())
 						{
+							char RealPath[256];
+							realpath(m_FlacFile.c_str(),RealPath);
+								
+							if (m_RenameFile!=RealPath)
+							{
 								if (RenameFile())
 									printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
 								else
 									printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+							}
 						}
 					}
 				}
