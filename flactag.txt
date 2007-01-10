@@ -10,7 +10,7 @@ Downloading
 
 The latest version of flactag can always be found http://www.gently.org.uk/flactag[here].
 
-The current version is link:flactag-1.0-RC1.tar.gz[v1.0-RC1].
+The current version is link:flactag-1.0-RC2.tar.gz[v1.0-RC2].
 
 Requirements
 ------------
@@ -235,7 +235,7 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History 
 ---------------
 
-v1.0RC2 - xxth December 2006
+v1.0RC2 - 10th January 2007
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Add install target to install application and associated scripts
