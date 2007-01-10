@@ -34,9 +34,8 @@ clean:
 flactag-$(VERSION).tar.gz: all
 	svn update && cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz \
 							flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt \
-							flactag/flactag.html flactag/flactag.sgml flactag/COPYING \
-							flactag/ripflac.sh flactag/ripdataflac.sh flactag/checkflac.sh \
-							flactag/fixtoc.sed
+							flactag/flactag.html flactag/COPYING flactag/ripflac.sh \
+							flactag/ripdataflac.sh flactag/checkflac.sh flactag/tocfix.sed
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag
