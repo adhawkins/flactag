@@ -9,7 +9,7 @@ FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						sha1.o base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o
 						
-DISCIDOBJS=discid.o
+DISCIDOBJS=discid.o DiscIDWrapper.o
 
 SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
@@ -49,9 +49,9 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ -o $@ -lslang -lmusicbrainz -lFLAC++ -lhttp_fetcher -lunac $^
+	g++ -o $@ -lslang -lmusicbrainz3 -lFLAC++ -lhttp_fetcher -lunac $^
 	
 discid: $(DISCIDOBJS)
-	g++ -o $@ -lmusicbrainz $^
+	g++ -o $@ -ldiscid $^
 	
 include $(SRCS:.cc=.d)
