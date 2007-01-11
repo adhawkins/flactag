@@ -38,10 +38,10 @@ flactag-$(VERSION).tar.gz: all
 							flactag/ripdataflac.sh flactag/checkflac.sh flactag/tocfix.sed
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
-	mkdir -p /auto/gentlyweb/flactag
-	cp flactag.html /auto/gentlyweb/flactag/index.html
-	cp flactag.html /auto/gentlyweb/flactag/
-	cp flactag-$(VERSION).tar.gz  /auto/gentlyweb/flactag
+	mkdir -p /auto/gentlyweb/flactag-1.1
+	cp flactag.html /auto/gentlyweb/flactag-1.1/index.html
+	cp flactag.html /auto/gentlyweb/flactag-1.1/
+	cp flactag-$(VERSION).tar.gz  /auto/gentlyweb/flactag-1.1
 	
 %.d: %.cc
 	@echo DEPEND $< $@
