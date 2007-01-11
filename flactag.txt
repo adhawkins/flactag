@@ -209,6 +209,8 @@ The FileName templates can accept the following parameters:
 
 - *%G* - This will be replaced with the genre
 
+- *%1* - This will be replaced with the first character of the artist sort name
+
 If any item is used but does not have a value, then it will be stored as (for 
 example) NOGENRE (if the genre tag is empty).
 
