@@ -42,19 +42,24 @@ bool CDiscIDWrapper::FromDevice(const std::string& Device)
 	return discid_read(m_DiscID,Device.c_str());
 }
 
+bool CDiscIDWrapper::FromCuesheet(const CCuesheet& Cuesheet)
+{
+	std::vector<int> Offsets;
+		
+	for (int count=Cuesheet.FirstTrack();count<=Cuesheet.LastTrack();count++)
+		Offsets.push_back(Cuesheet.Track(count).Offset());
+
+	return FromTOC(Cuesheet.FirstTrack(),Cuesheet.LastTrack(),Cuesheet.Leadout(),Offsets);
+}
+
 bool CDiscIDWrapper::FromTOC(int First, int Last, int Leadout, std::vector<int> Offsets)
 {
-	int *OffsetsArray=new int[100];
+	int *OffsetsArray=new int[Last+1];
 	
 	OffsetsArray[0]=Leadout;
 	
-	for (std::vector<int>::size_type count=1;count<99;count++)
-	{
-		if (count<=Offsets.size())
-			OffsetsArray[count]=Offsets[count-1];
-		else
-			OffsetsArray[count]=0;
-	}
+	for (std::vector<int>::size_type count=0;count<Offsets.size();count++)
+		OffsetsArray[count+1]=Offsets[count];
 	
 	bool RetVal=discid_put(m_DiscID,First,Last,OffsetsArray);
 				

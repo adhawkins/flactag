@@ -1,5 +1,5 @@
-FLACTAG v1.0-RC2
-================
+FLACTAG v1.1-Alpha1
+===================
 Andy Hawkins <andy@gently.org.uk>
 
 A utility for tagging single album FLAC files with embedded CUE sheets 
@@ -15,7 +15,7 @@ The current version is link:flactag-1.0-RC2.tar.gz[v1.0-RC2].
 Requirements
 ------------
 
-- http://musicbrainz.org/doc/libmusicbrainzDownload[libmusicbrainz] (I used version 2.1.4)
+- http://musicbrainz.org/doc/libmusicbrainzDownload[libmusicbrainz] (Version 3 required)
 - http://flac.sourceforge.net/download.html[libflac++] (I used version 1.1.1)
 - http://www.s-lang.org/download.html[S-Lang] (I used version 1.4.9)
 - http://http-fetcher.sourceforge.net/downloads.html[http-fetcher] (I used version 1.0.1)

@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Cuesheet.h"
+
 class CDiscIDWrapper
 {
 	public:
@@ -13,6 +15,7 @@ class CDiscIDWrapper
 		~CDiscIDWrapper();
 		
 		bool FromDevice(const std::string& Device);
+		bool FromCuesheet(const CCuesheet& Cuesheet);
 		bool FromTOC(int First, int Last, int Leadout, std::vector<int> Offsets);
 			
 		std::string ID() const;

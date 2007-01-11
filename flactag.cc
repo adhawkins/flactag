@@ -44,7 +44,7 @@
 #include "FileNameBuilder.h"
 #include "ErrorLog.h"
 #include "CommandLine.h"
-#include "DiskIDCalculate.h"
+#include "DiscIDWrapper.h"
 
 #include <vector>
 #include <sstream>
@@ -90,9 +90,10 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 			if (m_FlacInfo.CuesheetFound())
 			{		
 				m_FlacCuesheet=m_FlacInfo.Cuesheet();
-				CDiskIDCalculate Calc(m_FlacCuesheet);
-				std::string DiskID=Calc.DiskID();
-				printf("%s\n",DiskID.c_str());
+				CDiscIDWrapper Calc;
+				Calc.FromCuesheet(m_FlacCuesheet);
+				std::string DiscID=Calc.ID();
+				printf("%s\n",DiscID.c_str());
 			}
 		}
 	}	

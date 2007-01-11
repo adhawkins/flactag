@@ -36,14 +36,9 @@ int main(int argc, const char *argv[])
 		CDiscIDWrapper DiscID;
 
     if (DiscID.FromDevice(argv[1]))
-    {
     	printf("%s\n",DiscID.ID().c_str());
-    	printf("%s\n",DiscID.SubmitURL().c_str());
-    }
     else
-    {
 			printf("Query failed: %s\n",DiscID.Error().c_str());
-		}
 	}
 	else
 		printf("Usage: %s pathtocddevice\n",argv[0]);

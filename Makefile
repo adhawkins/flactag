@@ -1,15 +1,15 @@
 INSTALLPATH=/usr/local
 
-VERSION=1.0RC2
+VERSION=1.1-Alpha1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
-						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiskIDCalculate.o \
-						sha1.o base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
+						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
+						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o
 						
-DISCIDOBJS=discid.o DiscIDWrapper.o
+DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
 SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
@@ -49,7 +49,7 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ -o $@ -lslang -lmusicbrainz3 -lFLAC++ -lhttp_fetcher -lunac $^
+	g++ -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lhttp_fetcher -lunac $^
 	
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^

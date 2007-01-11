@@ -28,7 +28,11 @@
 
 #include <sstream>
 
-#include <musicbrainz/musicbrainz.h>
+#include <musicbrainz3/query.h>
+#include <musicbrainz3/filters.h>
+#include <musicbrainz3/release.h>
+#include <musicbrainz3/webservice.h>
+#include <musicbrainz3/utils.h>
 
 extern "C"
 {
@@ -37,7 +41,7 @@ extern "C"
 
 #include "base64.h"
 
-#include "DiskIDCalculate.h"
+#include "DiscIDWrapper.h"
 #include "ErrorLog.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const CCuesheet& Cuesheet)
@@ -49,138 +53,166 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 {
 	bool RetVal=false;
 	
-	CDiskIDCalculate Calc(m_Cuesheet);
-	std::string DiskID=Calc.DiskID();
-	
+	CDiscIDWrapper DiscIDWrapper;
+	DiscIDWrapper.FromCuesheet(m_Cuesheet);
+	std::string DiskID=DiscIDWrapper.ID();
+			
 	//Test Disk ID for album title containing extended characters
 	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
 	
 	//CErrorLog::Log("DiskID: " + DiskID);
-	//CErrorLog::Log("Submit: " + Calc.SubmitURL());
+	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 			
-  MusicBrainz o;
-  bool Ret;
-
-  o.UseUTF8(true);
-
-	//o.SetDebug(1);
-	//o.SetDepth(5);
-	
-  vector<string> Args;
-  Args.push_back(DiskID);
-  Ret=o.Query(string(MBQ_GetCDInfoFromCDIndexId),&Args);
-
-  if (Ret)
+  MusicBrainz::Query Query;
+  	
+  try
   {
-  	int NumAlbums=o.DataInt(MBE_GetNumAlbums);
-    if (NumAlbums)
-    {
-    	RetVal=true;
-    	
-	    for (int count=0; count<NumAlbums; count++)
+	  MusicBrainz::ReleaseResultList Releases=Query.getReleases(&MusicBrainz::ReleaseFilter().discId(DiskID));
+	  	
+	  if (Releases.size())
+	  {
+	  	RetVal=true;
+	  	
+	    for (MusicBrainz::ReleaseResultList::size_type count=0; count<Releases.size(); count++)
 	    {
-		    o.Select(MBS_SelectAlbum, count+1);
-	
-				CAlbum Album;
-				
-				std::string AlbumName=o.Data(MBE_AlbumGetAlbumName);
-				std::string::size_type DiskNumPos=AlbumName.find(" (disc ");
-				if (std::string::npos!=DiskNumPos)
-				{
-					int DiskNumber;
-					std::string NumStr=AlbumName.substr(DiskNumPos+7);
-					AlbumName=AlbumName.substr(0,DiskNumPos);
-					std::stringstream os;
-					os << NumStr;
-					os >> DiskNumber;
-					Album.SetDiskNumber(DiskNumber);
-				}
-				
-				Album.SetName(AlbumName);
-				Album.SetArtist(o.Data(MBE_AlbumGetAlbumArtistName));
-				Album.SetArtistSort(o.Data(MBE_AlbumGetAlbumArtistSortName));
-				Album.SetASIN(o.Data(MBE_AlbumGetAmazonAsin));
-
-				if (!Album.ASIN().empty())
-				{				
-					std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.LZZZZZZZ.jpg";
-												
-					char *Buffer=0;
+	    	try
+	    	{
+					MusicBrainz::Release *Release = 
+							Query.getReleaseById(Releases[count]->getRelease()->getId(),
+								&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents());
+						
+					CAlbum Album;
 					
-					int Bytes=http_fetch(URL.c_str(),&Buffer);
-					if (Bytes<1000)
+					std::string AlbumName=Release->getTitle();
+					std::string::size_type DiskNumPos=AlbumName.find(" (disc ");
+					if (std::string::npos!=DiskNumPos)
 					{
-						free(Buffer);
-						Buffer=0;
-						URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.MZZZZZZZ.jpg";
-						Bytes=http_fetch(URL.c_str(),&Buffer);
+						int DiskNumber;
+						std::string NumStr=AlbumName.substr(DiskNumPos+7);
+						AlbumName=AlbumName.substr(0,DiskNumPos);
+						std::stringstream os;
+						os << NumStr;
+						os >> DiskNumber;
+						Album.SetDiskNumber(DiskNumber);
 					}
-
-					if (Bytes>0)
-					{
+					
+					Album.SetName(AlbumName);
+					MusicBrainz::Artist *Artist = Release->getArtist();
+					Album.SetArtist(Artist->getName());
+					Album.SetArtistSort(Artist->getSortName());
+					Album.SetASIN(Release->getAsin());
+		
+					if (!Album.ASIN().empty())
+					{				
+						std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.LZZZZZZZ.jpg";
+													
+						char *Buffer=0;
+						
+						int Bytes=http_fetch(URL.c_str(),&Buffer);
 						if (Bytes<1000)
-							CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+						{
+							free(Buffer);
+							Buffer=0;
+							URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.MZZZZZZZ.jpg";
+							Bytes=http_fetch(URL.c_str(),&Buffer);
+						}
+		
+						if (Bytes>0)
+						{
+							if (Bytes<1000)
+								CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+							else
+								Album.SetCoverArt(CCoverArt((const unsigned char *)Buffer,Bytes));
+						}
 						else
-							Album.SetCoverArt(CCoverArt((const unsigned char *)Buffer,Bytes));
+							CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
+						
+						if (Buffer)
+							free(Buffer);
 					}
-					else
-						CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
 					
-					if (Buffer)
-						free(Buffer);
-				}
-				
-				std::string Status;
-				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),Status);
-				Album.SetStatus(AlbumStatus(Status));
-				
-				std::string Type;
-				o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),Type);
-				Album.SetType(AlbumType(Type));
+/*
+					std::string Status;
+					o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),Status);
+					Album.SetStatus(AlbumStatus(Status));
+			
+					std::string Type;
+					o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),Type);
+					Album.SetType(AlbumType(Type));
+*/			
+		
+					Album.SetArtistID(MusicBrainz::extractUuid(Artist->getId()));
+					
+					Album.SetAlbumID(MusicBrainz::extractUuid(Release->getId()));
+		
+					MusicBrainz::TrackList Tracks=Release->getTracks();
+		
+					for (MusicBrainz::TrackList::size_type i=0; i<Tracks.size(); i++)
+			    {
+			    	CTrack Track;
+			    	
+			    	Track.SetNumber(i+1);
+			    	Track.SetName(Tracks[i]->getTitle());
+			    	if (Tracks[i]->getArtist())
+			    	{
+				    	Track.SetArtist(Tracks[i]->getArtist()->getName());
+				    	Track.SetArtistSort(Tracks[i]->getArtist()->getSortName());
+				    	Track.SetArtistID(MusicBrainz::extractUuid(Tracks[i]->getArtist()->getId()));
+				    }
+				    else
+				    {
+				    	Track.SetArtist(Artist->getName());
+				    	Track.SetArtistSort(Artist->getSortName());
+				    	Track.SetArtistID(MusicBrainz::extractUuid(Artist->getId()));
+				    }
+			    	
+			    	Track.SetTrackID(MusicBrainz::extractUuid(Tracks[i]->getId()));
+			    	
+						Album.AddTrack(Track);
+					}
 	
-				std::string ArtistID;
-				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumArtistId),ArtistID);
-				Album.SetArtistID(ArtistID);
-				
-				std::string AlbumID;
-				o.GetIDFromURL(o.Data(MBE_AlbumGetAlbumId),AlbumID);
-				Album.SetAlbumID(AlbumID);
-
-		    int NumTracks=o.DataInt(MBE_AlbumGetNumTracks);
-
-				for (int i=1; i<=NumTracks; i++)
-		    {
-		    	CTrack Track;
-		    	
-		    	Track.SetNumber(i);
-		    	Track.SetName(o.Data(MBE_AlbumGetTrackName,i));
-		    	Track.SetArtist(o.Data(MBE_AlbumGetArtistName,i));
-		    	Track.SetArtistSort(o.Data(MBE_AlbumGetArtistSortName,i));
-		    	
-		    	std::string ArtistID;
-		    	o.GetIDFromURL(o.Data(MBE_AlbumGetArtistId,i),ArtistID);
-		    	Track.SetArtistID(ArtistID);
-		    	
-		    	std::string TrackID;
-		    	o.GetIDFromURL(o.Data(MBE_AlbumGetTrackId,i),TrackID);
-		    	Track.SetTrackID(TrackID);
-		    	
-					Album.AddTrack(Track);
+					MusicBrainz::ReleaseEventList ReleaseEvents = Release->getReleaseEvents();
+						
+					std::string AlbumDate=ReleaseEvents[0]->getDate();
+					std::string::size_type MinusPos=AlbumDate.find("-");
+					if (std::string::npos!=MinusPos)
+						AlbumDate=AlbumDate.substr(0,MinusPos);
+		
+					if (!AlbumDate.empty())
+						Album.SetDate(AlbumDate);
+					
+					m_Albums.push_back(Album);
+					
+					delete Release;
 				}
 
-				o.Select(MBS_SelectReleaseDate,1);				
-				
-				std::string AlbumDate=o.Data(MBE_ReleaseGetDate).c_str();
-				std::string::size_type MinusPos=AlbumDate.find("-");
-				if (std::string::npos!=MinusPos)
-					AlbumDate=AlbumDate.substr(0,MinusPos);
-
-				if (!AlbumDate.empty())
-					Album.SetDate(AlbumDate);
-				
-				m_Albums.push_back(Album);
-
-				o.Select(MBS_Rewind);
+				catch (MusicBrainz::ConnectionError Error)
+				{
+					CErrorLog::Log(std::string("Connection error from getReleaseById: ") + Error.what());
+				}
+				catch (MusicBrainz::ValueError Error)
+				{
+					CErrorLog::Log(std::string("Value error from getReleaseById: ") + Error.what());
+				}
+/*
+				catch (MusicBrainz::ParseError Error)
+				{
+					CErrorLog::Log(std::string("Parse error from getReleaseById: ") + Error.what());
+				}
+*/
+				catch (MusicBrainz::RequestError Error)
+				{
+					CErrorLog::Log(std::string("Request error from getReleaseById: ") + Error.what());
+				}
+				catch (MusicBrainz::ResponseError Error)
+				{
+					CErrorLog::Log(std::string("Response error from getReleaseById: ") + Error.what());
+				}
+	
+				catch (MusicBrainz::ResourceNotFoundError Error)
+				{
+					CErrorLog::Log(std::string("Resource not found error from getReleaseById: ") + Error.what());
+				}
 			}
 		}
 		else
@@ -190,20 +222,33 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			CErrorLog::Log(os.str());
 			
 			CErrorLog::Log("Please submit the DiskID using the following URL:");
-			CErrorLog::Log(Calc.SubmitURL());
+			CErrorLog::Log(DiscIDWrapper.SubmitURL());
 		}
-  }
-  else
-  {
-  	std::string Error;
-  		
-		o.GetQueryError(Error);
-		
-		std::stringstream os;
-		os << "Query failed: " << Error;
-		CErrorLog::Log(os.str());
+	}//catch exceptions from getReleases
+	
+	catch (MusicBrainz::ConnectionError Error)
+	{
+		CErrorLog::Log(std::string("Connection error from getReleases: ") + Error.what());
 	}
-
+	catch (MusicBrainz::ValueError Error)
+	{
+		CErrorLog::Log(std::string("Value error from getReleases: ") + Error.what());
+	}
+/*
+	catch (MusicBrainz::ParseError Error)
+	{
+		CErrorLog::Log(std::string("Parse error from getReleases: ") + Error.what());
+	}
+*/
+	catch (MusicBrainz::RequestError Error)
+	{
+		CErrorLog::Log(std::string("Request error from getReleases: ") + Error.what());
+	}
+	catch (MusicBrainz::ResponseError Error)
+	{
+		CErrorLog::Log(std::string("Response error from getReleases: ") + Error.what());
+	}
+	
 	return RetVal;
 }
 
