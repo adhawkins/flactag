@@ -97,9 +97,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					}
 					
 					Album.SetName(AlbumName);
-					MusicBrainz::Artist *Artist = Release->getArtist();
-					Album.SetArtist(Artist->getName());
-					Album.SetArtistSort(Artist->getSortName());
+
+					Album.SetAlbumID(MusicBrainz::extractUuid(Release->getId()));
+
+					Album.SetArtist(Release->getArtist()->getName());
+					Album.SetArtistSort(Release->getArtist()->getSortName());
+					Album.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
+					
 					Album.SetASIN(Release->getAsin());
 		
 					if (!Album.ASIN().empty())
@@ -141,10 +145,6 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					Album.SetType(AlbumType(Type));
 */			
 		
-					Album.SetArtistID(MusicBrainz::extractUuid(Artist->getId()));
-					
-					Album.SetAlbumID(MusicBrainz::extractUuid(Release->getId()));
-		
 					MusicBrainz::TrackList Tracks=Release->getTracks();
 		
 					for (MusicBrainz::TrackList::size_type i=0; i<Tracks.size(); i++)
@@ -161,9 +161,9 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				    }
 				    else
 				    {
-				    	Track.SetArtist(Artist->getName());
-				    	Track.SetArtistSort(Artist->getSortName());
-				    	Track.SetArtistID(MusicBrainz::extractUuid(Artist->getId()));
+				    	Track.SetArtist(Release->getArtist()->getName());
+				    	Track.SetArtistSort(Release->getArtist()->getSortName());
+				    	Track.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
 				    }
 			    	
 			    	Track.SetTrackID(MusicBrainz::extractUuid(Tracks[i]->getId()));
@@ -172,15 +172,18 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					}
 	
 					MusicBrainz::ReleaseEventList ReleaseEvents = Release->getReleaseEvents();
-						
-					std::string AlbumDate=ReleaseEvents[0]->getDate();
-					std::string::size_type MinusPos=AlbumDate.find("-");
-					if (std::string::npos!=MinusPos)
-						AlbumDate=AlbumDate.substr(0,MinusPos);
-		
-					if (!AlbumDate.empty())
-						Album.SetDate(AlbumDate);
 					
+					if (ReleaseEvents.size())
+					{	
+						std::string AlbumDate=ReleaseEvents[0]->getDate();
+						std::string::size_type MinusPos=AlbumDate.find("-");
+						if (std::string::npos!=MinusPos)
+							AlbumDate=AlbumDate.substr(0,MinusPos);
+			
+						if (!AlbumDate.empty())
+							Album.SetDate(AlbumDate);
+					}
+										
 					m_Albums.push_back(Album);
 					
 					delete Release;
