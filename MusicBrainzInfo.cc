@@ -134,17 +134,21 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 						if (Buffer)
 							free(Buffer);
 					}
-					
-/*
-					std::string Status;
-					o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumStatus),Status);
-					Album.SetStatus(AlbumStatus(Status));
-			
-					std::string Type;
-					o.GetFragmentFromURL(o.Data(MBE_AlbumGetAlbumType),Type);
-					Album.SetType(AlbumType(Type));
-*/			
-		
+
+					std::vector<std::string> Types=Release->getTypes();
+					std::vector<std::string>::const_iterator ThisType=Types.begin();
+					while (ThisType!=Types.end())
+					{
+						std::string ThisName=(*ThisType);
+						
+						if (ThisName==MusicBrainz::Release::TYPE_OFFICIAL || ThisName==MusicBrainz::Release::TYPE_PROMOTION || ThisName==MusicBrainz::Release::TYPE_BOOTLEG)
+							Album.SetStatus(AlbumStatus(MusicBrainz::extractFragment(ThisName)));
+						else
+							Album.SetType(AlbumType(MusicBrainz::extractFragment(ThisName)));
+							
+						++ThisType;
+					}
+										
 					MusicBrainz::TrackList Tracks=Release->getTracks();
 		
 					for (MusicBrainz::TrackList::size_type i=0; i<Tracks.size(); i++)
@@ -274,7 +278,7 @@ std::string CMusicBrainzInfo::AlbumType(const std::string Type) const
 	
 	while (AlbumTypeStrings[i][0]!='\0')
 	{
-		if (Type.length()>4 && strcasecmp(Type.substr(4).c_str(),AlbumTypeStrings[i])==0)
+		if (strcasecmp(Type.c_str(),AlbumTypeStrings[i])==0)
 		{
 			Ret=AlbumTypeStrings[i];
 			break;
@@ -299,7 +303,7 @@ std::string CMusicBrainzInfo::AlbumStatus(const std::string Status) const
 	
 	while (AlbumStatusStrings[i][0]!='\0')
 	{
-		if (Status.length()>6 && strcasecmp(Status.substr(6).c_str(),AlbumStatusStrings[i])==0)
+		if (strcasecmp(Status.c_str(),AlbumStatusStrings[i])==0)
 		{
 			Ret=AlbumStatusStrings[i];
 			break;
