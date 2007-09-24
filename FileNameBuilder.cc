@@ -116,7 +116,7 @@ std::string CFileNameBuilder::FixString(const std::string& String) const
 	if (out)
 		free(out);
 				
-	std::string BadChars="/:\"'`;?&,";
+	std::string BadChars="/:\"'`;?&,.!";
 		
 	for (std::string::size_type count=0;count<Fixed.length();count++)
 	{
