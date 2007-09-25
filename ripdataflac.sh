@@ -14,7 +14,7 @@ then
 		echo "Edit the CUE file to remove the data track"
 		sleep 10
 		$EDITOR $FILENAME.cue
-		if nice flac --replay-gain --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
+		if nice flac -8 --replay-gain --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
 		then
 			rm -f $FILENAME.bin
 			rm -f ${FILENAME}-fixed.toc
