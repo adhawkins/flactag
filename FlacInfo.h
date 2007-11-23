@@ -33,6 +33,8 @@
 
 #include "TagName.h"
 #include "Cuesheet.h"
+#include "CoverArt.h"
+#include "WriteInfo.h"
 
 class CFlacInfo
 {
@@ -43,21 +45,25 @@ public:
 	void SetFileName(const std::string& FileName);
 	bool Read();
 	tTagMap Tags() const;
+	CCoverArt CoverArt() const;
 	CCuesheet Cuesheet() const;
 	bool CuesheetFound() const;
 
-	bool WriteTags(const tTagMap& Tags);
+	bool WriteInfo(const CWriteInfo& WriteInfo);
 	void SetTag(const CTagName& Name, const std::string& Value);
 	
 private:
 	int CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) const;
+	void SetPictureBlock(const CCoverArt& CoverArt);
 
 	std::string m_FileName;
 	tTagMap m_Tags;
 	CCuesheet m_Cuesheet;
 	FLAC::Metadata::Chain m_Chain;
 	FLAC::Metadata::VorbisComment *m_TagBlock;
+	FLAC::Metadata::Picture *m_PictureBlock;
 	bool m_CuesheetFound;
+	CCoverArt m_CoverArt;
 };
 
 #endif

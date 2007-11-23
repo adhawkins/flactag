@@ -86,6 +86,11 @@ bool CTagName::operator ==(const CTagName& Other) const
 	return RetVal;
 }
 
+bool CTagName::operator !=(const CTagName& Other) const
+{
+	return !(*this==Other);
+}
+
 std::string CTagName::Name() const
 {
 	return m_Name;

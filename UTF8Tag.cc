@@ -28,6 +28,12 @@
 
 #include <locale.h>
 #include <langinfo.h>
+#include <unac.h>
+#include <errno.h>
+
+#include <sstream>
+
+#include "ErrorLog.h"
 
 CUTF8Tag::CUTF8Tag(const std::string& UTF8Value)
 :	m_UTF8Value(UTF8Value)
@@ -39,6 +45,17 @@ void CUTF8Tag::Convert()
 {
 	if (!m_UTF8Value.empty())
 	{
+/*
+		if (m_UTF8Value.length()>=4 && m_UTF8Value.substr(0,4)=="Live")
+		{
+			printf("%s\n",m_UTF8Value.c_str());
+			
+			for (std::string::size_type count=0;count<m_UTF8Value.length();count++)
+				printf("%02x (%c)\n",(unsigned char)m_UTF8Value[count],m_UTF8Value[count]);
+			printf("\n");
+		}
+*/
+			
 		setlocale(LC_ALL,  "" );
 		char *Codeset=nl_langinfo(CODESET);
 			
@@ -63,8 +80,20 @@ void CUTF8Tag::Convert()
 	
 				m_DisplayValue=Out;
 			}		    
+			else
+			{
+				std::stringstream os;
+				os << "iconv: "  << strerror(errno);
+				CErrorLog::Log(os.str());
+			}
 			
 			iconv_close(Convert);
+		}
+		else
+		{
+			std::stringstream os;
+			os << "iconv_open: "  << strerror(errno);
+			CErrorLog::Log(os.str());
 		}
 	
 		if (In)
@@ -72,6 +101,21 @@ void CUTF8Tag::Convert()
 			
 		if (Out)
 			free(Out);
+			
+		if (m_DisplayValue.empty())
+		{
+			char *out=0;
+			size_t out_length=0;
+			m_DisplayValue=m_UTF8Value;
+				
+			if (0==unac_string("UTF-8",m_DisplayValue.c_str(),m_DisplayValue.length(),&out,&out_length))
+				m_DisplayValue=out;
+			else
+				perror("unac_string");
+		
+			if (out)
+				free(out);
+		}
 	}
 }
 

@@ -35,6 +35,7 @@
 #include "FlacInfo.h"
 #include "ConfigFile.h"
 #include "CommandLine.h"
+#include "WriteInfo.h"
 
 class CFlacTag
 {
@@ -63,9 +64,8 @@ private:
 	std::string m_FlacFile;
 	std::vector<CAlbum> m_Albums;
 	CFlacInfo m_FlacInfo;			
-	tTagMap m_FlacTags;
 	CCuesheet m_FlacCuesheet;
-	tTagMap m_WriteTags;
+	CWriteInfo m_WriteInfo;
 	tWindowType m_SelectedWindow;
 	CConfigFile m_ConfigFile;
 	std::string m_RenameFile;

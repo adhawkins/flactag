@@ -7,7 +7,8 @@ CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
-						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o
+						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
+						WriteInfo.o
 						
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
@@ -31,11 +32,12 @@ flactag.html: flactag.txt Makefile
 clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man
 
-flactag-$(VERSION).tar.gz: all
-	svn update && cd .. && tar zcf flactag/flactag-$(VERSION).tar.gz \
-							flactag/*.cc flactag/*.h flactag/Makefile flactag/flactag.txt \
-							flactag/flactag.html flactag/COPYING flactag/ripflac.sh \
-							flactag/ripdataflac.sh flactag/checkflac.sh flactag/tocfix.sed
+dist: all
+	svn update && \
+		mkdir -p flactag-$(VERSION) && \
+		cp *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac.sh ripdataflac.sh checkflac.sh tocfix.sed flactag-$(VERSION) && \
+		tar zcf flactag-$(VERSION).tar.gz flactag-$(VERSION) && \
+		rm -rf flactag-$(VERSION)
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	mkdir -p /auto/gentlyweb/flactag-1.1
@@ -49,7 +51,7 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lhttp_fetcher -lunac $^
+	g++ -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lhttp_fetcher -lunac -ljpeg $^
 	
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^

@@ -133,18 +133,20 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 						
 						if (CommandLine.Check() || CommandLine.Write())
 						{
-							if (m_WriteTags!=m_FlacTags)
+							if (m_WriteInfo.Tags()!=m_FlacInfo.Tags() || m_WriteInfo.CoverArt()!=m_FlacInfo.CoverArt())
 							{
 								printf("%s: Tags differ\n",m_FlacFile.c_str());
 								
-								tTagMapConstIterator ThisTag=m_WriteTags.begin();
-								while (m_WriteTags.end()!=ThisTag)
+								tTagMap WriteTags=m_WriteInfo.Tags();
+								tTagMap FlacTags=m_FlacInfo.Tags();
+								tTagMapConstIterator ThisTag=WriteTags.begin();
+								while (WriteTags.end()!=ThisTag)
 								{
 									CTagName Name=(*ThisTag).first;
 									CUTF8Tag WriteValue=(*ThisTag).second;
 										
-									tTagMapConstIterator FLACTag=m_FlacTags.find(Name);
-									if (FLACTag!=m_FlacTags.end())
+									tTagMapConstIterator FLACTag=FlacTags.find(Name);
+									if (FLACTag!=FlacTags.end())
 									{
 										CUTF8Tag FLACValue=(*FLACTag).second;
 											
@@ -164,17 +166,24 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 									++ThisTag;
 								}
 							
-								ThisTag=m_FlacTags.begin();
-								while (m_FlacTags.end()!=ThisTag)
+								ThisTag=FlacTags.begin();
+								while (FlacTags.end()!=ThisTag)
 								{
 									CTagName Name=(*ThisTag).first;
 										
-									tTagMapConstIterator OtherTag=m_WriteTags.find(Name);
-									if (OtherTag==m_WriteTags.end())
+									tTagMapConstIterator OtherTag=WriteTags.find(Name);
+									if (OtherTag==WriteTags.end())
 										printf("%s: Tag %s not present in tags to be written\n",m_FlacFile.c_str(),Name.String().c_str());
 									
 									++ThisTag;
 								}
+
+								if (m_WriteInfo.CoverArt() && m_FlacInfo.CoverArt() && m_WriteInfo.CoverArt()!=m_FlacInfo.CoverArt())
+									printf("%s: Embedded cover art has changed\n",m_FlacFile.c_str());
+								else if (m_WriteInfo.CoverArt() && !m_FlacInfo.CoverArt())
+									printf("%s: New embedded cover art\n",m_FlacFile.c_str());
+								else if (!m_WriteInfo.CoverArt() && m_FlacInfo.CoverArt())
+									printf("%s: Embedded cover art removed\n",m_FlacFile.c_str());
 							}
 							else
 								printf("%s: Tags match\n",m_FlacFile.c_str());
@@ -183,7 +192,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							{
 								bool WriteTags=false;
 								
-								if (m_WriteTags!=m_FlacTags)
+								if (m_WriteInfo.Tags()!=m_FlacInfo.Tags() || m_WriteInfo.CoverArt()!=m_FlacInfo.CoverArt())
 									WriteTags=true;
 								else if (CommandLine.ForceWrite())
 								{
@@ -193,7 +202,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 
 								if (WriteTags)
 								{
-									if (m_FlacInfo.WriteTags(m_WriteTags))
+									if (m_FlacInfo.WriteInfo(m_WriteInfo))
 									{
 										LoadData();
 										printf("%s: Tags written\n",m_FlacFile.c_str());
@@ -258,7 +267,7 @@ void CFlacTag::Interactive()
 	AlbumWindow.SetSelected(true);
 	TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 	
-	TagsWindow.SetTags(m_WriteTags);
+	TagsWindow.SetTags(m_WriteInfo.Tags());
 	
 	SLsignal (SIGWINCH, sigwinch_handler);
 	
@@ -283,7 +292,8 @@ void CFlacTag::Interactive()
 			TagsWindow.SetDimensions(0,5+WindowHeight,SLtt_Screen_Cols,SLtt_Screen_Rows-WindowHeight-6);
 		}
 			
-		TagsWindow.SetModified(m_FlacTags!=m_WriteTags);
+		bool Modified=m_FlacInfo.Tags()!=m_WriteInfo.Tags() || m_FlacInfo.CoverArt()!=m_WriteInfo.CoverArt();
+		TagsWindow.SetModified(Modified);
 		
 		AlbumWindow.Draw();
 		TrackWindow.Draw();
@@ -305,7 +315,7 @@ void CFlacTag::Interactive()
 			SLsmg_write_string("opy ");
 		}
 		
-		if (m_FlacTags!=m_WriteTags)
+		if (Modified)
 		{
 			SLsmg_reverse_video();
 			SLsmg_write_string("W");
@@ -318,6 +328,9 @@ void CFlacTag::Interactive()
 			
 		if (m_RenameFile!=RealPath)
 		{
+			CErrorLog::Log(m_RenameFile);
+			CErrorLog::Log(RealPath);
+			
 			SLsmg_reverse_video();
 			SLsmg_write_string("R");
 			SLsmg_normal_video();
@@ -432,7 +445,7 @@ void CFlacTag::Interactive()
 					if (m_Albums.size())
 					{
 						CopyTags(AlbumWindow.GetCurrentAlbum());
-						TagsWindow.SetTags(m_WriteTags);			
+						TagsWindow.SetTags(m_WriteInfo.Tags());			
 					}
 					else
 						SLtt_beep();
@@ -441,12 +454,12 @@ void CFlacTag::Interactive()
 				
 				case 'w':
 				case 'W':
-					if (m_FlacTags!=m_WriteTags)
+					if (Modified)
 					{
-						if (m_FlacInfo.WriteTags(m_WriteTags))
+						if (m_FlacInfo.WriteInfo(m_WriteInfo))
 							LoadData();
 						
-						TagsWindow.SetTags(m_WriteTags);
+						TagsWindow.SetTags(m_WriteInfo.Tags());
 					}
 					else
 						SLtt_beep();
@@ -493,41 +506,45 @@ bool CFlacTag::LoadData()
 
 	if (m_FlacInfo.CuesheetFound())
 	{		
-		m_FlacTags=m_FlacInfo.Tags();
 		m_FlacCuesheet=m_FlacInfo.Cuesheet();
 	
-		m_WriteTags=m_FlacTags;
+		m_WriteInfo=CWriteInfo(m_FlacInfo.Tags(),m_FlacInfo.CoverArt());
 		
-		CFileNameBuilder FileNameBuilder(m_FlacTags,
+		CFileNameBuilder FileNameBuilder(m_FlacInfo.Tags(),
 														m_ConfigFile.Value("BasePath"),
 														m_ConfigFile.Value("SingleDiskFileName"),
 														m_ConfigFile.Value("MultiDiskFileName"));
 														
 		m_RenameFile=FileNameBuilder.FileName();
 	
-		if (m_WriteTags.end()==m_WriteTags.find(CTagName("ALBUM")) &&
-				m_WriteTags.end()==m_WriteTags.find(CTagName("ARTIST")))
+		tTagMap WriteTags=m_WriteInfo.Tags();
+		
+		if (WriteTags.end()==WriteTags.find(CTagName("ALBUM")) &&
+				WriteTags.end()==WriteTags.find(CTagName("ARTIST")))
 		{
 			//Populate write tags with empty tags
 			
-			m_WriteTags[CTagName("ALBUM")]=CUTF8Tag("");
-			m_WriteTags[CTagName("ARTIST")]=CUTF8Tag("");
-			m_WriteTags[CTagName("ARTISTSORT")]=CUTF8Tag("");
-			m_WriteTags[CTagName("YEAR")]=CUTF8Tag("");
-			m_WriteTags[CTagName("DISCNUMBER")]=CUTF8Tag("");
+			WriteTags[CTagName("ALBUM")]=CUTF8Tag("");
+			WriteTags[CTagName("ARTIST")]=CUTF8Tag("");
+			WriteTags[CTagName("ARTISTSORT")]=CUTF8Tag("");
+			WriteTags[CTagName("YEAR")]=CUTF8Tag("");
+			WriteTags[CTagName("DISCNUMBER")]=CUTF8Tag("");
 			
 			for (int count=m_FlacCuesheet.FirstTrack();count<=m_FlacCuesheet.LastTrack();count++)
 			{
 				std::stringstream TagValue;
 				TagValue << count;
 				
-				m_WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
+				WriteTags[CTagName("TRACKNUMBER",count)]=TagValue.str();
 				
-				m_WriteTags[CTagName("TITLE",count)]=CUTF8Tag("");
-				m_WriteTags[CTagName("ARTIST",count)]=CUTF8Tag("");
-				m_WriteTags[CTagName("ARTISTSORT",count)]=CUTF8Tag("");
+				WriteTags[CTagName("TITLE",count)]=CUTF8Tag("");
+				WriteTags[CTagName("ARTIST",count)]=CUTF8Tag("");
+				WriteTags[CTagName("ARTISTSORT",count)]=CUTF8Tag("");
 			}
 		}
+		
+		m_WriteInfo.SetTags(WriteTags);
+		m_WriteInfo.SetCoverArt(CCoverArt());
 		
 		CMusicBrainzInfo Info(m_FlacCuesheet);
 		if (Info.LoadInfo(m_FlacFile))
@@ -790,6 +807,8 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	CAlbum ThisAlbum=m_Albums[AlbumNumber];
 	std::vector<CTrack> Tracks=ThisAlbum.Tracks();
 	
+	tTagMap WriteTags=m_WriteInfo.Tags();
+	
 	for (std::vector<CTrack>::size_type count=0;count<Tracks.size();count++)
 	{
 		CTrack Track=Tracks[count];
@@ -797,41 +816,49 @@ void CFlacTag::CopyTags(int AlbumNumber)
 		std::stringstream os;
 		os << (int)Track.Number();
 		
-		SetTag(m_WriteTags,CTagName("TRACKNUMBER",Track.Number()),os.str());
-		SetTag(m_WriteTags,CTagName("TITLE",Track.Number()),Track.Name());
-		SetTag(m_WriteTags,CTagName("ARTIST",Track.Number()),Track.Artist());
-		SetTag(m_WriteTags,CTagName("ARTISTSORT",Track.Number()),Track.ArtistSort());
-		SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ARTISTID",Track.Number()),Track.ArtistID());
-		SetTag(m_WriteTags,CTagName("MUSICBRAINZ_TRACKID",Track.Number()),Track.TrackID());
+		SetTag(WriteTags,CTagName("TRACKNUMBER",Track.Number()),os.str());
+		SetTag(WriteTags,CTagName("TITLE",Track.Number()),Track.Name());
+		SetTag(WriteTags,CTagName("ARTIST",Track.Number()),Track.Artist());
+		SetTag(WriteTags,CTagName("ARTISTSORT",Track.Number()),Track.ArtistSort());
+		SetTag(WriteTags,CTagName("MUSICBRAINZ_ARTISTID",Track.Number()),Track.ArtistID());
+		SetTag(WriteTags,CTagName("MUSICBRAINZ_TRACKID",Track.Number()),Track.TrackID());
 	}
 	
-	SetTag(m_WriteTags,CTagName("ALBUM"),ThisAlbum.Name());
-	SetTag(m_WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
-	SetTag(m_WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
-	//SetTag(m_WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
-	SetTag(m_WriteTags,CTagName("ALBUMARTIST"),CUTF8Tag(""));
-	SetTag(m_WriteTags,CTagName("COVERART"),CUTF8Tag(ThisAlbum.CoverArt()));
-	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMARTISTID"),ThisAlbum.ArtistID());
-	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMID"),ThisAlbum.AlbumID());
-	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMSTATUS"),ThisAlbum.Status());
-	SetTag(m_WriteTags,CTagName("MUSICBRAINZ_ALBUMTYPE"),ThisAlbum.Type());
+	SetTag(WriteTags,CTagName("ALBUM"),ThisAlbum.Name());
+	SetTag(WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
+	SetTag(WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
+	SetTag(WriteTags,CTagName("ALBUMARTIST"),CUTF8Tag(""));
+	//SetTag(WriteTags,CTagName("ALBUMARTIST"),ThisAlbum.Artist());
+	SetTag(WriteTags,CTagName("MUSICBRAINZ_ALBUMARTISTID"),ThisAlbum.ArtistID());
+	SetTag(WriteTags,CTagName("MUSICBRAINZ_ALBUMID"),ThisAlbum.AlbumID());
+	SetTag(WriteTags,CTagName("MUSICBRAINZ_ALBUMSTATUS"),ThisAlbum.Status());
+	SetTag(WriteTags,CTagName("MUSICBRAINZ_ALBUMTYPE"),ThisAlbum.Type());
 					
-	m_WriteTags.erase(CTagName("YEAR"));				
-	m_WriteTags.erase(CTagName("DATE"));				
+	WriteTags.erase(CTagName("YEAR"));				
+	WriteTags.erase(CTagName("DATE"));				
 	
-	SetTag(m_WriteTags,CTagName("DATE"),ThisAlbum.Date());
+	SetTag(WriteTags,CTagName("DATE"),ThisAlbum.Date());
 	
 	if (ThisAlbum.DiskNumber()!=-1)
 	{
 		std::stringstream os;
 		os << ThisAlbum.DiskNumber();
-		SetTag(m_WriteTags,CTagName("DISCNUMBER"),os.str());
+		SetTag(WriteTags,CTagName("DISCNUMBER"),os.str());
 	}
 	
-	SetTag(m_WriteTags,CTagName("ASIN"),ThisAlbum.ASIN());
+	SetTag(WriteTags,CTagName("ASIN"),ThisAlbum.ASIN());
 						
 	if (ThisAlbum.Artist()==CUTF8Tag("Various Artists"))
-		SetTag(m_WriteTags,CTagName("COMPILATION"),CUTF8Tag("1"));
+		SetTag(WriteTags,CTagName("COMPILATION"),CUTF8Tag("1"));
+
+#ifdef FLAC_API_VERSION_CURRENT
+	SetTag(WriteTags,CTagName("COVERART"),CUTF8Tag(""));
+	m_WriteInfo.SetCoverArt(ThisAlbum.CoverArt());
+#else
+	SetTag(WriteTags,CTagName("COVERART"),CUTF8Tag(ThisAlbum.CoverArt()));
+#endif
+
+	m_WriteInfo.SetTags(WriteTags);
 }
 
 void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& TagValue)

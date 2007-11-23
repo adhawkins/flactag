@@ -34,16 +34,13 @@
 
 CFlacInfo::CFlacInfo()
 :	m_TagBlock(0),
+	m_PictureBlock(0),
 	m_CuesheetFound(false)
 {
 }
 
 CFlacInfo::~CFlacInfo()
 {
-	if (m_TagBlock)
-		delete m_TagBlock;
-	
-	m_TagBlock=0;
 }
 
 bool CFlacInfo::CuesheetFound() const
@@ -53,21 +50,30 @@ bool CFlacInfo::CuesheetFound() const
 
 void CFlacInfo::SetFileName(const std::string& FileName)
 {
-	if (m_TagBlock)
-		delete m_TagBlock;
-	
-	m_TagBlock=0;
-
 	m_Tags.clear();
 	m_Cuesheet.Clear();
+	m_CoverArt.Clear();
 			
 	m_FileName=FileName;
+
+	m_TagBlock=0;
+	m_PictureBlock=0;
+
 	m_CuesheetFound=false;
 }
 
 bool CFlacInfo::Read()
 {
 	bool RetVal=false;
+
+	m_Tags.clear();
+	m_Cuesheet.Clear();
+	m_CoverArt.Clear();
+			
+	m_TagBlock=0;
+	m_PictureBlock=0;
+
+	m_CuesheetFound=false;
 
 	if (!m_FileName.empty())
 	{
@@ -142,6 +148,15 @@ bool CFlacInfo::Read()
 								
 							case FLAC__METADATA_TYPE_UNDEFINED:  
 								break;
+								
+#ifdef FLAC_API_VERSION_CURRENT
+							case FLAC__METADATA_TYPE_PICTURE:
+								m_PictureBlock=(FLAC::Metadata::Picture *)Iterator.get_block();
+								if (m_PictureBlock->is_valid())
+									m_CoverArt.SetArt(m_PictureBlock->get_data(),m_PictureBlock->get_data_length());
+								break;
+#endif
+
 						}
 					} while (Iterator.next());
 				}
@@ -155,6 +170,11 @@ bool CFlacInfo::Read()
 tTagMap CFlacInfo::Tags() const
 {
 	return m_Tags;
+}
+
+CCoverArt CFlacInfo::CoverArt() const
+{
+	return m_CoverArt;
 }
 
 CCuesheet CFlacInfo::Cuesheet() const
@@ -182,15 +202,16 @@ int CFlacInfo::CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) con
 	return Offset;
 }
 
-bool CFlacInfo::WriteTags(const tTagMap& Tags)
+bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 {
-	bool RetVal=false;
+	bool RetVal=true;
 	
 	if (m_TagBlock)
 	{
 		while (m_TagBlock->get_num_comments())
 			m_TagBlock->delete_comment(0);
 			
+		tTagMap Tags=WriteInfo.Tags();
 		tTagMapConstIterator ThisTag=Tags.begin();
 		
 		while (Tags.end()!=ThisTag)
@@ -223,12 +244,71 @@ bool CFlacInfo::WriteTags(const tTagMap& Tags)
 					CErrorLog::Log(os.str());
 				}
 			}
-			
+
 			++ThisTag;
 		}
+
+#ifdef FLAC_API_VERSION_CURRENT
+		if (WriteInfo.CoverArt())
+		{
+			if (m_PictureBlock)
+				SetPictureBlock(WriteInfo.CoverArt());
+			else
+			{
+				FLAC::Metadata::Iterator Iterator;
+
+				Iterator.init(m_Chain);
+				
+				if (Iterator.is_valid())
+				{
+					//Move to the end
+					while (Iterator.next())
+						;
+						
+					m_PictureBlock = new FLAC::Metadata::Picture;
+					SetPictureBlock(WriteInfo.CoverArt());
+
+					RetVal=Iterator.insert_block_after(m_PictureBlock);
+				}
+			}
+		}
+		else
+		{
+			if (m_PictureBlock)
+			{
+				FLAC::Metadata::Iterator Iterator;
+					
+				Iterator.init(m_Chain);
+				
+				if (Iterator.is_valid())
+				{
+					bool Found=false;
+					
+					do
+					{
+						switch (Iterator.get_block_type())
+						{
+							case FLAC__METADATA_TYPE_PICTURE:
+							{
+								Found=true;
+								RetVal=Iterator.delete_block(true);
+								break;							
+							}
+								
+							default:
+								break;
+						}
+					} while (!Found && Iterator.next());
+				}
+			}
+		}
 		
-		RetVal=m_Chain.write();
+#endif
+		if (RetVal)
+			RetVal=m_Chain.write();
 	}
+	else
+		RetVal=false;
 	
 	return RetVal;
 }
@@ -261,5 +341,19 @@ void CFlacInfo::SetTag(const CTagName& Name, const std::string& Value)
 		NewEntry.set_field_value(Value.c_str(),Value.length());
 		
 		m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry);
+	}
+}
+
+void CFlacInfo::SetPictureBlock(const CCoverArt& CoverArt)
+{
+	if (m_PictureBlock)
+	{
+		m_PictureBlock->set_type(FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER);
+		unsigned char *TmpData=new unsigned char[CoverArt.Length()];
+		memcpy(TmpData,CoverArt.Data(),CoverArt.Length());
+		m_PictureBlock->set_data(TmpData,CoverArt.Length());
+		m_PictureBlock->set_width(CoverArt.Width());
+		m_PictureBlock->set_height(CoverArt.Height());
+		m_PictureBlock->set_mime_type("image/jpeg");
 	}
 }

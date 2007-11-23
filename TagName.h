@@ -41,6 +41,7 @@ public:
 	bool operator <(const CTagName& Other) const;
 	bool operator >(const CTagName& Other) const;
 	bool operator ==(const CTagName& Other) const;
+	bool operator !=(const CTagName& Other) const;
 	
 	std::string Name() const;
 	int Number() const;	
