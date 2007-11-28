@@ -157,13 +157,6 @@ if they appear to match those already in the file
 - *--rename (-r)* - The filename will be compared with that specified by the 
 rename rules, and if it doesn't match, the file will be renamed.
 
-- *--force-multi (-m)* - If the MusicBrainz service returns more than 
-one release for the DiskID of the FLAC file, then the software will not make any 
-changes unless this option is specified. This applies to *--check*, 
-*--write* and *--rename*. When multiple releases are returned, the 
-first release found will be used to update the tags and rename the file as 
-appropriate.
-
 Example uses of these options could be as follows (note the use of the find 
 option \'-print0\' and the xargs option \'-0\' to handle filenames containing 
 spaces):

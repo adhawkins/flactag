@@ -115,21 +115,35 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 				if (CommandLine.Check() || CommandLine.Write() || CommandLine.Rename())
 				{
 					bool Abort=false;
+					int AlbumNum=0;
 					
 					if (m_Albums.size()>1)
 					{
-						if (CommandLine.ForceMulti())
-							printf("%s: Multiple albums found, continuing using first album\n",m_FlacFile.c_str());
-						else
+						bool MatchFound=false;
+						
+						printf("%s: Multiple albums found\n",m_FlacFile.c_str());
+						
+						for (std::vector<CAlbum>::size_type count=0;!MatchFound && count<m_Albums.size();count++)
 						{
-							printf("%s: Multiple albums found, aborting\n",m_FlacFile.c_str());
+							if (m_FlacInfo.Tags()[CTagName("MUSICBRAINZ_ALBUMID")]==m_Albums[count].AlbumID())
+							{
+								AlbumNum=count;
+								MatchFound=true;
+								
+								printf("%s: Album ID in album %d is a match\n",m_FlacFile.c_str(),count);
+							}
+						}
+						
+						if (!MatchFound)
+						{
+							printf("%s: No matching album ID found, aborting\n",m_FlacFile.c_str());
 							Abort=true;
 						}
 					}
 					
 					if (!Abort)
 					{
-						CopyTags(0);
+						CopyTags(AlbumNum);
 						
 						if (CommandLine.Check() || CommandLine.Write())
 						{

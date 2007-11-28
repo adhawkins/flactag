@@ -37,7 +37,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_Check(false),
 	m_Write(false),
 	m_Rename(false),
-	m_ForceMulti(false),
 	m_Version(false),
 	m_DiscID(false),
 	m_ForceWrite(false)
@@ -47,7 +46,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		{"force-write", no_argument, 0, 'f'},
 		{"discid", no_argument, 0, 'd'},
 		{"version", no_argument, 0, 'v'},
-		{"force-multi", no_argument, 0, 'm'},
 		{"rename", no_argument, 0, 'r'},
 		{"write", no_argument, 0, 'w'},
 		{"check", no_argument, 0, 'c'},
@@ -74,10 +72,6 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 				
 			case 'v':
 				m_Version=true;
-				break;
-				
-			case 'm':
-				m_ForceMulti=true;
 				break;
 				
 			case 'r':
@@ -115,7 +109,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	
 	if (m_FileNames.empty() && !m_Version)
 		m_Valid=false;
-	else if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceMulti || m_ForceWrite))
+	else if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceWrite))
 		m_Valid=false;
 	else if (m_ForceWrite && !m_Write)
 		m_Valid=false;
@@ -142,11 +136,6 @@ bool CCommandLine::Write() const
 bool CCommandLine::Rename() const
 {
 	return m_Rename;
-}
-
-bool CCommandLine::ForceMulti() const
-{
-	return m_ForceMulti;
 }
 
 bool CCommandLine::Version() const

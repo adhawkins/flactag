@@ -39,7 +39,6 @@ public:
 	bool Check() const;
 	bool Write() const;
 	bool Rename() const;
-	bool ForceMulti() const;
 	bool Version() const;
 	bool DiscID() const;
 	bool ForceWrite() const;
@@ -50,7 +49,6 @@ private:
 	bool m_Check;
 	bool m_Write;
 	bool m_Rename;
-	bool m_ForceMulti;
 	bool m_Version;
 	bool m_DiscID;
 	bool m_ForceWrite;
