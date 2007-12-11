@@ -169,7 +169,7 @@ Report on the tags of all FLAC files
 Tag and rename all flac files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-`find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --write --rename --force-multi`
+`find /var/spool/music -name "*.flac" -print0 | xargs -0 flactag --write --rename`
 
 File Renaming Details
 ---------------------
