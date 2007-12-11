@@ -161,7 +161,6 @@ std::vector<std::string> CCommandLine::FileNames() const
 void CCommandLine::Usage(const std::string& ProgName) const
 {
 	printf("Usage: %s [ --version | -v ] [ --discid | -d] [ --check | -c ]\n"
-					"\t\t[ --write | -w ] [ --rename | -r ]\n"
-					"\t\t[ --force-multi | -m ] [ --force-write | -f ]\n"
+					"\t\t[ --write | -w ] [ --rename | -r ] [ --force-write | -f ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }
