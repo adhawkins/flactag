@@ -211,6 +211,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				{
 					CErrorLog::Log(std::string("Request error from getReleaseById: ") + Error.what());
 				}
+				
 				catch (MusicBrainz::ResponseError Error)
 				{
 					CErrorLog::Log(std::string("Response error from getReleaseById: ") + Error.what());
@@ -220,6 +221,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				{
 					CErrorLog::Log(std::string("Resource not found error from getReleaseById: ") + Error.what());
 				}
+
+				catch (MusicBrainz::WebServiceError Error)
+				{
+					CErrorLog::Log(std::string("Web service error from getReleaseById: ") + Error.what());
+				}
+
+				delete Releases[count];			
 			}
 		}
 		else
@@ -237,6 +245,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	{
 		CErrorLog::Log(std::string("Connection error from getReleases: ") + Error.what());
 	}
+
 	catch (MusicBrainz::ValueError Error)
 	{
 		CErrorLog::Log(std::string("Value error from getReleases: ") + Error.what());
@@ -251,9 +260,15 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	{
 		CErrorLog::Log(std::string("Request error from getReleases: ") + Error.what());
 	}
+
 	catch (MusicBrainz::ResponseError Error)
 	{
 		CErrorLog::Log(std::string("Response error from getReleases: ") + Error.what());
+	}
+
+	catch (MusicBrainz::WebServiceError Error)
+	{
+		CErrorLog::Log(std::string("Web service error from getReleases: ") + Error.what());
 	}
 	
 	return RetVal;
