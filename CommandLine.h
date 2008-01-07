@@ -42,6 +42,7 @@ public:
 	bool Version() const;
 	bool DiscID() const;
 	bool ForceWrite() const;
+	bool SubmitURL() const;
 	std::vector<std::string> FileNames() const;
 	
 private:
@@ -52,6 +53,7 @@ private:
 	bool m_Version;
 	bool m_DiscID;
 	bool m_ForceWrite;
+	bool m_SubmitURL;
 	std::vector<std::string> m_FileNames;
 		
 	void Usage(const std::string& ProgName) const;

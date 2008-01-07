@@ -93,10 +93,30 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 				CDiscIDWrapper Calc;
 				Calc.FromCuesheet(m_FlacCuesheet);
 				std::string DiscID=Calc.ID();
-				printf("%s\n",DiscID.c_str());
+				printf("%s: %s\n",m_FlacFile.c_str(),DiscID.c_str());
 			}
 		}
 	}	
+	else if (CommandLine.SubmitURL())
+	{
+		std::vector<std::string> Files=m_CommandLine.FileNames();
+		for (std::vector<std::string>::size_type count=0;count<Files.size();count++)
+		{
+			m_FlacFile=Files[count];
+			
+			m_FlacInfo.SetFileName(m_FlacFile);
+			m_FlacInfo.Read();
+		
+			if (m_FlacInfo.CuesheetFound())
+			{		
+				m_FlacCuesheet=m_FlacInfo.Cuesheet();
+				CDiscIDWrapper Calc;
+				Calc.FromCuesheet(m_FlacCuesheet);
+				std::string SubmitURL=Calc.SubmitURL();
+				printf("%s: %s\n",m_FlacFile.c_str(),SubmitURL.c_str());
+			}
+		}
+	}
 	else
 	{
 		std::vector<std::string> Files=m_CommandLine.FileNames();
@@ -342,9 +362,6 @@ void CFlacTag::Interactive()
 			
 		if (m_RenameFile!=RealPath)
 		{
-			CErrorLog::Log(m_RenameFile);
-			CErrorLog::Log(RealPath);
-			
 			SLsmg_reverse_video();
 			SLsmg_write_string("R");
 			SLsmg_normal_video();
@@ -555,10 +572,10 @@ bool CFlacTag::LoadData()
 				WriteTags[CTagName("ARTIST",count)]=CUTF8Tag("");
 				WriteTags[CTagName("ARTISTSORT",count)]=CUTF8Tag("");
 			}
+
+			m_WriteInfo.SetTags(WriteTags);
+			m_WriteInfo.SetCoverArt(CCoverArt());
 		}
-		
-		m_WriteInfo.SetTags(WriteTags);
-		m_WriteInfo.SetCoverArt(CCoverArt());
 		
 		CMusicBrainzInfo Info(m_FlacCuesheet);
 		if (Info.LoadInfo(m_FlacFile))

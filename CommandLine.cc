@@ -39,7 +39,8 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_Rename(false),
 	m_Version(false),
 	m_DiscID(false),
-	m_ForceWrite(false)
+	m_ForceWrite(false),
+	m_SubmitURL(false)
 {
 	struct option LongOptions[] =
 	{
@@ -49,6 +50,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		{"rename", no_argument, 0, 'r'},
 		{"write", no_argument, 0, 'w'},
 		{"check", no_argument, 0, 'c'},
+		{"submit-url", no_argument, 0, 's'},
 		{0, 0, 0, 0}
 	};
              
@@ -59,9 +61,13 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"fdvmrwc",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"fdvrwcs",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
+			case 's':
+				m_SubmitURL=true;
+				break;
+				
 			case 'f':
 				m_ForceWrite=true;
 				break;
@@ -109,7 +115,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	
 	if (m_FileNames.empty() && !m_Version)
 		m_Valid=false;
-	else if (m_DiscID && (m_Check || m_Write || m_Rename || m_ForceWrite))
+	else if ((m_DiscID || m_SubmitURL) && (m_Check || m_Write || m_Rename || m_ForceWrite))
 		m_Valid=false;
 	else if (m_ForceWrite && !m_Write)
 		m_Valid=false;
@@ -153,6 +159,11 @@ bool CCommandLine::ForceWrite() const
 	return m_ForceWrite;
 }
 
+bool CCommandLine::SubmitURL() const
+{
+	return m_SubmitURL;
+}
+
 std::vector<std::string> CCommandLine::FileNames() const
 {
 	return m_FileNames;
@@ -160,7 +171,7 @@ std::vector<std::string> CCommandLine::FileNames() const
 
 void CCommandLine::Usage(const std::string& ProgName) const
 {
-	printf("Usage: %s [ --version | -v ] [ --discid | -d] [ --check | -c ]\n"
+	printf("Usage: %s [ --version | -v ] [ --submit-url | -s ] [ --discid | -d] [ --check | -c ]\n"
 					"\t\t[ --write | -w ] [ --rename | -r ] [ --force-write | -f ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }

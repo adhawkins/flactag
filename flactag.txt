@@ -143,6 +143,10 @@ The following command line options are understood:
 - *--discid (-d)* - Display the calculated disc ID for the specified FLAC
 file and exit.
 
+- *--submit-url (-s)* - Display the URL used to submit information for this
+file to the MusicBrainz service. Use this to submit data for your CD if the 
+data returned does not match.
+
 - *--check (-c)* - This option will compare the file's tags against those 
 returned from the MusicBrainz service. A message will be displayed indicating 
 where the tags match or not.
