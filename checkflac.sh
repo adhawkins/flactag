@@ -7,7 +7,7 @@ then
 	FILENAME="$1"
 	
 	CDID=`discid $CDROM`
-	FLACID=`flactag --discid "$FILENAME"`
+	FLACID=`flactag --discid $FILENAME | cut -d':' -f 2| cut -d' ' -f 2`
 
 	if [ "$FLACID" != "$CDID" ]
 	then

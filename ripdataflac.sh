@@ -21,7 +21,7 @@ then
 			rm -f $FILENAME.toc
 			rm -f $FILENAME.cue*
 	
-			FLACID=`flactag --discid $FILENAME.flac`
+			FLACID=`flactag --discid $FILENAME.flac | cut -d':' -f 2| cut -d' ' -f 2`
 	
 			if [ "$FLACID" != "$CDID" ]
 			then
