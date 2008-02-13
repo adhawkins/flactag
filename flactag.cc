@@ -855,7 +855,11 @@ void CFlacTag::CopyTags(int AlbumNumber)
 		SetTag(WriteTags,CTagName("MUSICBRAINZ_TRACKID",Track.Number()),Track.TrackID());
 	}
 	
-	SetTag(WriteTags,CTagName("ALBUM"),ThisAlbum.Name());
+	std::string AlbumName=ThisAlbum.Name().UTF8Value();
+	if (ThisAlbum.Type().DisplayValue()=="single")
+		AlbumName+=" (Single)";
+
+	SetTag(WriteTags,CTagName("ALBUM"),CUTF8Tag(AlbumName));
 	SetTag(WriteTags,CTagName("ARTIST"),ThisAlbum.Artist());
 	SetTag(WriteTags,CTagName("ARTISTSORT"),ThisAlbum.ArtistSort());
 	SetTag(WriteTags,CTagName("ALBUMARTIST"),CUTF8Tag(""));
