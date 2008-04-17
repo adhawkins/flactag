@@ -18,7 +18,7 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-     $Id: base64.c 453 2001-04-13 18:23:37Z robert $
+     $Id$
 
 ----------------------------------------------------------------------------*/
 /*
@@ -87,7 +87,7 @@ std::string rfc822_binary (void *src, unsigned long srcl)
 {
   std::string ret;
   unsigned char *s = (unsigned char *) src;
-  char *v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const char *v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   for (int i = 0; srcl; s += 3) {	/* process tuplets */
     ret += v[s[0] >> 2];	/* byte 1: high 6 bits (1) */
 				/* byte 2: low 2 bits (1), high 4 bits (2) */
