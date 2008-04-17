@@ -137,6 +137,12 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 					bool Abort=false;
 					int AlbumNum=0;
 					
+					if (m_Albums.size()==0)
+					{
+						printf("%s: No albums found\n",m_FlacFile.c_str());
+						Abort=true;
+					}
+
 					if (m_Albums.size()>1)
 					{
 						bool MatchFound=false;
