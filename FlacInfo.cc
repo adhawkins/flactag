@@ -153,7 +153,7 @@ bool CFlacInfo::Read()
 							case FLAC__METADATA_TYPE_PICTURE:
 								m_PictureBlock=(FLAC::Metadata::Picture *)Iterator.get_block();
 								if (m_PictureBlock->is_valid())
-									m_CoverArt.SetArt(m_PictureBlock->get_data(),m_PictureBlock->get_data_length());
+									m_CoverArt.SetArt(m_PictureBlock->get_data(),m_PictureBlock->get_data_length(),true);
 								break;
 #endif
 

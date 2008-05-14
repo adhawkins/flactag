@@ -47,7 +47,7 @@ public:
 	operator bool() const;
 	operator std::string() const;
 
-	void SetArt(const unsigned char *Data, size_t Length);
+	void SetArt(const unsigned char *Data, size_t Length, bool RetrieveDimensions);
 	void Clear();
 	unsigned char *Data() const;
 	size_t Length() const;

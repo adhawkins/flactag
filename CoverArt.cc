@@ -26,7 +26,49 @@
 
 #include "CoverArt.h"
 
+#include "ErrorLog.h"
+
+#include <setjmp.h>
+
 #include "base64.h"
+
+struct my_error_mgr {
+  struct jpeg_error_mgr pub;    /* "public" fields */
+
+  jmp_buf setjmp_buffer;        /* for return to caller */
+};
+
+typedef struct my_error_mgr * my_error_ptr;
+
+/*
+ * Here's the routine that will replace the standard error_exit method:
+ */
+
+METHODDEF(void)
+my_output_message (j_common_ptr cinfo)
+{
+	  char buffer[JMSG_LENGTH_MAX];
+	  
+	  /* Create the message */  
+	  
+	  (*cinfo->err->format_message) (cinfo, buffer); 
+
+	  CErrorLog::Log(buffer);
+}
+
+METHODDEF(void)
+my_error_exit (j_common_ptr cinfo)
+{
+  /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
+  my_error_ptr myerr = (my_error_ptr) cinfo->err;
+
+  /* Always display the message. */
+  /* We could postpone this until after returning, if we chose. */
+  (*cinfo->err->output_message) (cinfo);
+
+  /* Return control to the setjmp point */
+  longjmp(myerr->setjmp_buffer, 1);
+}
 
 CCoverArt::CCoverArt(const unsigned char *Data, size_t Length)
 :	m_Data(0),
@@ -34,7 +76,7 @@ CCoverArt::CCoverArt(const unsigned char *Data, size_t Length)
 	m_Width(0),
 	m_Height(0)
 {
-	SetArt(Data,Length);
+	SetArt(Data,Length,true);
 }
 
 CCoverArt::CCoverArt(const CCoverArt& Other)
@@ -65,7 +107,7 @@ CCoverArt& CCoverArt::operator =(const CCoverArt& Other)
 {
 	m_Width=Other.m_Width;
 	m_Height=Other.m_Height;
-	SetArt(Other.m_Data,Other.m_Length);
+	SetArt(Other.m_Data,Other.m_Length,false);
 	
 	return *this;
 }
@@ -102,7 +144,7 @@ void CCoverArt::Clear()
 	Free();
 }
 
-void CCoverArt::SetArt(const unsigned char *Data, size_t Length)
+void CCoverArt::SetArt(const unsigned char *Data, size_t Length, bool RetrieveDimensions)
 {	
 	Free();
 	
@@ -112,7 +154,8 @@ void CCoverArt::SetArt(const unsigned char *Data, size_t Length)
 		m_Length=Length;
 		memcpy(m_Data,Data,Length);
 		
-		GetDimensions();
+		if (RetrieveDimensions)
+			GetDimensions();
 	}
 }
 
@@ -201,9 +244,21 @@ void CCoverArt::GetDimensions()
 	if (!m_Width && !m_Height)
 	{
 		struct jpeg_decompress_struct cinfo;
-		struct jpeg_error_mgr jerr;
+		struct my_error_mgr jerr;
 	
-		cinfo.err = jpeg_std_error(&jerr);
+		cinfo.err = jpeg_std_error(&jerr.pub);
+		jerr.pub.error_exit = my_error_exit;
+		jerr.pub.output_message = my_output_message;
+		
+		if (setjmp(jerr.setjmp_buffer)) 
+		{
+			/* If we get here, the JPEG code has signaled an error.
+			* We need to clean up the JPEG object, close the input file, and return.
+			*/
+			jpeg_destroy_decompress(&cinfo);
+			return;
+		}
+
 		jpeg_create_decompress(&cinfo);
 		JPEGMemorySource(&cinfo,m_Data,m_Length);
 		jpeg_read_header(&cinfo, TRUE);
@@ -224,3 +279,4 @@ int CCoverArt::Height() const
 {
 	return m_Height;
 }
+
