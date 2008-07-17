@@ -223,7 +223,7 @@ Problems / Suggestions
 ----------------------
 
 If you have any problems with the software, or suggestions for improvements or 
-new features, then please use the http://bugtracker.gently.org.uk/[Bug Tracking System] to 
+new features, then please mailto:andy@gently.org.uk[contact me] to 
 report them. 
 
 There are two mailing lists for 
