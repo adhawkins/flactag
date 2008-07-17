@@ -1,6 +1,6 @@
 INSTALLPATH=/usr/local
 
-VERSION=1.1-Alpha1
+VERSION=1.1-RC1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
@@ -32,6 +32,8 @@ flactag.html: flactag.txt Makefile
 clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man
 
+flactag-$(VERSION).tar.gz: dist
+
 dist: all
 	svn update && \
 		mkdir -p flactag-$(VERSION) && \
@@ -40,10 +42,10 @@ dist: all
 		rm -rf flactag-$(VERSION)
 
 install-webpages: flactag-$(VERSION).tar.gz flactag.html
-	mkdir -p /auto/gentlyweb/flactag-1.1
-	cp flactag.html /auto/gentlyweb/flactag-1.1/index.html
-	cp flactag.html /auto/gentlyweb/flactag-1.1/
-	cp flactag-$(VERSION).tar.gz  /auto/gentlyweb/flactag-1.1
+	mkdir -p /auto/gently-sw/flactag-1.1
+	cp flactag.html /auto/gently-sw/flactag-1.1/index.html
+	cp flactag.html flactag.jpg /auto/gently-sw/flactag-1.1/
+	cp flactag-$(VERSION).tar.gz  /auto/gently-sw/flactag-1.1
 	
 %.d: %.cc
 	@echo DEPEND $< $@

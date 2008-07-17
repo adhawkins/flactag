@@ -1,5 +1,5 @@
-FLACTAG v1.1-Alpha1
-===================
+FLACTAG v1.1-RC1
+================
 Andy Hawkins <andy@gently.org.uk>
 
 A utility for tagging single album FLAC files with embedded CUE sheets 
@@ -8,16 +8,18 @@ using data from the http://www.musicbrainz.org[MusicBrainz] service.
 Downloading
 -----------
 
-The latest version of flactag can always be found http://www.gently.org.uk/flactag[here].
+The latest version of flactag can always be found http://software.gently.org.uk/flactag[here].
 
-The current version is link:flactag-1.0-RC2.tar.gz[v1.0-RC2].
+The current version is link:flactag-1.1-RC1.tar.gz[v1.1-RC1].
+
+Flactag v1.0 is available http://software.gently.org.uk/flactag-1.0[here].
 
 Requirements
 ------------
 
 - http://musicbrainz.org/doc/libmusicbrainzDownload[libmusicbrainz] (Version 3 required)
-- http://flac.sourceforge.net/download.html[libflac++] (I used version 1.1.1)
-- http://www.s-lang.org/download.html[S-Lang] (I used version 1.4.9)
+- http://flac.sourceforge.net/download.html[libflac++] (I used version 1.2.1)
+- http://www.s-lang.org/download.html[S-Lang] (I used version 2.0.6 from Debian)
 - http://http-fetcher.sourceforge.net/downloads.html[http-fetcher] (I used version 1.0.1)
 - http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
 - http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 7.1.2 from Debian)
@@ -233,6 +235,28 @@ gmane.comp.audio.flactag.discuss respectively.
 
 Version History 
 ---------------
+
+v1.1RC1 - 17th July 2008
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use new version of MusicBrainz library
+
+- Correctly handle exceptions generated
+
+- Limit rate of requests to MusicBrainz server
+
+- Append '(Single)' to end of names of singles
+
+- Removed '--force-multi' option from command line. Now compare stored MUSICBRAINZ_ALBUMID 
+if multiple releases are returned.
+
+- Store embedded cover art
+
+
+v1.0 - 27th September 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Handle PICTURE block if library supports it
 
 v1.0RC2 - 10th January 2007
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
