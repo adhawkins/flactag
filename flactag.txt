@@ -18,6 +18,7 @@ Requirements
 ------------
 
 - http://musicbrainz.org/doc/libmusicbrainzDownload[libmusicbrainz] (Version 3 required)
+- http://musicbrainz.org/doc/libdiscid[libdiscid]
 - http://flac.sourceforge.net/download.html[libflac++] (I used version 1.2.1)
 - http://www.s-lang.org/download.html[S-Lang] (I used version 2.0.6 from Debian)
 - http://http-fetcher.sourceforge.net/downloads.html[http-fetcher] (I used version 1.0.1)
