@@ -92,7 +92,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	    	{
 					MusicBrainz::Release *Release =
 							Query.getReleaseById(Releases[count]->getRelease()->getId(),
-								&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents());
+								&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents().urlRelations());
 
 					CAlbum Album;
 
