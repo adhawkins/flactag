@@ -281,20 +281,20 @@ void CFlacTag::Interactive()
 	
 	if (-1==SLkp_init())
 	{
-		SLang_verror (0, "SLkp_init failed.");
+		SLang_verror (0, const_cast<char *>("SLkp_init failed."));
 		return;
 	}
 		
 	if (-1==SLang_init_tty(7,0,0))
 	{
-		SLang_verror (0, "SLang_init_tty.");
+		SLang_verror (0, const_cast<char *>("SLang_init_tty."));
 		return;
 	}
 	
 	SLang_set_abort_signal(NULL);
 	if (-1==SLsmg_init_smg())
 	{
-		SLang_verror(0, "Error initialising SLmsg\n");
+		SLang_verror(0, const_cast<char *>("Error initialising SLmsg\n"));
 		return;
 	}
 	
@@ -343,24 +343,24 @@ void CFlacTag::Interactive()
 		SLsmg_erase_eol();
 
 		SLsmg_reverse_video();
-		SLsmg_write_string("Q");
+		SLsmg_write_string(const_cast<char *>("Q"));
 		SLsmg_normal_video();
-		SLsmg_write_string("uit ");
+		SLsmg_write_string(const_cast<char *>("uit "));
 		
 		if (m_Albums.size())
 		{
 			SLsmg_reverse_video();
-			SLsmg_write_string("C");
+			SLsmg_write_string(const_cast<char *>("C"));
 			SLsmg_normal_video();
-			SLsmg_write_string("opy ");
+			SLsmg_write_string(const_cast<char *>("opy "));
 		}
 		
 		if (Modified)
 		{
 			SLsmg_reverse_video();
-			SLsmg_write_string("W");
+			SLsmg_write_string(const_cast<char *>("W"));
 			SLsmg_normal_video();
-			SLsmg_write_string("rite ");
+			SLsmg_write_string(const_cast<char *>("rite "));
 		}
 
 		char RealPath[256];
@@ -369,13 +369,13 @@ void CFlacTag::Interactive()
 		if (m_RenameFile!=RealPath)
 		{
 			SLsmg_reverse_video();
-			SLsmg_write_string("R");
+			SLsmg_write_string(const_cast<char *>("R"));
 			SLsmg_normal_video();
-			SLsmg_write_string("ename ");
+			SLsmg_write_string(const_cast<char *>("ename "));
 		}
 
 		SLsmg_gotorc(SLtt_Screen_Rows-1,SLtt_Screen_Cols-2);
-		SLsmg_write_string(" ");
+		SLsmg_write_string(const_cast<char *>(" "));
 
 		SLsmg_refresh();
 	
