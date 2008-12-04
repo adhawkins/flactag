@@ -39,6 +39,8 @@ dist: all
 	svn update && \
 		mkdir -p flactag-$(VERSION) && \
 		cp *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac.sh ripdataflac.sh checkflac.sh tocfix.sed flactag-$(VERSION) && \
+		mkdir flactag-$(VERSION)/debian && \
+		cp debian/* flactag-$(VERSION)/debian && \
 		tar zcf flactag-$(VERSION).tar.gz flactag-$(VERSION) && \
 		rm -rf flactag-$(VERSION)
 
