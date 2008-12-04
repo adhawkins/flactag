@@ -63,16 +63,8 @@ clean:
 
 install: install-arch install-indep
 install-indep:
-	dh_testdir
-	dh_testroot
-	dh_clean -k -s 
-	dh_installdirs -s
-
-	# Add here commands to install the arch part of the package into 
-	# debian/tmp.
-	#$(MAKE) DESTDIR=$(CURDIR)/debian/flactag install
-
 	dh_install -s
+
 install-arch:
 	dh_testdir
 	dh_testroot
