@@ -1,0 +1,13 @@
+Source: flactag
+Section: sound
+Priority: optional
+Maintainer: Andy Hawkins <andy@gently.org.uk>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: flactag
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A tagger for whole album FLACs using data from MusicBrainz
+ A tagger for whole album FLAC files with embedded CUE sheets. Data for the tags
+ is retrieved from the MusicBrainz service

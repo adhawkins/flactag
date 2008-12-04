@@ -1,4 +1,5 @@
-INSTALLPATH=/usr/local
+INSTALLROOT=/usr
+INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
 VERSION=1.1-RC1
 
@@ -23,7 +24,7 @@ install: all
 	install -m 755 tocfix.sed $(INSTALLPATH)/bin
 	install -m 755 ripdataflac.sh $(INSTALLPATH)/bin
 	install -m 755 checkflac.sh $(INSTALLPATH)/bin
-	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLPATH)/bin\2#" ripflac.sh > $(INSTALLPATH)/bin/ripflac.sh
+	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/bin\2#" ripflac.sh > $(INSTALLPATH)/bin/ripflac.sh
 	chmod 755 ${INSTALLPATH}/bin/ripflac.sh
 	
 flactag.html: flactag.txt Makefile
