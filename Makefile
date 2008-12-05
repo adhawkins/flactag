@@ -1,7 +1,7 @@
 INSTALLROOT=/usr
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=1.1-RC1
+VERSION=1.1~rc1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
@@ -19,6 +19,8 @@ all: flactag discid flactag.html
 
 debian: .phony
 	debuild clean
+	make dist
+	cp flactag-$(VERSION).tar.gz ../flactag_$(VERSION).orig.tar.gz
 	debuild
 	
 repository: debian
@@ -43,7 +45,7 @@ flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
 	
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.*
 
 flactag-$(VERSION).tar.gz: dist
 
@@ -51,7 +53,7 @@ dist: all
 	svn update && \
 		mkdir -p flactag-$(VERSION) && \
 		cp flactag.jpg *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac ripdataflac checkflac tocfix.sed flactag-$(VERSION) && \
-		mkdir flactag-$(VERSION)/debian && \
+		mkdir -p flactag-$(VERSION)/debian && \
 		cp debian/* flactag-$(VERSION)/debian && \
 		tar zcf flactag-$(VERSION).tar.gz flactag-$(VERSION) && \
 		rm -rf flactag-$(VERSION)
