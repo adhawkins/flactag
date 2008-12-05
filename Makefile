@@ -34,10 +34,10 @@ install: all
 	install -m 755 flactag $(INSTALLPATH)/bin
 	install -m 755 discid $(INSTALLPATH)/bin
 	install -m 755 tocfix.sed $(INSTALLPATH)/bin
-	install -m 755 ripdataflac.sh $(INSTALLPATH)/bin
-	install -m 755 checkflac.sh $(INSTALLPATH)/bin
-	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/bin\2#" ripflac.sh > $(INSTALLPATH)/bin/ripflac.sh
-	chmod 755 ${INSTALLPATH}/bin/ripflac.sh
+	install -m 755 ripdataflac $(INSTALLPATH)/bin
+	install -m 755 checkflac $(INSTALLPATH)/bin
+	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/bin\2#" ripflac > $(INSTALLPATH)/bin/ripflac
+	chmod 755 ${INSTALLPATH}/bin/ripflac
 	
 flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
@@ -50,7 +50,7 @@ flactag-$(VERSION).tar.gz: dist
 dist: all
 	svn update && \
 		mkdir -p flactag-$(VERSION) && \
-		cp flactag.jpg *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac.sh ripdataflac.sh checkflac.sh tocfix.sed flactag-$(VERSION) && \
+		cp flactag.jpg *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac ripdataflac checkflac tocfix.sed flactag-$(VERSION) && \
 		mkdir flactag-$(VERSION)/debian && \
 		cp debian/* flactag-$(VERSION)/debian && \
 		tar zcf flactag-$(VERSION).tar.gz flactag-$(VERSION) && \
