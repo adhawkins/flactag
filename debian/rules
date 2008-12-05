@@ -1,20 +1,14 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 # Sample debian/rules that uses debhelper.
-#
 # This file was originally written by Joey Hess and Craig Small.
 # As a special exception, when this file is copied by dh-make into a
 # dh-make output file, you may use that output file without restriction.
 # This special exception was added by Craig Small in version 0.37 of dh-make.
-#
-# Modified to make a template file for a multi-binary package with separated
-# build-arch and build-indep targets  by Bill Allombert 2001
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
 
 
 
@@ -34,60 +28,52 @@ configure-stamp:
 	touch configure-stamp
 
 
-#Architecture 
-build: build-arch build-indep
+build: build-stamp
 
-build-indep: build-indep-stamp
-build-indep-stamp: configure-stamp 
+build-stamp: configure-stamp 
+	dh_testdir
 
-	# Add here commands to compile the indep part of the package.
-	#$(MAKE)
-	touch $@
-
-build-arch: build-arch-stamp
-build-arch-stamp: configure-stamp 
-
-	# Add here commands to compile the arch part of the package.
+	# Add here commands to compile the package.
 	$(MAKE)
+	#docbook-to-man debian/flactag.sgml > flactag.1
+
 	touch $@
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
+	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
 	-$(MAKE) clean
 
 	dh_clean 
 
-install: install-arch install-indep
-install-indep:
-	dh_install -s
-
-install-arch:
+install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k -s 
-	dh_installdirs -s
+	dh_clean -k 
+	dh_installdirs
 
-	# Add here commands to install the arch part of the package into 
-	# debian/tmp.
+	# Add here commands to install the package into debian/flactag.
 	$(MAKE) DESTDIR=$(CURDIR)/debian/flactag install
 
-	dh_install -s
-# Must not depend on anything. This is to be called by
-# binary-arch/binary-indep
-# in another 'make' thread.
-binary-common:
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
+#	dh_install
 #	dh_installmenu
 #	dh_installdebconf	
-#	dh_installlogrotate	
+#	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
@@ -98,20 +84,15 @@ binary-common:
 	dh_installman
 	dh_link
 	dh_strip
-	dh_compress 
+	dh_compress
 	dh_fixperms
 #	dh_perl
-	dh_makeshlibs
+#	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
-# Build architecture dependant packages using the common target.
-binary-indep: build-indep install-indep
-	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
-binary-arch: build-arch install-arch
-	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 
-binary: binary-arch binary-indep
-.PHONY: build clean binary-arch binary install install-arch configure
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
