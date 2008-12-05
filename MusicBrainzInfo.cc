@@ -63,36 +63,26 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 
-  MusicBrainz::Query Query;
+	MusicBrainz::Query Query;
 
-  try
-  {
-		static time_t LastRequest=0;
+	try
+	{
+		WaitRequest();
 
-		time_t TimeNow;
+		MusicBrainz::ReleaseResultList Releases=Query.getReleases(&MusicBrainz::ReleaseFilter().discId(DiskID));
 
-		do
+		if (Releases.size())
 		{
-			TimeNow=time(NULL);
-			if (abs(TimeNow-LastRequest)<5)
-				usleep(100000);
-		}	while (abs(TimeNow-LastRequest)<5);
+			RetVal=true;
 
-		LastRequest=TimeNow;
-
-	  MusicBrainz::ReleaseResultList Releases=Query.getReleases(&MusicBrainz::ReleaseFilter().discId(DiskID));
-
-	  if (Releases.size())
-	  {
-	  	RetVal=true;
-
-	    for (MusicBrainz::ReleaseResultList::size_type count=0; count<Releases.size(); count++)
-	    {
-	    	try
-	    	{
+			for (MusicBrainz::ReleaseResultList::size_type count=0; count<Releases.size(); count++)
+			{
+				try
+				{
+					WaitRequest();
 					MusicBrainz::Release *Release =
-							Query.getReleaseById(Releases[count]->getRelease()->getId(),
-								&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents().urlRelations());
+					Query.getReleaseById(Releases[count]->getRelease()->getId(),
+					&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents().urlRelations());
 
 					CAlbum Album;
 
@@ -165,25 +155,25 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					MusicBrainz::TrackList Tracks=Release->getTracks();
 
 					for (MusicBrainz::TrackList::size_type i=0; i<Tracks.size(); i++)
-			    {
-			    	CTrack Track;
+					{
+						CTrack Track;
 
-			    	Track.SetNumber(i+1);
-			    	Track.SetName(Tracks[i]->getTitle());
-			    	if (Tracks[i]->getArtist())
-			    	{
-				    	Track.SetArtist(Tracks[i]->getArtist()->getName());
-				    	Track.SetArtistSort(Tracks[i]->getArtist()->getSortName());
-				    	Track.SetArtistID(MusicBrainz::extractUuid(Tracks[i]->getArtist()->getId()));
-				    }
-				    else
-				    {
-				    	Track.SetArtist(Release->getArtist()->getName());
-				    	Track.SetArtistSort(Release->getArtist()->getSortName());
-				    	Track.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
-				    }
+						Track.SetNumber(i+1);
+						Track.SetName(Tracks[i]->getTitle());
+						if (Tracks[i]->getArtist())
+						{
+							Track.SetArtist(Tracks[i]->getArtist()->getName());
+							Track.SetArtistSort(Tracks[i]->getArtist()->getSortName());
+							Track.SetArtistID(MusicBrainz::extractUuid(Tracks[i]->getArtist()->getId()));
+						}
+						else
+						{
+							Track.SetArtist(Release->getArtist()->getName());
+							Track.SetArtistSort(Release->getArtist()->getSortName());
+							Track.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
+						}
 
-			    	Track.SetTrackID(MusicBrainz::extractUuid(Tracks[i]->getId()));
+						Track.SetTrackID(MusicBrainz::extractUuid(Tracks[i]->getId()));
 
 						Album.AddTrack(Track);
 					}
@@ -372,4 +362,21 @@ std::string CMusicBrainzInfo::AlbumStatus(const std::string Status) const
 	}
 
 	return Ret;
+}
+
+void CMusicBrainzInfo::WaitRequest() const
+{
+	static time_t LastRequest=0;
+	const time_t TimeBetweenRequests=2;
+	
+	time_t TimeNow;
+
+	do
+	{
+		TimeNow=time(NULL);
+		if (abs(TimeNow-LastRequest)<TimeBetweenRequests)
+			usleep(100000);
+	}	while (abs(TimeNow-LastRequest)<TimeBetweenRequests);
+
+	LastRequest=TimeNow;
 }
