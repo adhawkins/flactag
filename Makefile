@@ -17,10 +17,13 @@ SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc)
 
 all: flactag discid flactag.html
 
-debian: .phony
+debian-orig: .phony
 	debuild clean
 	make dist
 	cp flactag-$(VERSION).tar.gz ../flactag_$(VERSION).orig.tar.gz
+	
+debian: .phony
+	debuild clean
 	debuild
 	
 repository: debian
