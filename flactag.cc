@@ -624,7 +624,7 @@ bool CFlacTag::MakeDirectoryTree(const std::string& Directory) const
 		SlashPos=Directory.find("/",SlashPos+1);
 	}
 	
-	if (RetVal && LastSlashPos!=Directory.length())
+	if (RetVal && LastSlashPos<Directory.length()-1)
 		Components.push_back(Directory.substr(LastSlashPos+1));
 
 	std::vector<std::string>::const_iterator ThisComponent=Components.begin();

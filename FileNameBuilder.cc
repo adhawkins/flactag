@@ -53,7 +53,11 @@ void CFileNameBuilder::BuildPath()
 	else
 		Template=m_MultiDiskFileName;
 		
-	m_FileName=m_BasePath+"/"+Template;
+	m_FileName=m_BasePath;
+	if (m_FileName[m_FileName.length()-1]!='/')
+		m_FileName+="/";
+		
+	m_FileName+=Template;
 	
 	ReplaceString("%A","ARTIST",false);
 	ReplaceString("%S","ARTISTSORT",false);
