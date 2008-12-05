@@ -33,7 +33,7 @@ install: all
 	mkdir -p $(INSTALLPATH)/bin
 	install -m 755 flactag $(INSTALLPATH)/bin
 	install -m 755 discid $(INSTALLPATH)/bin
-	install -m 755 tocfix.sed $(INSTALLPATH)/bin
+	install -m 644 tocfix.sed $(INSTALLPATH)/bin
 	install -m 755 ripdataflac $(INSTALLPATH)/bin
 	install -m 755 checkflac $(INSTALLPATH)/bin
 	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/bin\2#" ripflac > $(INSTALLPATH)/bin/ripflac
