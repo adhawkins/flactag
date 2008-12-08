@@ -40,7 +40,8 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_Version(false),
 	m_DiscID(false),
 	m_ForceWrite(false),
-	m_SubmitURL(false)
+	m_SubmitURL(false),
+	m_OverwriteExisting(false)
 {
 	struct option LongOptions[] =
 	{
@@ -51,6 +52,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		{"write", no_argument, 0, 'w'},
 		{"check", no_argument, 0, 'c'},
 		{"submit-url", no_argument, 0, 's'},
+		{"overwrite-existing", no_argument, 0, 'o'},
 		{0, 0, 0, 0}
 	};
              
@@ -61,7 +63,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"fdvrwcs",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"fdvrwcso",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
 			case 's':
@@ -90,6 +92,10 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 				
 			case 'c':
 				m_Check=true;
+				break;
+
+			case 'o':
+				m_OverwriteExisting=true;
 				break;
 
 			case -1:
@@ -164,6 +170,11 @@ bool CCommandLine::SubmitURL() const
 	return m_SubmitURL;
 }
 
+bool CCommandLine::OverwriteExisting() const
+{
+	return m_OverwriteExisting;
+}
+
 std::vector<std::string> CCommandLine::FileNames() const
 {
 	return m_FileNames;
@@ -171,7 +182,8 @@ std::vector<std::string> CCommandLine::FileNames() const
 
 void CCommandLine::Usage(const std::string& ProgName) const
 {
-	printf("Usage: %s [ --version | -v ] [ --submit-url | -s ] [ --discid | -d] [ --check | -c ]\n"
-					"\t\t[ --write | -w ] [ --rename | -r ] [ --force-write | -f ]\n"
+	printf("Usage: %s [ --version | -v ] [ --submit-url | -s ] [ --discid | -d]\n"
+					"\t\t[ --check | -c ] [ --write | -w ] [ --force-write | -f ]\n"
+					"\t\t[ --rename | -r ] [ --overwrite-existing | -o ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }

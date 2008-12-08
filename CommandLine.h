@@ -43,6 +43,7 @@ public:
 	bool DiscID() const;
 	bool ForceWrite() const;
 	bool SubmitURL() const;
+	bool OverwriteExisting() const;
 	std::vector<std::string> FileNames() const;
 	
 private:
@@ -54,6 +55,7 @@ private:
 	bool m_DiscID;
 	bool m_ForceWrite;
 	bool m_SubmitURL;
+	bool m_OverwriteExisting;
 	std::vector<std::string> m_FileNames;
 		
 	void Usage(const std::string& ProgName) const;

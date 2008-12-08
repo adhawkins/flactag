@@ -164,6 +164,9 @@ if they appear to match those already in the file
 - *--rename (-r)* - The filename will be compared with that specified by the 
 rename rules, and if it doesn't match, the file will be renamed.
 
+- *--overwrite-existing (-o)* - If --rename is specified then flactag will
+overwrite existing files when renaming.
+
 Example uses of these options could be as follows (note the use of the find 
 option \'-print0\' and the xargs option \'-0\' to handle filenames containing 
 spaces):

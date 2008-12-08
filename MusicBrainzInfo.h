@@ -43,6 +43,7 @@ public:
 private:
 	std::string AlbumType(const std::string Type) const;
 	std::string AlbumStatus(const std::string Status) const;
+	void WaitRequest() const;
 
 	std::vector<CAlbum> m_Albums;
 	CCuesheet m_Cuesheet;

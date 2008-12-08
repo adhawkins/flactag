@@ -624,7 +624,7 @@ bool CFlacTag::MakeDirectoryTree(const std::string& Directory) const
 		SlashPos=Directory.find("/",SlashPos+1);
 	}
 	
-	if (RetVal && LastSlashPos!=Directory.length())
+	if (RetVal && LastSlashPos<Directory.length()-1)
 		Components.push_back(Directory.substr(LastSlashPos+1));
 
 	std::vector<std::string>::const_iterator ThisComponent=Components.begin();
@@ -717,39 +717,57 @@ bool CFlacTag::RenameFile()
 {
 	bool RetVal=false;
 	
-	std::string::size_type LastSlash=m_RenameFile.rfind("/");
-	if (std::string::npos!=LastSlash)
+	bool Continue=true;
+	
+	//First check if the file exists
+	
+	struct stat Stat;
+	
+	if (0==stat(m_RenameFile.c_str(),&Stat))
+		Continue=m_CommandLine.OverwriteExisting();
+		
+	if (Continue)
 	{
-		std::string Directory=m_RenameFile.substr(0,LastSlash);
-		if (MakeDirectoryTree(Directory))
+		std::string::size_type LastSlash=m_RenameFile.rfind("/");
+		if (std::string::npos!=LastSlash)
 		{
-			if (0==rename(m_FlacFile.c_str(),m_RenameFile.c_str()))
+			std::string Directory=m_RenameFile.substr(0,LastSlash);
+			if (MakeDirectoryTree(Directory))
 			{
-				RetVal=true;
-				
-				m_FlacFile=m_RenameFile;
-				LoadData();
-			}
-			else
-			{
-				if (EXDEV==errno)
+				if (0==rename(m_FlacFile.c_str(),m_RenameFile.c_str()))
 				{
-					if (CopyFile(m_FlacFile,m_RenameFile) && 0==unlink(m_FlacFile.c_str()))
-					{
-						RetVal=true;
-						
-						m_FlacFile=m_RenameFile;
-						LoadData();
-					}
+					RetVal=true;
+
+					m_FlacFile=m_RenameFile;
+					LoadData();
 				}
 				else
 				{
-					std::stringstream os;
-					os << "rename: " << strerror(errno);
-					CErrorLog::Log(os.str());
+					if (EXDEV==errno)
+					{
+						if (CopyFile(m_FlacFile,m_RenameFile) && 0==unlink(m_FlacFile.c_str()))
+						{
+							RetVal=true;
+
+							m_FlacFile=m_RenameFile;
+							LoadData();
+						}
+					}
+					else
+					{
+						std::stringstream os;
+						os << "rename: " << strerror(errno);
+						CErrorLog::Log(os.str());
+					}
 				}
 			}
 		}
+	}
+	else
+	{
+		std::stringstream os;
+		os << m_RenameFile << " already exists, use --overwrite-existing to force it to be overwritten";
+		CErrorLog::Log(os.str());
 	}
 	
 	return RetVal;
