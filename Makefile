@@ -28,8 +28,8 @@ debian: .phony
 	
 repository: debian
 	mkdir -p /auto/gently-sw/debian/dists/stable/main/binary-i386 /auto/gently-sw/debian/dists/stable/main/source
-	cp ../flactag_1.1-RC1-1_i386.deb /auto/gently-sw/debian/dists/stable/main/binary-i386
-	cp ../flactag_1.1-RC1.orig.tar.gz ../flactag_1.1-RC1-1.diff.gz ../flactag_1.1-RC1-1.dsc /auto/gently-sw/debian/dists/stable/main/source
+	cp ../flactag_$(VERSION)*.deb /auto/gently-sw/debian/dists/stable/main/binary-i386
+	cp ../flactag_$(VERSION).orig.tar.gz ../flactag_$(VERSION)*.diff.gz ../flactag_$(VERSION)*.dsc /auto/gently-sw/debian/dists/stable/main/source
 	cd /auto/gently-sw/debian/ && \
 		dpkg-scansources dists/stable/main/source/ /dev/null | gzip -9c > dists/stable/main/source/Sources.gz && \
 		dpkg-scanpackages dists/stable/main/binary-i386 /dev/null | gzip -9c > dists/stable/main/binary-i386/Packages.gz
