@@ -26,6 +26,8 @@
 
 #include "FileNameBuilder.h"
 
+#include <stdlib.h>
+
 #include <unac.h>
 
 #include "ErrorLog.h"

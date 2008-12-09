@@ -30,6 +30,10 @@
 #include <langinfo.h>
 #include <unac.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <iconv.h>
 
 #include <sstream>
 

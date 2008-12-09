@@ -26,6 +26,8 @@
 
 #include "TagName.h"
 
+#include <stdlib.h>
+
 #include <sstream>
 
 CTagName::CTagName(const std::string& Name, int Number)

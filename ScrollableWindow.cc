@@ -71,7 +71,7 @@ void CScrollableWindow::Draw()
 
 	SLsmg_draw_box(m_Top,m_Left,m_Height,m_Width);
 	SLsmg_gotorc(m_Top,m_Left+2);
-	SLsmg_printf(" %s ",m_Title.c_str());
+	SLsmg_printf(const_cast<char *>(" %s "),m_Title.c_str());
 	SLsmg_normal_video();
 
 	int MaxLine=m_TopVisible+m_Height-2;
