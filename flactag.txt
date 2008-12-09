@@ -56,12 +56,12 @@ release is a SED script which will massage the TOC file of a CD to work around
 this problem. Unfortunately, the only way to recover from this is to re-rip the 
 CD*
 
-To rip a CD to flac, simply enter `ripflac <filename>` (where filename is 
+To rip a CD to flac, simply enter `ripflac <basename>` (where basename is 
 used as the base name of the FLAC file you will be creating. The CD in the drive
 will be ripped, and a FLAC file created containing an embedded CUE sheet.
 
 If the original CD contains data tracks, then the FLAC conversion will fail. 
-Should this happen, enter `ripdataflac <filename> <range>` (where filename is 
+Should this happen, enter `ripdataflac <basename> <range>` (where basename is 
 the same one specified in the first rip attempt, and range is the range of 
 tracks to rip (e.g. if the CD has 13 tracks, where track 13 is the data track, 
 then the range would be 1-12). 
@@ -79,13 +79,8 @@ Using flactag
 Interactive mode
 ~~~~~~~~~~~~~~~~
 
-flactac should be executed from a linux console prompt, giving the path to the 
-FLAC files to tag as its arguments as follows:
-
-`flactag victory.flac absent.flac`
-
-(filenames can be quoted if they contain special characters to avoid having 
-to \'escape\' these characters).
+If flactac is executed without any options, it will interactively process 
+all FLAC files given as arguments.
 
 If the flactag utility does not find information for your CD, a URL will be 
 provided to submit information for it. Often the MusicBrainz server will 
@@ -103,13 +98,13 @@ image:flactag.jpg[flactag interactive mode]
 
 This contains three main areas:
 
-- The \'Albums\' window. This will contain a list of albums that match 
+- The *\'Albums\'* window. This will contain a list of albums that match 
 the DiskID for your FLAC file.
 
-- The \'Tracks\' window. This contains a list of all the tracks on the 
+- The *\'Tracks\'* window. This contains a list of all the tracks on the 
 currently selected album.
 
-- The \'Tags\' window. At startup, this will contain a list of the tags 
+- The *\'Tags\'* window. At startup, this will contain a list of the tags 
 currently found in your FLAC file. If there are no tags present, then an empty 
 set appropriate for the album will be displayed. If you make changes to these 
 tags, an asterisk (\'*\') will be displayed to indicate that this information has 
@@ -119,11 +114,11 @@ The currently active window will be highlighted by the border and window title
 changing colour. To switch between the three windows, press the *TAB* key. To 
 scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to 
 scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half 
-a page at a time). Scrolling in the \'Albums\' window will update the information 
-in the \'Tracks\' window appropriately.
+a page at a time). Scrolling in the *\'Albums\'* window will update the information 
+in the *\'Tracks\'* window appropriately.
 
 Once the appropriate album has been selected, pressing *c* will copy the tags 
-for that album into the 'Tags' window. These tags can then be saved to the FLAC 
+for that album into the *\'Tags\'* window. These tags can then be saved to the FLAC 
 file by pressing the *w* key.
 
 Pressing *r* will rename the file based on the settings in the 
@@ -160,7 +155,7 @@ from those returned from the MusicBrainz service, the tags will be written to
 the file.
 
 - *--force-write (-f)* - If --write is specified then tags will be written even 
-if they appear to match those already in the file
+if they appear to match those already in the file.
 
 - *--rename (-r)* - The filename will be compared with that specified by the 
 rename rules, and if it doesn't match, the file will be renamed.

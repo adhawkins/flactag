@@ -1,7 +1,7 @@
-INSTALLROOT=/usr
+INSTALLROOT=/
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=1.1~rc1
+VERSION=1.1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
 
@@ -15,7 +15,7 @@ DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
 SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
 
-all: flactag discid flactag.html
+all: flactag discid flactag.html flactag.1
 
 debian-orig: .phony
 	debuild clean
@@ -35,27 +35,41 @@ repository: debian
 		dpkg-scanpackages dists/stable/main/binary-i386 /dev/null | gzip -9c > dists/stable/main/binary-i386/Packages.gz
 
 install: all
-	mkdir -p $(INSTALLPATH)/bin
-	install -m 755 flactag $(INSTALLPATH)/bin
-	install -m 755 discid $(INSTALLPATH)/bin
-	install -m 644 tocfix.sed $(INSTALLPATH)/bin
-	install -m 755 ripdataflac $(INSTALLPATH)/bin
-	install -m 755 checkflac $(INSTALLPATH)/bin
-	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/bin\2#" ripflac > $(INSTALLPATH)/bin/ripflac
-	chmod 755 ${INSTALLPATH}/bin/ripflac
+	mkdir -p $(INSTALLPATH)/usr/bin
+	mkdir -p $(INSTALLPATH)/usr/share/man/man1
+	mkdir -p $(INSTALLPATH)/var/lib/flactag
+	install -m 755 flactag $(INSTALLPATH)/usr/bin
+	install -m 755 discid $(INSTALLPATH)/usr/bin
+	install -m 644 tocfix.sed $(INSTALLPATH)/var/lib/flactag
+	install -m 755 ripdataflac $(INSTALLPATH)/usr/bin
+	install -m 755 checkflac $(INSTALLPATH)/usr/bin
+	cat flactag.1 | gzip -9 > $(INSTALLPATH)/usr/share/man/man1/flactag.1.gz
+	chmod 644 $(INSTALLPATH)/usr/share/man/man1/flactag.1.gz
+	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripflac.1.gz
+	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripdataflac.1.gz
+	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/checkflac.1.gz
+	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/discid.1.gz
+	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/var/lib/flactag\2#" ripflac > $(INSTALLPATH)/usr/bin/ripflac
+	chmod 755 ${INSTALLPATH}/usr/bin/ripflac
+	
+flactag.1: flactag.1.xml Makefile
+	docbook2x-man flactag.1.xml
+	
+flactag.1.xml: flactag.1.txt Makefile
+	asciidoc -d manpage -b docbook flactag.1.txt
 	
 flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
 	
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.*
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1
 
 flactag-$(VERSION).tar.gz: dist
 
 dist: all
 	svn update && \
 		mkdir -p flactag-$(VERSION) && \
-		cp flactag.jpg *.cc *.h Makefile flactag.txt flactag.html COPYING ripflac ripdataflac checkflac tocfix.sed flactag-$(VERSION) && \
+		cp flactag.jpg *.cc *.h Makefile flactag.txt flactag.1.txt flactag.html COPYING ripflac ripdataflac checkflac tocfix.sed flactag-$(VERSION) && \
 		mkdir -p flactag-$(VERSION)/debian && \
 		cp debian/* flactag-$(VERSION)/debian && \
 		tar zcf flactag-$(VERSION).tar.gz flactag-$(VERSION) && \
