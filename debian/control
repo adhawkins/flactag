@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 5),libmusicbrainz3-dev,libdiscid0-dev,libslang1-dev
 Standards-Version: 3.7.2
 
 Package: flactag
-Architecture: i386
+Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: cdrdao, cdparanoia
 Description: A tagger for whole album FLACs using data from MusicBrainz
