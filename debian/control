@@ -2,7 +2,7 @@ Source: flactag
 Section: sound
 Priority: optional
 Maintainer: Andy Hawkins <andy@gently.org.uk>
-Build-Depends: debhelper (>= 5),libmusicbrainz3-dev,libdiscid0-dev,libslang1-dev,libflac++-dev,libhttpfetcher-dev,libjpeg62-dev,libunac1-dev,asciidoc
+Build-Depends: debhelper (>= 5),libmusicbrainz3-dev,libdiscid0-dev,libslang1-dev,libflac++-dev,libneon26-dev,libjpeg62-dev,libunac1-dev,asciidoc
 Standards-Version: 3.7.2
 
 Package: flactag

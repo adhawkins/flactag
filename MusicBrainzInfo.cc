@@ -34,15 +34,11 @@
 #include <musicbrainz3/webservice.h>
 #include <musicbrainz3/utils.h>
 
-extern "C"
-{
-#include <http_fetcher.h>
-}
-
 #include "base64.h"
 
 #include "DiscIDWrapper.h"
 #include "ErrorLog.h"
+#include "HTTPFetch.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const CCuesheet& Cuesheet)
 :	m_Cuesheet(Cuesheet)
@@ -113,15 +109,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 					{
 						std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.LZZZZZZZ.jpg";
 
-						char *Buffer=0;
-
-						int Bytes=http_fetch(URL.c_str(),&Buffer);
+						CHTTPFetch Fetch;
+						
+						int Bytes=Fetch.Fetch(URL);
 						if (Bytes<1000)
 						{
-							free(Buffer);
-							Buffer=0;
 							URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.MZZZZZZZ.jpg";
-							Bytes=http_fetch(URL.c_str(),&Buffer);
+							Bytes=Fetch.Fetch(URL);
 						}
 
 						if (Bytes>0)
@@ -129,13 +123,13 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 							if (Bytes<1000)
 								CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
 							else
-								Album.SetCoverArt(CCoverArt((const unsigned char *)Buffer,Bytes));
+							{
+								std::vector<unsigned char> Data=Fetch.Data();
+								Album.SetCoverArt(CCoverArt(&Data[0],Data.size()));
+							}
 						}
 						else
-							CErrorLog::Log(std::string("Error downloading art: ") + http_strerror());
-
-						if (Buffer)
-							free(Buffer);
+							CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
 					}
 
 					std::vector<std::string> Types=Release->getTypes();
