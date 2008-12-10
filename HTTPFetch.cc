@@ -52,7 +52,7 @@ int CHTTPFetch::Fetch(const std::string& URL)
 		ne_session *sess=ne_session_create("http", uri.host, uri.port);
 		if (sess) 
 		{
-			ne_set_useragent(sess, "flactag/v1.1");
+			ne_set_useragent(sess, "flactag/v" VERSION);
 	
 			ne_request *req = ne_request_create(sess, "GET", uri.path);	
 			ne_add_response_body_reader(req, ne_accept_2xx, httpResponseReader, &m_Data);
