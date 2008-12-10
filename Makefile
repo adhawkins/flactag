@@ -3,13 +3,13 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
 VERSION=1.1
 
-CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\"
+CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
-						WriteInfo.o
+						WriteInfo.o HTTPFetch.o
 						
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
@@ -87,7 +87,7 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lhttp_fetcher -lunac -ljpeg $^
+	g++ `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^ 
 	
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^
