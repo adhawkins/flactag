@@ -85,7 +85,7 @@ binary-arch: build install
 	dh_link
 	dh_strip
 	dh_compress
-	dh_fixperms --exclude tocfix.sed
+	dh_fixperms
 #	dh_perl
 #	dh_makeshlibs
 	dh_installdeb
