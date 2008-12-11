@@ -77,8 +77,7 @@ int CHTTPFetch::httpResponseReader(void *userdata, const char *buf, size_t len)
 {
 	std::vector<unsigned char> *buffer = reinterpret_cast<std::vector<unsigned char> *>(userdata);
 
-	for (size_t count=0;count<len;count++)
-		buffer->push_back(buf[count]);
+	buffer->insert(buffer->end(),buf,buf+len);
 
 	return 0;
 }
