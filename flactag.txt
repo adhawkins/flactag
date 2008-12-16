@@ -1,5 +1,5 @@
-FLACTAG v1.1-RC1
-================
+FLACTAG v1.1
+============
 Andy Hawkins <andy@gently.org.uk>
 
 A utility for tagging single album FLAC files with embedded CUE sheets 
@@ -236,8 +236,8 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History 
 ---------------
 
-v1.1 - xxxxxxxxxxxxxxxx
-~~~~~~~~~~~~~~~~~~~~~~~
+v1.1 - 16th December 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Scripts no longer have '.sh' extension
 
@@ -252,6 +252,8 @@ v1.1 - xxxxxxxxxxxxxxxx
 - New option '--overwrite-existing' when renaming files
 
 - Fix compilation problems caused by newer gcc
+
+- Switch to neon for downloading image files
 
 v1.1RC1 - 17th July 2008
 ~~~~~~~~~~~~~~~~~~~~~~~~
