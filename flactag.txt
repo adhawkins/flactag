@@ -10,7 +10,7 @@ Downloading
 
 The latest version of flactag can always be found http://software.gently.org.uk/flactag[here].
 
-The current version is link:flactag-1.1-RC1.tar.gz[v1.1-RC1].
+The current version is link:flactag-1.1.tar.gz[v1.1].
 
 Flactag v1.0 is available http://software.gently.org.uk/flactag-1.0[here].
 
