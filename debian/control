@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: Andy Hawkins <andy@gently.org.uk>
 Build-Depends: debhelper (>= 5),libmusicbrainz3-dev,libdiscid0-dev,libslang2-dev,libflac++-dev,libneon26-dev,libjpeg62-dev,libunac1-dev,asciidoc,docbook2x
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: flactag
 Architecture: any
