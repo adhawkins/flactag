@@ -1,7 +1,12 @@
-flactag (1.1-1) stable; urgency=low
+flactag (1.1-2) unstable; urgency=low
 
-  * Initial release
-    closes: bug#507876
+  * Address comments from Jonathan Wiltshire <debian@jwiltshire.org.uk>
+
+ -- Andy Hawkins <andy@gently.org.uk>  Tue, 16 Dec 2008 15:20:15 +0000
+
+flactag (1.1-1) unstable; urgency=low
+
+  * Initial release closes: #507876
 
  -- Andy Hawkins <andy@gently.org.uk>  Thu,  4 Dec 2008 12:49:20 +0000
 
