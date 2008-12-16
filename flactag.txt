@@ -23,10 +23,9 @@ Requirements
 - http://www.s-lang.org/download.html[S-Lang] (I used version 2.0.6 from Debian)
 - http://www.webdav.org/neon/[libneon] (I used version 0.26 from Debian)
 - http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
-- http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 7.1.2 from Debian)
 - http://www.ijg.org/[libjpeg] (I used version 6b-13 from Debian)
-- http://docbook2x.sourceforge.net/[docbook2x] (I used version 0.8.3 from Debian)
 - http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 7.1.2 from Debian)
+- http://docbook2x.sourceforge.net/[docbook2x] (I used version 0.8.3 from Debian)
 
 Building and Installing
 -----------------------
