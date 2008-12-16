@@ -1,6 +1,7 @@
 flactag (1.1-1) stable; urgency=low
 
   * Initial release
+    closes: bug#507876
 
  -- Andy Hawkins <andy@gently.org.uk>  Thu,  4 Dec 2008 12:49:20 +0000
 
