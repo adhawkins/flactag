@@ -5,6 +5,8 @@ Andy Hawkins <andy@gently.org.uk>
 A utility for tagging single album FLAC files with embedded CUE sheets 
 using data from the http://www.musicbrainz.org[MusicBrainz] service.
 
+Flactag is licensed under the GNU Lesser General Public License (LGPL).
+
 Downloading
 -----------
 
