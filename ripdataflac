@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CDROM=/dev/hdc
+CDROM=/dev/cdrom
 
 if [ $# = "2" ]
 then
