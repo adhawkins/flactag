@@ -827,8 +827,8 @@ bool CFlacTag::CopyFile(const std::string& Source, const std::string& Dest) cons
 						std::stringstream os;
 						os << "chown: " << strerror(errno);
 						CErrorLog::Log(os.str());
-
-						RetVal=false;
+						
+						//Allow chown to fail (could be on smbfs for example)
 					}
 				}
 
