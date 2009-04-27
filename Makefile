@@ -1,7 +1,7 @@
 INSTALLROOT=/
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=1.1
+VERSION=1.2-alpha
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 
@@ -10,10 +10,10 @@ FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
 						WriteInfo.o HTTPFetch.o
-						
+
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
-SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc) 
+SRCS=$(FLACTAGOBJS:.o=.cc) $(DISCIDOBJS:.o=.cc)
 
 all: flactag discid flactag.html flactag.1
 
@@ -21,11 +21,11 @@ debian-orig: .phony
 	debuild clean
 	make dist
 	cp flactag-$(VERSION).tar.gz ../flactag_$(VERSION).orig.tar.gz
-	
+
 debian: .phony
 	debuild clean
 	debuild
-	
+
 repository: debian
 	mkdir -p /auto/gently-sw/debian/dists/stable/main/binary-i386 /auto/gently-sw/debian/dists/stable/main/source
 	cp ../flactag_$(VERSION)*.deb /auto/gently-sw/debian/dists/stable/main/binary-i386
@@ -51,16 +51,16 @@ install: all
 	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/discid.1.gz
 	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/var/lib/flactag\2#" ripflac > $(INSTALLPATH)/usr/bin/ripflac
 	chmod 755 ${INSTALLPATH}/usr/bin/ripflac
-	
+
 flactag.1: flactag.1.xml Makefile
 	docbook2x-man flactag.1.xml
-	
+
 flactag.1.xml: flactag.1.txt Makefile
 	asciidoc -d manpage -b docbook flactag.1.txt
-	
+
 flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
-	
+
 clean:
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1.html flactag.1
 
@@ -78,18 +78,18 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	cp flactag.html /auto/gently-sw/flactag-1.1/index.html
 	cp flactag.html flactag.jpg /auto/gently-sw/flactag-1.1/
 	cp flactag-$(VERSION).tar.gz  /auto/gently-sw/flactag-1.1
-	
+
 %.d: %.cc
 	@echo DEPEND $< $@
 	@$(CXX) -MM $(CXXFLAGS) $< | \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^ 
-	
+	g++ `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
+
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^
-	
+
 include $(SRCS:.cc=.d)
 
 .phony:

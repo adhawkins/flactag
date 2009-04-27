@@ -110,7 +110,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 						std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.LZZZZZZZ.jpg";
 
 						CHTTPFetch Fetch;
-						
+
 						int Bytes=Fetch.Fetch(URL);
 						if (Bytes<1000)
 						{
@@ -172,17 +172,38 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 						Album.AddTrack(Track);
 					}
 
-					MusicBrainz::ReleaseEventList ReleaseEvents = Release->getReleaseEvents();
+					int EarliestYear=-1;
 
-					if (ReleaseEvents.size())
+					MusicBrainz::ReleaseEventList ReleaseEvents = Release->getReleaseEvents();
+					MusicBrainz::ReleaseEventList::const_iterator ThisEvent=ReleaseEvents.begin();
+					while (ReleaseEvents.end()!=ThisEvent)
 					{
-						std::string AlbumDate=ReleaseEvents[0]->getDate();
+						std::string AlbumDate=(*ThisEvent)->getDate();
+
 						std::string::size_type MinusPos=AlbumDate.find("-");
 						if (std::string::npos!=MinusPos)
 							AlbumDate=AlbumDate.substr(0,MinusPos);
 
-						if (!AlbumDate.empty())
-							Album.SetDate(AlbumDate);
+						int ThisYear;
+						std::stringstream os;
+
+						os << AlbumDate;
+						os >> ThisYear;
+						if (!os.fail())
+						{
+							if (-1==EarliestYear || ThisYear<EarliestYear)
+								EarliestYear=ThisYear;
+						}
+
+						++ThisEvent;
+					}
+
+					if (-1!=EarliestYear)
+					{
+						std::stringstream os;
+
+						os << EarliestYear;
+						Album.SetDate(os.str());
 					}
 
 					m_Albums.push_back(Album);
@@ -362,7 +383,7 @@ void CMusicBrainzInfo::WaitRequest() const
 {
 	static time_t LastRequest=0;
 	const time_t TimeBetweenRequests=2;
-	
+
 	time_t TimeNow;
 
 	do
