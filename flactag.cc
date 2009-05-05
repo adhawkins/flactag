@@ -156,7 +156,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 								AlbumNum=count;
 								MatchFound=true;
 								
-								printf("%s: Album ID in album %d is a match\n",m_FlacFile.c_str(),count);
+								printf("%s: Album ID in album %d is a match\n",m_FlacFile.c_str(),(int)count);
 							}
 						}
 						
