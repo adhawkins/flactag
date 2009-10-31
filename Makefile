@@ -4,7 +4,7 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 VERSION=1.2-alpha
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
-#CXXFLAGS+=-g -ggdb
+CXXFLAGS+=-g -ggdb
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
@@ -46,10 +46,10 @@ install: all
 	install -m 755 checkflac $(INSTALLPATH)/usr/bin
 	cat flactag.1 | gzip -9 > $(INSTALLPATH)/usr/share/man/man1/flactag.1.gz
 	chmod 644 $(INSTALLPATH)/usr/share/man/man1/flactag.1.gz
-	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripflac.1.gz
-	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripdataflac.1.gz
-	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/checkflac.1.gz
-	ln -s flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/discid.1.gz
+	ln -sf flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripflac.1.gz
+	ln -sf flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/ripdataflac.1.gz
+	ln -sf flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/checkflac.1.gz
+	ln -sf flactag.1.gz $(INSTALLPATH)/usr/share/man/man1/discid.1.gz
 	sed -e "s#\(.*\)INSTALLPATH\(.*\)#\1$(INSTALLROOT)/var/lib/flactag\2#" ripflac > $(INSTALLPATH)/usr/bin/ripflac
 	chmod 755 ${INSTALLPATH}/usr/bin/ripflac
 
