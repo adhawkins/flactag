@@ -32,6 +32,7 @@ CConfigFile::CConfigFile()
 	m_Values["SingleDiskFileName"]="";
 	m_Values["MultiDiskFileName"]="";
 	m_Values["DirectoryCreatePermissions"]="0755";
+	m_Values["Server"]="musicbrainz.org";
 }
 
 std::string CConfigFile::Value(const std::string& Name) const

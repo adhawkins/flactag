@@ -4,6 +4,7 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 VERSION=1.2-alpha
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
+#CXXFLAGS+=-g -ggdb
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \

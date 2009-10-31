@@ -40,9 +40,12 @@
 #include "ErrorLog.h"
 #include "HTTPFetch.h"
 
-CMusicBrainzInfo::CMusicBrainzInfo(const CCuesheet& Cuesheet)
-:	m_Cuesheet(Cuesheet)
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet)
+:	m_Server(Server),
+	m_Cuesheet(Cuesheet)
 {
+	if (m_Server.empty())
+		m_Server="musicbrainz.org";
 }
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
@@ -59,7 +62,9 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 
-	MusicBrainz::Query Query;
+	MusicBrainz::WebService Service(m_Server);
+			
+	MusicBrainz::Query Query(&Service);
 
 	try
 	{

@@ -583,7 +583,7 @@ bool CFlacTag::LoadData()
 			m_WriteInfo.SetCoverArt(CCoverArt());
 		}
 		
-		CMusicBrainzInfo Info(m_FlacCuesheet);
+		CMusicBrainzInfo Info(m_ConfigFile.Value("Server"),m_FlacCuesheet);
 		if (Info.LoadInfo(m_FlacFile))
 			m_Albums=Info.Albums();
 		else

@@ -35,7 +35,7 @@
 class CMusicBrainzInfo
 {
 public:
-	CMusicBrainzInfo(const CCuesheet& Cuesheet);
+	CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet);
 	
 	bool LoadInfo(const std::string& FlacFile);
 	std::vector<CAlbum> Albums() const;
@@ -46,6 +46,7 @@ private:
 	void WaitRequest() const;
 
 	std::vector<CAlbum> m_Albums;
+	std::string m_Server;
 	CCuesheet m_Cuesheet;
 };
 
