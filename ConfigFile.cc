@@ -26,6 +26,8 @@
 
 #include "ConfigFile.h"
 
+#include <stdio.h>
+
 CConfigFile::CConfigFile()
 {
 	m_Values["BasePath"]="";
