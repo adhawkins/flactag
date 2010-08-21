@@ -26,6 +26,8 @@
 
 #include "ErrorLog.h"
 
+#include <stdio.h>
+
 const std::vector<std::string>::size_type CErrorLog::m_cMaxSize=100;
 	
 std::vector<std::string> Entries;

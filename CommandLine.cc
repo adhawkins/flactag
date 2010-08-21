@@ -28,6 +28,7 @@
 
 #include <sstream>
 
+#include <stdio.h>
 #include <getopt.h>
 
 #include "ErrorLog.h"
