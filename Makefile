@@ -54,7 +54,7 @@ install: all
 	chmod 755 ${INSTALLPATH}/usr/bin/ripflac
 
 flactag.1: flactag.1.xml Makefile
-	docbook2x-man flactag.1.xml
+	xmlto man flactag.1.xml
 
 flactag.1.xml: flactag.1.txt Makefile
 	asciidoc -d manpage -b docbook flactag.1.txt

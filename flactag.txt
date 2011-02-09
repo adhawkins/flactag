@@ -28,6 +28,7 @@ Requirements
 - http://www.ijg.org/[libjpeg] (I used version 6b-13 from Debian)
 - http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 7.1.2 from Debian)
 - http://docbook2x.sourceforge.net/[docbook2x] (I used version 0.8.3 from Debian)
+- http://cyberelk.net/tim/software/xmlto/[xmlto] (I used version 0.0.20-5 from Debian)
 
 Building and Installing
 -----------------------
