@@ -48,6 +48,7 @@
 
 #include <vector>
 #include <sstream>
+#include <iostream>
 
 bool ScreenSizeChanged=false;
 
@@ -156,7 +157,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 								AlbumNum=count;
 								MatchFound=true;
 								
-								printf("%s: Album ID in album %d is a match\n",m_FlacFile.c_str(),(int)count);
+								std::cout << m_FlacFile.c_str() << ": Album ID in album " << count << " is a match" << std::endl;
 							}
 						}
 						
