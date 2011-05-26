@@ -16,6 +16,8 @@ public:
 	
 private:
 	std::vector<CRelease> m_Releases;
+
+	friend std::ostream& operator << (std::ostream& os, const CReleaseList& ReleaseList);
 };
 
 #endif
