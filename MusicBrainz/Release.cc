@@ -73,6 +73,10 @@ CRelease::CRelease(const XMLNode& Node)
 			{
 				m_ReleaseGroup=CReleaseGroup(ChildNode);
 			}
+			else if ("medium-list"==NodeName)
+			{
+				m_MediumList=CMediumList(ChildNode);
+			}
 			else
 			{
 				std::cerr << "Unrecognised release node: '" << NodeName << "'" << std::endl;
@@ -141,6 +145,11 @@ CReleaseGroup CRelease::ReleaseGroup() const
 	return m_ReleaseGroup;
 }
 
+CMediumList CRelease::MediumList() const
+{
+	return m_MediumList;
+}
+
 std::ostream& operator << (std::ostream& os, const CRelease& Release)
 {
 	os << "Release:" << std::endl;
@@ -158,6 +167,7 @@ std::ostream& operator << (std::ostream& os, const CRelease& Release)
 	os << Release.m_LabelInfoList << std::endl;
 	os << Release.m_ArtistCredit << std::endl;
 	os << Release.m_ReleaseGroup << std::endl;
+	os << Release.m_MediumList << std::endl;
 
 	return os;
 }

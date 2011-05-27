@@ -11,6 +11,7 @@
 #include "LabelInfoList.h"
 #include "ArtistCredit.h"
 #include "ReleaseGroup.h"
+#include "MediumList.h"
 
 class CRelease
 {
@@ -29,6 +30,7 @@ public:
 	CLabelInfoList LabelInfoList() const;
 	CArtistCredit ArtistCredit() const;
 	CReleaseGroup ReleaseGroup() const;
+	CMediumList MediumList() const;
 		
 private:
 	std::string m_ID;
@@ -44,6 +46,7 @@ private:
 	CLabelInfoList m_LabelInfoList;
 	CArtistCredit m_ArtistCredit;
 	CReleaseGroup m_ReleaseGroup;
+	CMediumList m_MediumList;
 	
 	friend std::ostream& operator << (std::ostream& os, const CRelease& Release);
 };

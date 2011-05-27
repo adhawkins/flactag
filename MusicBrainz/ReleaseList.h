@@ -2,6 +2,7 @@
 #define _RELEASE_LIST_H
 
 #include <vector>
+#include <iostream>
 
 #include "xmlParser/xmlParser.h"
 
