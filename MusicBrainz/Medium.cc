@@ -69,8 +69,6 @@ CTrackList CMedium::TrackList() const
 
 bool CMedium::ContainsDiscID(const std::string& DiscID) const
 {
-	std::cout << "Checking medium position " << m_Position << " for disc id '" << DiscID << "'" << std::endl;
-		
 	return m_DiscList.ContainsDiscID(DiscID);
 }
 

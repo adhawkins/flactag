@@ -161,8 +161,6 @@ std::vector<CMedium> CRelease::MediaMatchingDiscID(const std::string& DiscID) co
 	{
 		CMedium Medium=(*ThisMedium);
 		
-		std::cout << "Checking medium " << Medium.Position() << " for disc id '" << DiscID << "'" << std::endl;
-			
 		if (Medium.ContainsDiscID(DiscID))
 			Ret.push_back(Medium);
 			

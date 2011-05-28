@@ -34,8 +34,6 @@ bool CDiscList::ContainsDiscID(const std::string& DiscID) const
 	{
 		CDisc Disc=(*ThisDisc);
 		
-		std::cout << "Checking disc id '" << Disc.ID() << "' against '" << DiscID << "'" << std::endl;
-			
 		if (Disc.ID()==DiscID)
 			RetVal=true;
 			
