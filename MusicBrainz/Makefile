@@ -8,7 +8,7 @@ PROGSRCS=mbtest.cc
 OBJS=$(CPPSRCS:.cpp=.o) $(CCSRCS:.cc=.o) $(PROGSRCS:.cc=.o)
 PROGS=$(PROGSRCS:.cc=)
 
-LIB=libmusicbrainz-adh.so
+LIB=libmusicbrainz-adh.a
 
 LD=g++
 CXXFLAGS=-Wall -Werror -Wextra -pedantic-errors `neon-config --cflags` -DVERSION=\"1.0\" 
@@ -20,10 +20,10 @@ CXXFLAGS=-Wall -Werror -Wextra -pedantic-errors `neon-config --cflags` -DVERSION
 all: $(PROGS) $(LIB)
 
 $(LIB):  $(OBJS) $(CCOBJS)
-	$(LD) -shared `neon-config --libs` -o $@ $^
+	$(AR) rcs $@ $^
 
 mbtest: mbtest.o $(LIB)
-	$(LD) -lmusicbrainz-adh -L. -o $@ mbtest.o
+	$(LD) -o $@ mbtest.o $(LIB) `neon-config --libs`
 	
 clean:
 	rm -f $(OBJS) $(CCOBJS) $(LIB) $(PROGS) *.d
