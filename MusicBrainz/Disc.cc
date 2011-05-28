@@ -1,6 +1,6 @@
 #include "Medium.h"
 
-CDisc::CDisc(const XMLNode& Node)
+MusicBrainzADH::CDisc::CDisc(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -29,22 +29,22 @@ CDisc::CDisc(const XMLNode& Node)
 	}
 }
 
-std::string CDisc::ID() const
+std::string MusicBrainzADH::CDisc::ID() const
 {
 	return m_ID;
 }
 
-std::string CDisc::Sectors() const
+std::string MusicBrainzADH::CDisc::Sectors() const
 {
 	return m_Sectors;
 }
 
-std::ostream& operator << (std::ostream& os, const CDisc& Disc)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CDisc& Disc)
 {
 	os << "Disc:" << std::endl;
 		
-	os << "\tID:      " << Disc.m_ID << std::endl;
-	os << "\tSectors: " << Disc.m_Sectors << std::endl;
+	os << "\tID:      " << Disc.ID() << std::endl;
+	os << "\tSectors: " << Disc.Sectors() << std::endl;
 		
 	return os;
 }

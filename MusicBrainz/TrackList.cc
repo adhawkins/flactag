@@ -4,7 +4,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-CTrackList::CTrackList(const XMLNode& Node)
+MusicBrainzADH::CTrackList::CTrackList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -20,17 +20,18 @@ CTrackList::CTrackList(const XMLNode& Node)
 	}
 }
 
-std::vector<CTrack> CTrackList::Tracks() const
+std::vector<MusicBrainzADH::CTrack> MusicBrainzADH::CTrackList::Tracks() const
 {
 	return m_Tracks;
 }
 
-std::ostream& operator << (std::ostream& os, const CTrackList& TrackList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTrackList& TrackList)
 {
 	os << "Track list:" << std::endl;
 		
-	std::vector<CTrack>::const_iterator ThisTrack=TrackList.m_Tracks.begin();
-	while (ThisTrack!=TrackList.m_Tracks.end())
+	std::vector<MusicBrainzADH::CTrack> Tracks=TrackList.Tracks();
+	std::vector<MusicBrainzADH::CTrack>::const_iterator ThisTrack=Tracks.begin();
+	while (ThisTrack!=Tracks.end())
 	{
 		os << *ThisTrack;
 		

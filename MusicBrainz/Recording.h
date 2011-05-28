@@ -1,5 +1,5 @@
-#ifndef _RECORDING_H
-#define _RECORDING_H
+#ifndef _MBADH_RECORDING_H
+#define _MBADH_RECORDING_H
 
 #include <string>
 #include <iostream>
@@ -8,23 +8,26 @@
 
 #include "ArtistCredit.h"
 
-class CRecording
+namespace MusicBrainzADH
 {
-public:
-	CRecording(const XMLNode& Node=XMLNode::emptyNode());
+	class CRecording
+	{
+	public:
+		CRecording(const XMLNode& Node=XMLNode::emptyNode());
+	
+		std::string ID() const;
+		std::string Title() const;
+		std::string Length() const;
+		CArtistCredit ArtistCredit() const;
+			
+	private:
+		std::string m_ID;
+		std::string m_Title;
+		std::string m_Length;
+		CArtistCredit m_ArtistCredit;
+	};
+}
 
-	std::string ID() const;
-	std::string Title() const;
-	std::string Length() const;
-	CArtistCredit ArtistCredit() const;
-		
-private:
-	std::string m_ID;
-	std::string m_Title;
-	std::string m_Length;
-	CArtistCredit m_ArtistCredit;
-		
-	friend std::ostream& operator << (std::ostream& os, const CRecording& Recording);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRecording& Recording);
 
 #endif

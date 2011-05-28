@@ -1,6 +1,6 @@
 #include "Relation.h"
 
-CRelation::CRelation(const XMLNode& Node)
+MusicBrainzADH::CRelation::CRelation(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -29,21 +29,21 @@ CRelation::CRelation(const XMLNode& Node)
 	}	
 }
 
-std::string CRelation::Type() const
+std::string MusicBrainzADH::CRelation::Type() const
 {
 	return m_Type;
 }
 
-std::string CRelation::Target() const
+std::string MusicBrainzADH::CRelation::Target() const
 {
 	return m_Target;
 }
 
-std::ostream& operator << (std::ostream& os, const CRelation& Relation)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelation& Relation)
 {
 	os << "Relation:" << std::endl;
-	os << "\tType:   " << Relation.m_Type << std::endl;
-	os << "\tTarget: " << Relation.m_Target << std::endl;
+	os << "\tType:   " << Relation.Type() << std::endl;
+	os << "\tTarget: " << Relation.Target() << std::endl;
 		
 	return os;
 }

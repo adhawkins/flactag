@@ -1,5 +1,5 @@
-#ifndef _TRACK_LIST_H
-#define _TRACK_LIST_H
+#ifndef _MBADH_TRACK_LIST_H
+#define _MBADH_TRACK_LIST_H
 
 #include <vector>
 #include <iostream>
@@ -8,17 +8,20 @@
 
 #include "Track.h"
 
-class CTrackList
+namespace MusicBrainzADH
 {
-public:
-	CTrackList(const XMLNode& Node=XMLNode::emptyNode());
-	
-	std::vector<CTrack> Tracks() const;
-	
-private:
-	std::vector<CTrack> m_Tracks;
+	class CTrackList
+	{
+	public:
+		CTrackList(const XMLNode& Node=XMLNode::emptyNode());
+		
+		std::vector<CTrack> Tracks() const;
+		
+	private:
+		std::vector<CTrack> m_Tracks;
+	};
+}
 
-	friend std::ostream& operator << (std::ostream& os, const CTrackList& TrackList);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTrackList& TrackList);
 
 #endif

@@ -1,6 +1,6 @@
 #include "Recording.h"
 
-CRecording::CRecording(const XMLNode& Node)
+MusicBrainzADH::CRecording::CRecording(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -37,34 +37,34 @@ CRecording::CRecording(const XMLNode& Node)
 	}
 }
 
-std::string CRecording::ID() const
+std::string MusicBrainzADH::CRecording::ID() const
 {
 	return m_ID;
 }
 
-std::string CRecording::Title() const
+std::string MusicBrainzADH::CRecording::Title() const
 {
 	return m_Title;
 }
 
-std::string CRecording::Length() const
+std::string MusicBrainzADH::CRecording::Length() const
 {
 	return m_Length;
 }
 
-CArtistCredit CRecording::ArtistCredit() const
+MusicBrainzADH::CArtistCredit MusicBrainzADH::CRecording::ArtistCredit() const
 {
 	return m_ArtistCredit;
 }
 
-std::ostream& operator << (std::ostream& os, const CRecording& Recording)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRecording& Recording)
 {
 	os << "Recording:" << std::endl;
 		
-	os << "\tID:    " << Recording.m_ID << std::endl;
-	os << "\tTitle: " << Recording.m_Title << std::endl;
-	os << "\tLength: " << Recording.m_Length<< std::endl;
-	os << Recording.m_ArtistCredit << std::endl;
+	os << "\tID:     " << Recording.ID() << std::endl;
+	os << "\tTitle:  " << Recording.Title() << std::endl;
+	os << "\tLength: " << Recording.Length() << std::endl;
+	os << Recording.ArtistCredit() << std::endl;
 		
 	return os;
 }

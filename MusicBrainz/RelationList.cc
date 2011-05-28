@@ -4,7 +4,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-CRelationList::CRelationList(const XMLNode& Node)
+MusicBrainzADH::CRelationList::CRelationList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -20,17 +20,18 @@ CRelationList::CRelationList(const XMLNode& Node)
 	}
 }
 
-std::vector<CRelation> CRelationList::Relations() const
+std::vector<MusicBrainzADH::CRelation> MusicBrainzADH::CRelationList::Relations() const
 {
 	return m_Relations;
 }
 
-std::ostream& operator << (std::ostream& os, const CRelationList& RelationList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelationList& RelationList)
 {
 	os << "Relation list:" << std::endl;
 		
-	std::vector<CRelation>::const_iterator ThisRelation=RelationList.m_Relations.begin();
-	while (ThisRelation!=RelationList.m_Relations.end())
+	std::vector<MusicBrainzADH::CRelation> Relations=RelationList.Relations();
+	std::vector<MusicBrainzADH::CRelation>::const_iterator ThisRelation=Relations.begin();
+	while (ThisRelation!=Relations.end())
 	{
 		os << *ThisRelation;
 		

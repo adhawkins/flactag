@@ -1,6 +1,6 @@
 #include "Track.h"
 
-CTrack::CTrack(const XMLNode& Node)
+MusicBrainzADH::CTrack::CTrack(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -16,7 +16,9 @@ CTrack::CTrack(const XMLNode& Node)
 			
 			if ("position"==NodeName)
 			{
-				m_Position=NodeValue;
+				std::stringstream os;
+				os << NodeValue;
+				os >> m_Position;
 			}
 			else if ("title"==NodeName)
 			{
@@ -34,28 +36,28 @@ CTrack::CTrack(const XMLNode& Node)
 	}
 }
 
-std::string CTrack::Position() const
+int MusicBrainzADH::CTrack::Position() const
 {
 	return m_Position;
 }
 
-std::string CTrack::Title() const
+std::string MusicBrainzADH::CTrack::Title() const
 {
 	return m_Title;
 }
 
-CRecording CTrack:: Recording() const
+MusicBrainzADH::CRecording MusicBrainzADH::CTrack:: Recording() const
 {
 	return m_Recording;
 }
 
-std::ostream& operator << (std::ostream& os, const CTrack& Track)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTrack& Track)
 {
 	os << "Track:" << std::endl;
 		
-	os << "\tPosition: " << Track.m_Position << std::endl;
-	os << "\tTitle:    " << Track.m_Title << std::endl;
-	os << Track.m_Recording << std::endl;
+	os << "\tPosition: " << Track.Position() << std::endl;
+	os << "\tTitle:    " << Track.Title() << std::endl;
+	os << Track.Recording() << std::endl;
 		
 	return os;
 }

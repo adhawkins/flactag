@@ -1,5 +1,5 @@
-#ifndef _RELEASE_LIST_H
-#define _RELEASE_LIST_H
+#ifndef _MBADH_RELEASE_LIST_H
+#define _MBADH_RELEASE_LIST_H
 
 #include <vector>
 #include <iostream>
@@ -8,17 +8,20 @@
 
 #include "Release.h"
 
-class CReleaseList
+namespace MusicBrainzADH
 {
-public:
-	CReleaseList(const XMLNode& Node=XMLNode::emptyNode());
-	
-	std::vector<CRelease> Releases() const;
-	
-private:
-	std::vector<CRelease> m_Releases;
+	class CReleaseList
+	{
+	public:
+		CReleaseList(const XMLNode& Node=XMLNode::emptyNode());
+		
+		std::vector<MusicBrainzADH::CRelease> Releases() const;
+		
+	private:
+		std::vector<MusicBrainzADH::CRelease> m_Releases;
+	};
+}
 
-	friend std::ostream& operator << (std::ostream& os, const CReleaseList& ReleaseList);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CReleaseList& ReleaseList);
 
 #endif

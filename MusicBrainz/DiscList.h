@@ -1,5 +1,5 @@
-#ifndef _DISC_LIST_H
-#define _DISC_LIST_H
+#ifndef _MBADH_DISC_LIST_H
+#define _MBADH_DISC_LIST_H
 
 #include <vector>
 #include <iostream>
@@ -8,19 +8,22 @@
 
 #include "Disc.h"
 
-class CDiscList
+namespace MusicBrainzADH
 {
-public:
-	CDiscList(const XMLNode& Node=XMLNode::emptyNode());
+	class CDiscList
+	{
+	public:
+		CDiscList(const XMLNode& Node=XMLNode::emptyNode());
+		
+		std::vector<CDisc> Discs() const;
 	
-	std::vector<CDisc> Discs() const;
+		bool ContainsDiscID(const std::string& DiscID) const;
+				
+	private:
+		std::vector<CDisc> m_Discs;
+	};
+}
 
-	bool ContainsDiscID(const std::string& DiscID) const;
-			
-private:
-	std::vector<CDisc> m_Discs;
-
-	friend std::ostream& operator << (std::ostream& os, const CDiscList& DiscList);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CDiscList& DiscList);
 
 #endif

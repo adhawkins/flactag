@@ -1,6 +1,8 @@
 #include "Medium.h"
 
-CMedium::CMedium(const XMLNode& Node)
+#include <sstream>
+
+MusicBrainzADH::CMedium::CMedium(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -16,7 +18,9 @@ CMedium::CMedium(const XMLNode& Node)
 			
 			if ("position"==NodeName)
 			{
-				m_Position=NodeValue;
+				std::stringstream os;
+				os << NodeValue;
+				os << m_Position;
 			}
 			else if ("format"==NodeName)
 			{
@@ -42,45 +46,45 @@ CMedium::CMedium(const XMLNode& Node)
 	}
 }
 
-std::string CMedium::Position() const
+int MusicBrainzADH::CMedium::Position() const
 {
 	return m_Position;
 }
 
-std::string CMedium::Format() const
+std::string MusicBrainzADH::CMedium::Format() const
 {
 	return m_Format;
 }
 
-std::string CMedium::Title() const
+std::string MusicBrainzADH::CMedium::Title() const
 {
 	return m_Title;
 }
 
-CDiscList CMedium::DiscList() const
+MusicBrainzADH::CDiscList MusicBrainzADH::CMedium::DiscList() const
 {
 	return m_DiscList;
 }
 
-CTrackList CMedium::TrackList() const
+MusicBrainzADH::CTrackList MusicBrainzADH::CMedium::TrackList() const
 {
 	return m_TrackList;
 }
 
-bool CMedium::ContainsDiscID(const std::string& DiscID) const
+bool MusicBrainzADH::CMedium::ContainsDiscID(const std::string& DiscID) const
 {
 	return m_DiscList.ContainsDiscID(DiscID);
 }
 
-std::ostream& operator << (std::ostream& os, const CMedium& Medium)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMedium& Medium)
 {
 	os << "Medium:" << std::endl;
 		
-	os << "\tPosition: " << Medium.m_Position << std::endl;
-	os << "\tFormat:   " << Medium.m_Format << std::endl;
-	os << "\tTitle:    " << Medium.m_Title << std::endl;
-	os << Medium.m_DiscList << std::endl;
-	os << Medium.m_TrackList << std::endl;
+	os << "\tPosition: " << Medium.Position() << std::endl;
+	os << "\tFormat:   " << Medium.Format() << std::endl;
+	os << "\tTitle:    " << Medium.Title() << std::endl;
+	os << Medium.DiscList() << std::endl;
+	os << Medium.TrackList() << std::endl;
 		
 	return os;
 }

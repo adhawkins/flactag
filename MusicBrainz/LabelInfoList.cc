@@ -1,6 +1,6 @@
 #include "LabelInfoList.h"
 
-CLabelInfoList::CLabelInfoList(const XMLNode& Node)
+MusicBrainzADH::CLabelInfoList::CLabelInfoList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -16,17 +16,18 @@ CLabelInfoList::CLabelInfoList(const XMLNode& Node)
 	}
 }
 
-std::vector<CLabelInfo> CLabelInfoList::LabelInfos() const
+std::vector<MusicBrainzADH::CLabelInfo> MusicBrainzADH::CLabelInfoList::LabelInfos() const
 {
 	return m_LabelInfos;
 }
 
-std::ostream& operator << (std::ostream& os, const CLabelInfoList& LabelInfoList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabelInfoList& LabelInfoList)
 {
 	os << "Label info list:" << std::endl;
 		
-	std::vector<CLabelInfo>::const_iterator ThisLabelInfo=LabelInfoList.m_LabelInfos.begin();
-	while (ThisLabelInfo!=LabelInfoList.m_LabelInfos.end())
+	std::vector<MusicBrainzADH::CLabelInfo> LabelInfos=LabelInfoList.LabelInfos();
+	std::vector<MusicBrainzADH::CLabelInfo>::const_iterator ThisLabelInfo=LabelInfos.begin();
+	while (ThisLabelInfo!=LabelInfos.end())
 	{
 		os << *ThisLabelInfo;
 		

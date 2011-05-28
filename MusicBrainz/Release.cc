@@ -8,7 +8,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-CRelease::CRelease(const XMLNode& Node)
+MusicBrainzADH::CRelease::CRelease(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -85,81 +85,86 @@ CRelease::CRelease(const XMLNode& Node)
 	}
 }
 
-std::string CRelease::ID() const
+std::string MusicBrainzADH::CRelease::ID() const
 {
 	return m_ID;
 }
 
-std::string CRelease::Title() const
+std::string MusicBrainzADH::CRelease::Title() const
 {
 	return m_Title;
 }
 
-std::string CRelease::Status() const
+std::string MusicBrainzADH::CRelease::Status() const
 {
 	return m_Status;
 }
 
-std::string CRelease::Quality() const
+std::string MusicBrainzADH::CRelease::Quality() const
 {
 	return m_Quality;
 }
 
-CTextRepresentation CRelease::TextRepresentation() const
+MusicBrainzADH::CTextRepresentation MusicBrainzADH::CRelease::TextRepresentation() const
 {
 	return m_TextRepresentation;
 }
 
-std::string CRelease::Date() const
+std::string MusicBrainzADH::CRelease::Date() const
 {
 	return m_Date;
 }
 
-std::string CRelease::Country() const
+std::string MusicBrainzADH::CRelease::Country() const
 {
 	return m_Country;
 }
 
-std::string CRelease::ASIN() const
+std::string MusicBrainzADH::CRelease::ASIN() const
 {
 	return m_ASIN;
 }
 
-std::string CRelease::Barcode() const
+std::string MusicBrainzADH::CRelease::Barcode() const
 {
 	return m_Barcode;
 }
 
-CLabelInfoList CRelease::LabelInfoList() const
+MusicBrainzADH::CRelationList MusicBrainzADH::CRelease::RelationList() const
+{
+	return m_RelationList;
+}
+
+MusicBrainzADH::CLabelInfoList MusicBrainzADH::CRelease::LabelInfoList() const
 {
 	return m_LabelInfoList;
 }
 
-CArtistCredit CRelease::ArtistCredit() const
+MusicBrainzADH::CArtistCredit MusicBrainzADH::CRelease::ArtistCredit() const
 {
 	return m_ArtistCredit;
 }
 
-CReleaseGroup CRelease::ReleaseGroup() const
+MusicBrainzADH::CReleaseGroup MusicBrainzADH::CRelease::ReleaseGroup() const
 {
 	return m_ReleaseGroup;
 }
 
-CMediumList CRelease::MediumList() const
+MusicBrainzADH::CMediumList MusicBrainzADH::CRelease::MediumList() const
 {
 	return m_MediumList;
 }
 
-std::vector<CMedium> CRelease::MediaMatchingDiscID(const std::string& DiscID) const
+std::vector<MusicBrainzADH::CMedium> MusicBrainzADH::CRelease::MediaMatchingDiscID(const std::string& DiscID) const
 {
-	std::vector<CMedium> Ret;
+	std::vector<MusicBrainzADH::CMedium> Ret;
 	
-	std::vector<CMedium> Media=m_MediumList.Media();
+	std::vector<MusicBrainzADH::CMedium> Media=m_MediumList.Media();
 	
-	std::vector<CMedium>::const_iterator ThisMedium=Media.begin();
+	std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
 	while (ThisMedium!=Media.end())
 	{
-		CMedium Medium=(*ThisMedium);
+		MusicBrainzADH::CMedium Medium=(*ThisMedium);
 		
 		if (Medium.ContainsDiscID(DiscID))
 			Ret.push_back(Medium);
@@ -170,24 +175,24 @@ std::vector<CMedium> CRelease::MediaMatchingDiscID(const std::string& DiscID) co
 	return Ret;
 }
 
-std::ostream& operator << (std::ostream& os, const CRelease& Release)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelease& Release)
 {
 	os << "Release:" << std::endl;
 		
-	os << "\tID:                  " << Release.m_ID << std::endl;
-	os << "\tTitle:               " << Release.m_Title << std::endl;
-	os << "\tStatus:              " << Release.m_Status << std::endl;
-	os << "\tQuality:             " << Release.m_Quality << std::endl;
-	os << Release.m_TextRepresentation;
-	os << "\tDate:                " << Release.m_Date << std::endl;
-	os << "\tCountry:             " << Release.m_Country << std::endl;
-	os << "\tASIN:                " << Release.m_ASIN << std::endl;
-	os << "\tBarcode:             " << Release.m_Barcode << std::endl;
-	os << Release.m_RelationList << std::endl;
-	os << Release.m_LabelInfoList << std::endl;
-	os << Release.m_ArtistCredit << std::endl;
-	os << Release.m_ReleaseGroup << std::endl;
-	os << Release.m_MediumList << std::endl;
+	os << "\tID:                  " << Release.ID() << std::endl;
+	os << "\tTitle:               " << Release.Title() << std::endl;
+	os << "\tStatus:              " << Release.Status() << std::endl;
+	os << "\tQuality:             " << Release.Quality() << std::endl;
+	os << Release.TextRepresentation();
+	os << "\tDate:                " << Release.Date() << std::endl;
+	os << "\tCountry:             " << Release.Country() << std::endl;
+	os << "\tASIN:                " << Release.ASIN() << std::endl;
+	os << "\tBarcode:             " << Release.Barcode() << std::endl;
+	os << Release.RelationList() << std::endl;
+	os << Release.LabelInfoList() << std::endl;
+	os << Release.ArtistCredit() << std::endl;
+	os << Release.ReleaseGroup() << std::endl;
+	os << Release.MediumList() << std::endl;
 
 	return os;
 }

@@ -1,5 +1,5 @@
-#ifndef _LABEL_INFO_LIST_H
-#define _LABEL_INFO_LIST_H
+#ifndef _MBADH_LABEL_INFO_LIST_H
+#define _MBADH_LABEL_INFO_LIST_H
 
 #include <vector>
 #include <iostream>
@@ -8,17 +8,20 @@
 
 #include "xmlParser/xmlParser.h"
 
-class CLabelInfoList
+namespace MusicBrainzADH
 {
-public:
-	CLabelInfoList(const XMLNode& Node=XMLNode::emptyNode());
-
-	std::vector<CLabelInfo> LabelInfos() const;
+	class CLabelInfoList
+	{
+	public:
+		CLabelInfoList(const XMLNode& Node=XMLNode::emptyNode());
 	
-private:
-	std::vector<CLabelInfo> m_LabelInfos;
+		std::vector<CLabelInfo> LabelInfos() const;
+		
+	private:
+		std::vector<CLabelInfo> m_LabelInfos;
+	};
+}
 
-	friend std::ostream& operator << (std::ostream& os, const CLabelInfoList& LabelInfoList);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabelInfoList& LabelInfoList);
 
 #endif

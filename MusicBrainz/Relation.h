@@ -1,24 +1,27 @@
-#ifndef _RELATION_H
-#define _RELATION_H
+#ifndef _MBADH_RELATION_H
+#define _MBADH_RELATION_H
 
 #include <string>
 #include <iostream>
 
 #include "xmlParser/xmlParser.h"
 
-class CRelation
+namespace MusicBrainzADH
 {
-public:
-	CRelation(const XMLNode& Node=XMLNode::emptyNode());
-	
-	std::string Type() const;
-	std::string Target() const;
+	class CRelation
+	{
+	public:
+		CRelation(const XMLNode& Node=XMLNode::emptyNode());
 		
-private:
-	std::string m_Type;
-	std::string m_Target;
-		
-	friend std::ostream& operator << (std::ostream& os, const CRelation& Relation);
-};
+		std::string Type() const;
+		std::string Target() const;
+			
+	private:
+		std::string m_Type;
+		std::string m_Target;
+	};
+}
+
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelation& Relation);
 
 #endif

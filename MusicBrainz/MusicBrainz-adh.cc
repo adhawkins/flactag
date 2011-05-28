@@ -8,12 +8,12 @@
 #include "HTTPFetch.h"
 #include "ReleaseList.h"
 
-CReleaseList CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
+MusicBrainzADH::CReleaseList MusicBrainzADH::CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
 {
 	//Will this work soon (and return disc IDs as well)?
 	//http://www.musicbrainz.org/ws/2/discid/arIS30RPWowvwNEqsqdDnZzDGhk-?inc=artists+labels+recordings+release-groups+artist-credits
 	
-	CReleaseList ReleaseList;
+	MusicBrainzADH::CReleaseList ReleaseList;
 	
 	std::stringstream os;
 	os << "/ws/2/discid/" << DiscID;
@@ -36,9 +36,9 @@ CReleaseList CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
 	return ReleaseList;
 }		
 
-CRelease CMusicBrainzADH::LookupRelease(const std::string& ReleaseID)
+MusicBrainzADH::CRelease MusicBrainzADH::CMusicBrainzADH::LookupRelease(const std::string& ReleaseID)
 {
-	CRelease Release;
+	MusicBrainzADH::CRelease Release;
 	
 	std::stringstream os;
 	os << "/ws/2/release/" << ReleaseID << "?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits";

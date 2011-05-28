@@ -1,5 +1,5 @@
-#ifndef _ARTIST_CREDIT_H
-#define _ARTIST_CREDIT_H
+#ifndef _MBADH_ARTIST_CREDIT_H
+#define _MBADH_ARTIST_CREDIT_H
 
 #include <vector>
 #include <iostream>
@@ -8,17 +8,20 @@
 
 #include "NameCredit.h"
 
-class CArtistCredit
+namespace MusicBrainzADH
 {
-public:
-	CArtistCredit(const XMLNode& Node=XMLNode::emptyNode());
+	class CArtistCredit
+	{
+	public:
+		CArtistCredit(const XMLNode& Node=XMLNode::emptyNode());
+	
+		std::vector<CNameCredit> NameCredits() const;
+				
+	private:
+		std::vector<CNameCredit> m_NameCredits;
+	};
+}
 
-	std::vector<CNameCredit> NameCredits() const;
-			
-private:
-	std::vector<CNameCredit> m_NameCredits;
-		
-	friend std::ostream& operator << (std::ostream& os, const CArtistCredit& ArtistCredit);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CArtistCredit& ArtistCredit);
 
 #endif

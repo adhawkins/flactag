@@ -1,16 +1,19 @@
-#ifndef _MUSICBRAINZ_ADH_H
-#define _MUSICBRAINZ_ADH_H
+#ifndef _MBADH_MUSICBRAINZ_ADH_H
+#define _MBADH_MUSICBRAINZ_ADH_H
 
 #include <string>
 
 #include "ReleaseList.h"
 #include "Release.h"
 
-class CMusicBrainzADH
+namespace MusicBrainzADH
 {
-public:
-	CReleaseList LookupDiscID(const std::string& DiscID);
-	CRelease LookupRelease(const std::string& Release);
-};
+	class CMusicBrainzADH
+	{
+	public:
+		CReleaseList LookupDiscID(const std::string& DiscID);
+		CRelease LookupRelease(const std::string& Release);
+	};
+}
 
 #endif

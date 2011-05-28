@@ -4,7 +4,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-CDiscList::CDiscList(const XMLNode& Node)
+MusicBrainzADH::CDiscList::CDiscList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -20,19 +20,19 @@ CDiscList::CDiscList(const XMLNode& Node)
 	}
 }
 
-std::vector<CDisc> CDiscList::Discs() const
+std::vector<MusicBrainzADH::CDisc> MusicBrainzADH::CDiscList::Discs() const
 {
 	return m_Discs;
 }
 
-bool CDiscList::ContainsDiscID(const std::string& DiscID) const
+bool MusicBrainzADH::CDiscList::ContainsDiscID(const std::string& DiscID) const
 {
 	bool RetVal=false;
 	
-	std::vector<CDisc>::const_iterator ThisDisc=m_Discs.begin();
+	std::vector<MusicBrainzADH::CDisc>::const_iterator ThisDisc=m_Discs.begin();
 	while (!RetVal && ThisDisc!=m_Discs.end())
 	{
-		CDisc Disc=(*ThisDisc);
+		MusicBrainzADH::CDisc Disc=(*ThisDisc);
 		
 		if (Disc.ID()==DiscID)
 			RetVal=true;
@@ -43,12 +43,13 @@ bool CDiscList::ContainsDiscID(const std::string& DiscID) const
 	return RetVal;
 }
 
-std::ostream& operator << (std::ostream& os, const CDiscList& DiscList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CDiscList& DiscList)
 {
 	os << "Disc list:" << std::endl;
 		
-	std::vector<CDisc>::const_iterator ThisDisc=DiscList.m_Discs.begin();
-	while (ThisDisc!=DiscList.m_Discs.end())
+	std::vector<MusicBrainzADH::CDisc> Discs=DiscList.Discs();
+	std::vector<MusicBrainzADH::CDisc>::const_iterator ThisDisc=Discs.begin();
+	while (ThisDisc!=Discs.end())
 	{
 		os << *ThisDisc;
 		

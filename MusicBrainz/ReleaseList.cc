@@ -4,7 +4,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-CReleaseList::CReleaseList(const XMLNode& Node)
+MusicBrainzADH::CReleaseList::CReleaseList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -20,17 +20,18 @@ CReleaseList::CReleaseList(const XMLNode& Node)
 	}
 }
 
-std::vector<CRelease> CReleaseList::Releases() const
+std::vector<MusicBrainzADH::CRelease> MusicBrainzADH::CReleaseList::Releases() const
 {
 	return m_Releases;
 }
 
-std::ostream& operator << (std::ostream& os, const CReleaseList& ReleaseList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CReleaseList& ReleaseList)
 {
 	os << "Release list:" << std::endl;
 		
-	std::vector<CRelease>::const_iterator ThisRelease=ReleaseList.m_Releases.begin();
-	while (ThisRelease!=ReleaseList.m_Releases.end())
+	std::vector<MusicBrainzADH::CRelease> Releases=ReleaseList.Releases();
+	std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
+	while (ThisRelease!=Releases.end())
 	{
 		os << *ThisRelease;
 		

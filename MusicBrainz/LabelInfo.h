@@ -1,5 +1,5 @@
-#ifndef _LABEL_INFO_H
-#define _LABEL_INFO_H
+#ifndef _MBADH_LABEL_INFO_H
+#define _MBADH_LABEL_INFO_H
 
 #include <string>
 #include <iostream>
@@ -8,20 +8,23 @@
 
 #include "Label.h"
 
-class CLabelInfo
+namespace MusicBrainzADH
 {
-public:
-	CLabelInfo(const XMLNode& Node=XMLNode::emptyNode());
+	class CLabelInfo
+	{
+	public:
+		CLabelInfo(const XMLNode& Node=XMLNode::emptyNode());
+	
+		std::string CatalogNumber() const;
+		CLabel Label() const;
+	
+	private:
+		std::string m_CatalogNumber;
+		CLabel m_Label;
+	};
+}
 
-	std::string CatalogNumber() const;
-	CLabel Label() const;
-
-private:
-	std::string m_CatalogNumber;
-	CLabel m_Label;
-
-	friend std::ostream& operator << (std::ostream& os, const CLabelInfo& LabelInfo);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabelInfo& LabelInfo);
 
 #endif
 

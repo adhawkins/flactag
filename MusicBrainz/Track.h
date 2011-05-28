@@ -1,5 +1,5 @@
-#ifndef _TRACK_H
-#define _TRACK_H
+#ifndef _MBADH_TRACK_H
+#define _MBADH_TRACK_H
 
 #include <string>
 #include <iostream>
@@ -8,21 +8,24 @@
 
 #include "Recording.h"
 
-class CTrack
+namespace MusicBrainzADH
 {
-public:
-	CTrack(const XMLNode& Node=XMLNode::emptyNode());
+	class CTrack
+	{
+	public:
+		CTrack(const XMLNode& Node=XMLNode::emptyNode());
+	
+		int Position() const;
+		std::string Title() const;
+		CRecording Recording() const;
+			
+	private:
+		int m_Position;
+		std::string m_Title;
+		CRecording m_Recording;
+	};
+}
 
-	std::string Position() const;
-	std::string Title() const;
-	CRecording Recording() const;
-		
-private:
-	std::string m_Position;
-	std::string m_Title;
-	CRecording m_Recording;
-		
-	friend std::ostream& operator << (std::ostream& os, const CTrack& Track);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTrack& Track);
 
 #endif

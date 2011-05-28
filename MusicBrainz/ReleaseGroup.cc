@@ -1,6 +1,6 @@
 #include "ReleaseGroup.h"
 
-CReleaseGroup::CReleaseGroup(const XMLNode& Node)
+MusicBrainzADH::CReleaseGroup::CReleaseGroup(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -33,29 +33,28 @@ CReleaseGroup::CReleaseGroup(const XMLNode& Node)
 	}
 }
 
-std::string CReleaseGroup::ID() const
+std::string MusicBrainzADH::CReleaseGroup::ID() const
 {
 	return m_ID;
 }
 
-std::string CReleaseGroup::Title() const
+std::string MusicBrainzADH::CReleaseGroup::Title() const
 {
 	return m_Title;
 }
 
-CArtistCredit CReleaseGroup::ArtistCredit() const
+MusicBrainzADH::CArtistCredit MusicBrainzADH::CReleaseGroup::ArtistCredit() const
 {
 	return m_ArtistCredit;
 }
 
-
-std::ostream& operator << (std::ostream& os, const CReleaseGroup& ReleaseGroup)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CReleaseGroup& ReleaseGroup)
 {
 	os << "Release group:" << std::endl;
 		
-	os << "\tID:                  " << ReleaseGroup.m_ID << std::endl;
-	os << "\tTitle:               " << ReleaseGroup.m_Title << std::endl;
-	os << ReleaseGroup.m_ArtistCredit;
+	os << "\tID:    " << ReleaseGroup.ID() << std::endl;
+	os << "\tTitle: " << ReleaseGroup.Title() << std::endl;
+	os << ReleaseGroup.ArtistCredit();
 	
 	return os;
 }

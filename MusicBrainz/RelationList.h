@@ -1,5 +1,5 @@
-#ifndef _RELATION_LIST_H
-#define _RELATION_LIST_H
+#ifndef _MBADH_RELATION_LIST_H
+#define _MBADH_RELATION_LIST_H
 
 #include <vector>
 
@@ -7,17 +7,20 @@
 
 #include "Relation.h"
 
-class CRelationList
+namespace MusicBrainzADH
 {
-public:
-	CRelationList(const XMLNode& Node=XMLNode::emptyNode());
-	
-	std::vector<CRelation> Relations() const;
-	
-private:
-	std::vector<CRelation> m_Relations;
+	class CRelationList
+	{
+	public:
+		CRelationList(const XMLNode& Node=XMLNode::emptyNode());
+		
+		std::vector<CRelation> Relations() const;
+		
+	private:
+		std::vector<CRelation> m_Relations;
+	};
+}
 
-	friend std::ostream& operator << (std::ostream& os, const CRelationList& Relations);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelationList& RelationList);
 
 #endif

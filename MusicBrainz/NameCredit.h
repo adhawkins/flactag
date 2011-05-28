@@ -1,5 +1,5 @@
-#ifndef _NAME_CREDIT_H
-#define _NAME_CREDIT_H
+#ifndef _MBADH_NAME_CREDIT_H
+#define _MBADH_NAME_CREDIT_H
 
 #include <string>
 #include <iostream>
@@ -8,21 +8,24 @@
 
 #include "Artist.h"
 
-class CNameCredit
+namespace MusicBrainzADH
 {
-public:
-	CNameCredit(const XMLNode& Node=XMLNode::emptyNode());
+	class CNameCredit
+	{
+	public:
+		CNameCredit(const XMLNode& Node=XMLNode::emptyNode());
+	
+		std::string JoinPhrase() const;
+		std::string Name() const;
+		CArtist Artist() const;
+	
+	private:
+		std::string m_JoinPhrase;
+		std::string m_Name;
+		CArtist m_Artist;
+	};
+}
 
-	std::string JoinPhrase() const;
-	std::string Name() const;
-	CArtist Artist() const;
-
-private:
-	std::string m_JoinPhrase;
-	std::string m_Name;
-	CArtist m_Artist;
-
-	friend std::ostream& operator << (std::ostream& os, const CNameCredit& NameCredit);
-};
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNameCredit& NameCredit);
 
 #endif

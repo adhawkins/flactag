@@ -1,6 +1,6 @@
 #include "MediumList.h"
 
-CMediumList::CMediumList(const XMLNode& Node)
+MusicBrainzADH::CMediumList::CMediumList(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -16,17 +16,18 @@ CMediumList::CMediumList(const XMLNode& Node)
 	}
 }
 
-std::vector<CMedium> CMediumList::Media() const
+std::vector<MusicBrainzADH::CMedium> MusicBrainzADH::CMediumList::Media() const
 {
 	return m_Media;
 }
 
-std::ostream& operator << (std::ostream& os, const CMediumList& MediumList)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMediumList& MediumList)
 {
 	os << "Medium list:" << std::endl;
 		
-	std::vector<CMedium>::const_iterator ThisMedium=MediumList.m_Media.begin();
-	while (ThisMedium!=MediumList.m_Media.end())
+	std::vector<MusicBrainzADH::CMedium> Media=MediumList.Media();
+	std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
+	while (ThisMedium!=Media.end())
 	{
 		os << *ThisMedium;
 		

@@ -1,6 +1,6 @@
 #include "Artist.h"
 
-CArtist::CArtist(const XMLNode& Node)
+MusicBrainzADH::CArtist::CArtist(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -37,34 +37,34 @@ CArtist::CArtist(const XMLNode& Node)
 	}
 }
 
-std::string CArtist::ID() const
+std::string MusicBrainzADH::CArtist::ID() const
 {
 	return m_ID;
 }
 
-std::string CArtist::Name() const
+std::string MusicBrainzADH::CArtist::Name() const
 {
 	return m_Name;
 }
 
-std::string CArtist::SortName() const
+std::string MusicBrainzADH::CArtist::SortName() const
 {
 	return m_SortName;
 }
 
-std::string CArtist::Disambiguation() const
+std::string MusicBrainzADH::CArtist::Disambiguation() const
 {
 	return m_Disambiguation;
 }
 
-std::ostream& operator << (std::ostream& os, const CArtist& Artist)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CArtist& Artist)
 {
 	os << "Artist:" << std::endl;
 		
-	os << "\tID:             " << Artist.m_ID << std::endl;
-	os << "\tName:           " << Artist.m_Name << std::endl;
-	os << "\tSort name:      " << Artist.m_SortName << std::endl;
-	os << "\tDisambiguation: " << Artist.m_Disambiguation << std::endl;
+	os << "\tID:             " << Artist.ID() << std::endl;
+	os << "\tName:           " << Artist.Name() << std::endl;
+	os << "\tSort name:      " << Artist.SortName() << std::endl;
+	os << "\tDisambiguation: " << Artist.Disambiguation() << std::endl;
 
 	return os;
 }

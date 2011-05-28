@@ -1,6 +1,6 @@
 #include "ArtistCredit.h"
 
-CArtistCredit::CArtistCredit(const XMLNode& Node)
+MusicBrainzADH::CArtistCredit::CArtistCredit(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -16,17 +16,18 @@ CArtistCredit::CArtistCredit(const XMLNode& Node)
 	}
 }
 
-std::vector<CNameCredit> CArtistCredit::NameCredits() const
+std::vector<MusicBrainzADH::CNameCredit> MusicBrainzADH::CArtistCredit::NameCredits() const
 {
 	return m_NameCredits;
 }
 
-std::ostream& operator << (std::ostream& os, const CArtistCredit& ArtistCredit)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CArtistCredit& ArtistCredit)
 {
 	os << "Artist credit:" << std::endl;
-		
-	std::vector<CNameCredit>::const_iterator ThisNameCredit=ArtistCredit.m_NameCredits.begin();
-	while (ThisNameCredit!=ArtistCredit.m_NameCredits.end())
+	
+	std::vector<MusicBrainzADH::CNameCredit> NameCredits=ArtistCredit.NameCredits();	
+	std::vector<MusicBrainzADH::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+	while (ThisNameCredit!=NameCredits.end())
 	{
 		os << *ThisNameCredit;
 		

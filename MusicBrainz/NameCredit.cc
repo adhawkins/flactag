@@ -1,6 +1,6 @@
 #include "NameCredit.h"
 
-CNameCredit::CNameCredit(const XMLNode& Node)
+MusicBrainzADH::CNameCredit::CNameCredit(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -33,28 +33,28 @@ CNameCredit::CNameCredit(const XMLNode& Node)
 	}
 }
 
-std::string CNameCredit::JoinPhrase() const
+std::string MusicBrainzADH::CNameCredit::JoinPhrase() const
 {
 	return m_JoinPhrase;
 }
 
-std::string CNameCredit::Name() const
+std::string MusicBrainzADH::CNameCredit::Name() const
 {
 	return m_Name;
 }
 
-CArtist CNameCredit::Artist() const
+MusicBrainzADH::CArtist MusicBrainzADH::CNameCredit::Artist() const
 {
 	return m_Artist;
 }
 
-std::ostream& operator << (std::ostream& os, const CNameCredit& NameCredit)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNameCredit& NameCredit)
 {
 	os << "Name credit:" << std::endl;
 		
-	os << "\tJoin phrase: " << NameCredit.m_JoinPhrase << std::endl;
-	os << "\tName:        " << NameCredit.m_Name << std::endl;
-	os << NameCredit.m_Artist << std::endl;
+	os << "\tJoin phrase: " << NameCredit.JoinPhrase() << std::endl;
+	os << "\tName:        " << NameCredit.Name() << std::endl;
+	os << NameCredit.Artist() << std::endl;
 		
 	return os;
 }

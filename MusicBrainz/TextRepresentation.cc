@@ -1,6 +1,6 @@
 #include "TextRepresentation.h"
 
-CTextRepresentation::CTextRepresentation(const XMLNode& Node)
+MusicBrainzADH::CTextRepresentation::CTextRepresentation(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -26,22 +26,23 @@ CTextRepresentation::CTextRepresentation(const XMLNode& Node)
 	}
 }
 
-std::string CTextRepresentation::Language() const
+std::string MusicBrainzADH::CTextRepresentation::Language() const
 {
 	return m_Language;
 }
 
-std::string CTextRepresentation::Script() const
+std::string MusicBrainzADH::CTextRepresentation::Script() const
 {
 	return m_Script;
 }
 
-std::ostream& operator << (std::ostream& os, const CTextRepresentation& TextRepresentation)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTextRepresentation& TextRepresentation)
 {
 	os << "\tText Representation:" << std::endl;
 		
-	os << "\t\tLanguage: " << TextRepresentation.m_Language << std::endl;
-	os << "\t\tScript:   " << TextRepresentation.m_Script << std::endl;
+	os << "\t\tLanguage: " << TextRepresentation.Language() << std::endl;
+	os << "\t\tScript:   " << TextRepresentation.Script() << std::endl;
+	
 	return os;
 }
 

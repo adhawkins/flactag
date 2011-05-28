@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-CLabel::CLabel(const XMLNode& Node)
+MusicBrainzADH::CLabel::CLabel(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -39,34 +39,34 @@ CLabel::CLabel(const XMLNode& Node)
 	}
 }
 
-std::string CLabel::ID() const
+std::string MusicBrainzADH::CLabel::ID() const
 {
 	return m_ID;
 }
 
-std::string CLabel::Name() const
+std::string MusicBrainzADH::CLabel::Name() const
 {
 	return m_Name;
 }
 
-std::string CLabel::SortName() const
+std::string MusicBrainzADH::CLabel::SortName() const
 {
 	return m_SortName;
 }
 
-std::string CLabel::LabelCode() const
+std::string MusicBrainzADH::CLabel::LabelCode() const
 {
 	return m_LabelCode;
 }
 
-std::ostream& operator << (std::ostream& os, const CLabel& Label)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabel& Label)
 {
 	os << "Label:" << std::endl;
 		
-	os << "\tID:         " << Label.m_ID << std::endl;
-	os << "\tName:       " << Label.m_Name << std::endl;
-	os << "\tSort name:  " << Label.m_SortName << std::endl;
-	os << "\tLabel code: " << Label.m_LabelCode << std::endl;
+	os << "\tID:         " << Label.ID() << std::endl;
+	os << "\tName:       " << Label.Name() << std::endl;
+	os << "\tSort name:  " << Label.SortName() << std::endl;
+	os << "\tLabel code: " << Label.LabelCode() << std::endl;
 		
 	return os;
 }

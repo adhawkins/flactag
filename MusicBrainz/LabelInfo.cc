@@ -1,6 +1,6 @@
 #include "LabelInfo.h"
 
-CLabelInfo::CLabelInfo(const XMLNode& Node)
+MusicBrainzADH::CLabelInfo::CLabelInfo(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
@@ -30,22 +30,22 @@ CLabelInfo::CLabelInfo(const XMLNode& Node)
 	}
 }
 
-std::string CLabelInfo::CatalogNumber() const
+std::string MusicBrainzADH::CLabelInfo::CatalogNumber() const
 {
 	return m_CatalogNumber;
 }
 
-CLabel CLabelInfo::Label() const
+MusicBrainzADH::CLabel MusicBrainzADH::CLabelInfo::Label() const
 {
 	return m_Label;
 }
 
-std::ostream& operator << (std::ostream& os, const CLabelInfo& LabelInfo)
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabelInfo& LabelInfo)
 {
 	os << "Label info:" << std::endl;
 		
-	os << "\tCatalog number: " << LabelInfo.m_CatalogNumber << std::endl;
-	os << LabelInfo.m_Label << std::endl;
+	os << "\tCatalog number: " << LabelInfo.CatalogNumber() << std::endl;
+	os << LabelInfo.Label() << std::endl;
 		
 	return os;
 }

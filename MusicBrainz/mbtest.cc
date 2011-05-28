@@ -5,10 +5,10 @@
 
 int main(int argc, const char *argv[])
 {
-	CMusicBrainzADH MB;
+	MusicBrainzADH::CMusicBrainzADH MB;
 
-	//CRelease Test=MB.LookupRelease("8fd13191-2d9a-4670-b789-0c99a06278e0");
-	//CRelease Test=MB.LookupRelease("ae8c2094-f3a8-45f8-8c1b-09d069425526");
+	//MusicBrainzADH::CRelease Test=MB.LookupRelease("8fd13191-2d9a-4670-b789-0c99a06278e0");
+	//MusicBrainzADH::CRelease Test=MB.LookupRelease("ae8c2094-f3a8-45f8-8c1b-09d069425526");
 	//std::cout << Test << std::endl;
 	//return 0;
 		
@@ -18,22 +18,26 @@ int main(int argc, const char *argv[])
 	if (argc==2)
 		DiscID=argv[1];
 		
-	CReleaseList ReleaseList=MB.LookupDiscID(DiscID);
+	MusicBrainzADH::CReleaseList ReleaseList=MB.LookupDiscID(DiscID);
 	
-	std::vector<CRelease>Releases=ReleaseList.Releases();
-	std::vector<CRelease>::const_iterator ThisRelease=Releases.begin();
+	std::vector<MusicBrainzADH::CRelease>Releases=ReleaseList.Releases();
+	std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
 	while (ThisRelease!=Releases.end())
 	{
-		CRelease Release=(*ThisRelease);
+		MusicBrainzADH::CRelease Release=(*ThisRelease);
 		
-		CRelease FullRelease=MB.LookupRelease(Release.ID());
+		MusicBrainzADH::CRelease FullRelease=MB.LookupRelease(Release.ID());
 		
+		std::cout << "Full release: " << std::endl;
+			
 		std::cout << FullRelease << std::endl;
+			
+		std::cout << "Release group title: '" << FullRelease.ReleaseGroup().Title() << "'" << std::endl;
 			
 		std::cout << std::endl << std::endl << "Media matching " << DiscID << ":" << std::endl;
 			
-		std::vector<CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
-		std::vector<CMedium>::const_iterator ThisMedium=Media.begin();
+		std::vector<MusicBrainzADH::CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
+		std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
 		while (ThisMedium!=Media.end())
 		{
 			std::cout << *ThisMedium << std::endl;
