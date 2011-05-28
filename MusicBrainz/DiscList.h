@@ -14,7 +14,9 @@ public:
 	CDiscList(const XMLNode& Node=XMLNode::emptyNode());
 	
 	std::vector<CDisc> Discs() const;
-	
+
+	bool ContainsDiscID(const std::string& DiscID) const;
+			
 private:
 	std::vector<CDisc> m_Discs;
 

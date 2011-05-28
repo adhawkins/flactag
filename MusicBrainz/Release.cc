@@ -150,6 +150,28 @@ CMediumList CRelease::MediumList() const
 	return m_MediumList;
 }
 
+std::vector<CMedium> CRelease::MediaMatchingDiscID(const std::string& DiscID) const
+{
+	std::vector<CMedium> Ret;
+	
+	std::vector<CMedium> Media=m_MediumList.Media();
+	
+	std::vector<CMedium>::const_iterator ThisMedium=Media.begin();
+	while (ThisMedium!=Media.end())
+	{
+		CMedium Medium=(*ThisMedium);
+		
+		std::cout << "Checking medium " << Medium.Position() << " for disc id '" << DiscID << "'" << std::endl;
+			
+		if (Medium.ContainsDiscID(DiscID))
+			Ret.push_back(Medium);
+			
+		++ThisMedium;
+	}
+	
+	return Ret;
+}
+
 std::ostream& operator << (std::ostream& os, const CRelease& Release)
 {
 	os << "Release:" << std::endl;

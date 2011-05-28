@@ -16,12 +16,16 @@ public:
 
 	std::string Position() const;
 	std::string Format() const;
+	std::string Title() const;
 	CDiscList DiscList() const;
 	CTrackList TrackList() const;
-	
+
+	bool ContainsDiscID(const std::string& DiscID) const;
+			
 private:
 	std::string m_Position;
 	std::string m_Format;
+	std::string m_Title;
 	CDiscList m_DiscList;
 	CTrackList m_TrackList;
 

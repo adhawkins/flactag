@@ -22,6 +22,10 @@ CMedium::CMedium(const XMLNode& Node)
 			{
 				m_Format=NodeValue;
 			}
+			else if ("title"==NodeName)
+			{
+				m_Title=NodeValue;
+			}
 			else if ("disc-list"==NodeName)
 			{
 				m_DiscList=CDiscList(ChildNode);
@@ -48,6 +52,11 @@ std::string CMedium::Format() const
 	return m_Format;
 }
 
+std::string CMedium::Title() const
+{
+	return m_Title;
+}
+
 CDiscList CMedium::DiscList() const
 {
 	return m_DiscList;
@@ -58,12 +67,20 @@ CTrackList CMedium::TrackList() const
 	return m_TrackList;
 }
 
+bool CMedium::ContainsDiscID(const std::string& DiscID) const
+{
+	std::cout << "Checking medium position " << m_Position << " for disc id '" << DiscID << "'" << std::endl;
+		
+	return m_DiscList.ContainsDiscID(DiscID);
+}
+
 std::ostream& operator << (std::ostream& os, const CMedium& Medium)
 {
 	os << "Medium:" << std::endl;
 		
 	os << "\tPosition: " << Medium.m_Position << std::endl;
 	os << "\tFormat:   " << Medium.m_Format << std::endl;
+	os << "\tTitle:    " << Medium.m_Title << std::endl;
 	os << Medium.m_DiscList << std::endl;
 	os << Medium.m_TrackList << std::endl;
 		

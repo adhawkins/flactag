@@ -25,6 +25,26 @@ std::vector<CDisc> CDiscList::Discs() const
 	return m_Discs;
 }
 
+bool CDiscList::ContainsDiscID(const std::string& DiscID) const
+{
+	bool RetVal=false;
+	
+	std::vector<CDisc>::const_iterator ThisDisc=m_Discs.begin();
+	while (!RetVal && ThisDisc!=m_Discs.end())
+	{
+		CDisc Disc=(*ThisDisc);
+		
+		std::cout << "Checking disc id '" << Disc.ID() << "' against '" << DiscID << "'" << std::endl;
+			
+		if (Disc.ID()==DiscID)
+			RetVal=true;
+			
+		++ThisDisc;
+	}
+	
+	return RetVal;
+}
+
 std::ostream& operator << (std::ostream& os, const CDiscList& DiscList)
 {
 	os << "Disc list:" << std::endl;

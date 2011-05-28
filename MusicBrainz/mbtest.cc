@@ -30,6 +30,19 @@ int main(int argc, const char *argv[])
 		
 		std::cout << FullRelease << std::endl;
 			
+		std::cout << std::endl << std::endl << "Media matching " << DiscID << ":" << std::endl;
+			
+		std::vector<CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
+		std::vector<CMedium>::const_iterator ThisMedium=Media.begin();
+		while (ThisMedium!=Media.end())
+		{
+			std::cout << *ThisMedium << std::endl;
+				
+			++ThisMedium;
+		}
+			
+		std::cout << std::endl << std::endl;
+		
 		++ThisRelease;
 	}
 	

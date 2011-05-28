@@ -31,6 +31,8 @@ public:
 	CArtistCredit ArtistCredit() const;
 	CReleaseGroup ReleaseGroup() const;
 	CMediumList MediumList() const;
+	
+	std::vector<CMedium> MediaMatchingDiscID(const std::string& DiscID) const;
 		
 private:
 	std::string m_ID;
