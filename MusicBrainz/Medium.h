@@ -6,30 +6,37 @@
 
 #include "xmlParser/xmlParser.h"
 
-#include "DiscList.h"
-#include "TrackList.h"
+#include "GenericList.h"
 
 namespace MusicBrainzADH
 {
+	class CDisc;
+	class CTrack;
+	
 	class CMedium
 	{
 	public:
 		CMedium(const XMLNode& Node=XMLNode::emptyNode());
+		CMedium(const CMedium& Other);
+		CMedium& operator =(const CMedium& Other);
+		~CMedium();
 	
+		std::string Title() const;
 		int Position() const;
 		std::string Format() const;
-		std::string Title() const;
-		CDiscList DiscList() const;
-		CTrackList TrackList() const;
+		CGenericList<CDisc> *DiscList() const;
+		CGenericList<CTrack> *TrackList() const;
 	
 		bool ContainsDiscID(const std::string& DiscID) const;
 				
 	private:
+		void Cleanup();
+		
+		std::string m_Title;
 		int m_Position;
 		std::string m_Format;
-		std::string m_Title;
-		CDiscList m_DiscList;
-		CTrackList m_TrackList;
+		CGenericList<CDisc> *m_DiscList;
+		CGenericList<CTrack> *m_TrackList;
 	};
 }
 

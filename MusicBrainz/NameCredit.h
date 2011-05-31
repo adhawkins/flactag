@@ -6,23 +6,28 @@
 
 #include "xmlParser/xmlParser.h"
 
-#include "Artist.h"
-
 namespace MusicBrainzADH
 {
+	class CArtist;
+
 	class CNameCredit
 	{
 	public:
 		CNameCredit(const XMLNode& Node=XMLNode::emptyNode());
+		CNameCredit(const CNameCredit& Other);
+		CNameCredit& operator =(const CNameCredit& Other);
+		~CNameCredit();
 	
 		std::string JoinPhrase() const;
 		std::string Name() const;
-		CArtist Artist() const;
+		CArtist *Artist() const;
 	
 	private:
+		void Cleanup();
+		
 		std::string m_JoinPhrase;
 		std::string m_Name;
-		CArtist m_Artist;
+		CArtist *m_Artist;
 	};
 }
 

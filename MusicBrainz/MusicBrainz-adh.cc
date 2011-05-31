@@ -6,14 +6,18 @@
 #include "xmlParser/xmlParser.h"
 
 #include "HTTPFetch.h"
-#include "ReleaseList.h"
 
-MusicBrainzADH::CReleaseList MusicBrainzADH::CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
+#include "GenericList.h"
+#include "Release.h"
+#include "Metadata.h"
+#include "Disc.h"
+
+MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> MusicBrainzADH::CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
 {
 	//Will this work soon (and return disc IDs as well)?
 	//http://www.musicbrainz.org/ws/2/discid/arIS30RPWowvwNEqsqdDnZzDGhk-?inc=artists+labels+recordings+release-groups+artist-credits
 	
-	MusicBrainzADH::CReleaseList ReleaseList;
+	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList;
 	
 	std::stringstream os;
 	os << "/ws/2/discid/" << DiscID;
@@ -27,10 +31,11 @@ MusicBrainzADH::CReleaseList MusicBrainzADH::CMusicBrainzADH::LookupDiscID(const
 
 		XMLNode TopNode=XMLNode::parseString((const char *)&Data[0]);			
 		XMLNode MetadataNode=TopNode.getChildNode("metadata");
-		XMLNode DiscNode=MetadataNode.getChildNode("disc");
-		XMLNode ReleaseListNode=DiscNode.getChildNode("release-list");
-			
-		ReleaseList=CReleaseList(ReleaseListNode);
+		CMetadata Metadata(MetadataNode);
+		
+		CDisc *Disc=Metadata.Disc();
+		if (Disc && Disc->ReleaseList())
+			ReleaseList=*Disc->ReleaseList();
 	}
 	
 	return ReleaseList;
@@ -53,8 +58,9 @@ MusicBrainzADH::CRelease MusicBrainzADH::CMusicBrainzADH::LookupRelease(const st
 
 		XMLNode TopNode=XMLNode::parseString((const char *)&Data[0]);			
 		XMLNode MetadataNode=TopNode.getChildNode("metadata");
-		XMLNode ReleaseNode=MetadataNode.getChildNode("release");
-		Release=CRelease(ReleaseNode);
+		CMetadata Metadata(MetadataNode);
+		if (Metadata.Release())
+			Release=*Metadata.Release();
 	}
 		
 	return Release;

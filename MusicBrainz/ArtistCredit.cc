@@ -1,5 +1,6 @@
 #include "ArtistCredit.h"
 
+
 MusicBrainzADH::CArtistCredit::CArtistCredit(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
@@ -14,6 +15,21 @@ MusicBrainzADH::CArtistCredit::CArtistCredit(const XMLNode& Node)
 			m_NameCredits.push_back(CNameCredit(NameCreditNode));
 		}
 	}
+}
+
+MusicBrainzADH::CArtistCredit::CArtistCredit(const CArtistCredit& Other)
+{
+	*this=Other;
+}
+
+MusicBrainzADH::CArtistCredit& MusicBrainzADH::CArtistCredit::operator =(const CArtistCredit& Other)
+{
+	if (this!=&Other)
+	{
+		m_NameCredits=Other.m_NameCredits;
+	}
+	
+	return *this;
 }
 
 std::vector<MusicBrainzADH::CNameCredit> MusicBrainzADH::CArtistCredit::NameCredits() const

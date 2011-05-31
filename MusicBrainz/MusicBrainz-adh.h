@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "ReleaseList.h"
+#include "GenericList.h"
 #include "Release.h"
 
 namespace MusicBrainzADH
@@ -11,7 +11,7 @@ namespace MusicBrainzADH
 	class CMusicBrainzADH
 	{
 	public:
-		CReleaseList LookupDiscID(const std::string& DiscID);
+		CGenericList<CRelease> LookupDiscID(const std::string& DiscID);
 		CRelease LookupRelease(const std::string& Release);
 	};
 }

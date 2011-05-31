@@ -1,6 +1,9 @@
 #include "NameCredit.h"
 
+#include "Artist.h"
+
 MusicBrainzADH::CNameCredit::CNameCredit(const XMLNode& Node)
+:	m_Artist(0)
 {
 	if (!Node.isEmpty())
 	{
@@ -23,7 +26,7 @@ MusicBrainzADH::CNameCredit::CNameCredit(const XMLNode& Node)
 			}
 			else if ("artist"==NodeName)
 			{
-				m_Artist=CArtist(ChildNode);
+				m_Artist=new CArtist(ChildNode);
 			}
 			else
 			{
@@ -31,6 +34,39 @@ MusicBrainzADH::CNameCredit::CNameCredit(const XMLNode& Node)
 			}
 		}
 	}
+}
+
+MusicBrainzADH::CNameCredit::CNameCredit(const CNameCredit& Other)
+:	m_Artist(0)
+{
+	*this=Other;
+}
+
+MusicBrainzADH::CNameCredit& MusicBrainzADH::CNameCredit::operator =(const CNameCredit& Other)
+{
+	if (this!=&Other)
+	{
+		Cleanup();
+		
+		m_JoinPhrase=Other.m_JoinPhrase;
+		m_Name=Other.m_Name;
+		
+		if (Other.m_Artist)
+			m_Artist=new CArtist(*Other.m_Artist);
+	}
+	
+	return *this;
+}
+
+MusicBrainzADH::CNameCredit::~CNameCredit()
+{
+	Cleanup();
+}
+
+void MusicBrainzADH::CNameCredit::Cleanup()
+{
+	delete m_Artist;
+	m_Artist=0;
 }
 
 std::string MusicBrainzADH::CNameCredit::JoinPhrase() const
@@ -43,7 +79,7 @@ std::string MusicBrainzADH::CNameCredit::Name() const
 	return m_Name;
 }
 
-MusicBrainzADH::CArtist MusicBrainzADH::CNameCredit::Artist() const
+MusicBrainzADH::CArtist *MusicBrainzADH::CNameCredit::Artist() const
 {
 	return m_Artist;
 }
@@ -54,7 +90,9 @@ std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNameCredit& 
 		
 	os << "\tJoin phrase: " << NameCredit.JoinPhrase() << std::endl;
 	os << "\tName:        " << NameCredit.Name() << std::endl;
-	os << NameCredit.Artist() << std::endl;
+
+	if (NameCredit.Artist())
+		os << *NameCredit.Artist() << std::endl;
 		
 	return os;
 }

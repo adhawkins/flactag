@@ -1,7 +1,9 @@
 CPPSRCS=xmlParser/xmlParser.cpp
-CCSRCS=MusicBrainz-adh.cc HTTPFetch.cc ReleaseList.cc Release.cc TextRepresentation.cc RelationList.cc \
-	Relation.cc LabelInfoList.cc LabelInfo.cc Label.cc ArtistCredit.cc NameCredit.cc Artist.cc \
-	ReleaseGroup.cc MediumList.cc Medium.cc DiscList.cc Disc.cc TrackList.cc Track.cc Recording.cc
+CCSRCS=Alias.cc Annotation.cc Artist.cc ArtistCredit.cc Attribute.cc CDStub.cc Collection.cc \
+				Disc.cc FreeDBDisc.cc HTTPFetch.cc ISRC.cc Label.cc LabelInfo.cc Lifespan.cc \
+				ListTest.cc Medium.cc Metadata.cc MusicBrainz-adh.cc NameCredit.cc NoneMBTrack.cc \
+				PUID.cc Rating.cc Recording.cc Relation.cc Release.cc ReleaseGroup.cc Tag.cc \
+				TextRepresentation.cc Track.cc UserRating.cc UserTag.cc Work.cc
 	
 PROGSRCS=mbtest.cc
 

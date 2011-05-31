@@ -1,7 +1,10 @@
 #include <iostream>
-
 #include "MusicBrainz-adh.h"
-#include "ReleaseList.h"
+
+#include "GenericList.h"
+#include "Release.h"
+#include "ReleaseGroup.h"
+#include "Medium.h"
 
 int main(int argc, const char *argv[])
 {
@@ -18,9 +21,9 @@ int main(int argc, const char *argv[])
 	if (argc==2)
 		DiscID=argv[1];
 		
-	MusicBrainzADH::CReleaseList ReleaseList=MB.LookupDiscID(DiscID);
+	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList=MB.LookupDiscID(DiscID);
 	
-	std::vector<MusicBrainzADH::CRelease>Releases=ReleaseList.Releases();
+	std::vector<MusicBrainzADH::CRelease>Releases=ReleaseList.Items();
 	std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
 	while (ThisRelease!=Releases.end())
 	{
@@ -32,7 +35,7 @@ int main(int argc, const char *argv[])
 			
 		std::cout << FullRelease << std::endl;
 			
-		std::cout << "Release group title: '" << FullRelease.ReleaseGroup().Title() << "'" << std::endl;
+		std::cout << "Release group title: '" << FullRelease.ReleaseGroup()->Title() << "'" << std::endl;
 			
 		std::cout << std::endl << std::endl << "Media matching " << DiscID << ":" << std::endl;
 			

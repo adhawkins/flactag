@@ -6,52 +6,63 @@
 
 #include "xmlParser/xmlParser.h"
 
-#include "TextRepresentation.h"
-#include "RelationList.h"
-#include "LabelInfoList.h"
-#include "ArtistCredit.h"
-#include "ReleaseGroup.h"
-#include "MediumList.h"
+#include "GenericList.h"
 
 namespace MusicBrainzADH
 {
+	class CTextRepresentation;
+	class CArtistCredit;
+	class CReleaseGroup;
+	class CLabelInfo;
+	class CMedium;
+	class CRelation;
+	
 	class CRelease
 	{
 	public:
 		CRelease(const XMLNode& Node=XMLNode::emptyNode());
+		CRelease(const CRelease& Other);
+		CRelease& operator =(const CRelease& Other);
+		~CRelease();
 		
 		std::string ID() const;
 		std::string Title() const;
 		std::string Status() const;
 		std::string Quality() const;
-		CTextRepresentation TextRepresentation() const;
+		std::string Disambiguation() const;
+		std::string Packaging() const;
+		CTextRepresentation *TextRepresentation() const;
+		CArtistCredit *ArtistCredit() const;
+		CReleaseGroup *ReleaseGroup() const;
 		std::string Date() const;
 		std::string Country() const;
-		std::string ASIN() const;
 		std::string Barcode() const;
-		CRelationList RelationList() const;
-		CLabelInfoList LabelInfoList() const;
-		CArtistCredit ArtistCredit() const;
-		CReleaseGroup ReleaseGroup() const;
-		CMediumList MediumList() const;
+		std::string ASIN() const;
+		CGenericList<CLabelInfo> *LabelInfoList() const;
+		CGenericList<CMedium> *MediumList() const;
+		CGenericList<CRelation> *RelationList() const;
 		
 		std::vector<CMedium> MediaMatchingDiscID(const std::string& DiscID) const;
 			
 	private:
+		void Cleanup();
+		
 		std::string m_ID;
 		std::string m_Title;
 		std::string m_Status;
 		std::string m_Quality;
-		CTextRepresentation m_TextRepresentation;
+		std::string m_Disambiguation;
+		std::string m_Packaging;
+		CTextRepresentation *m_TextRepresentation;
+		CArtistCredit *m_ArtistCredit;
+		CReleaseGroup *m_ReleaseGroup;
 		std::string m_Date;
 		std::string m_Country;
-		std::string m_ASIN;
 		std::string m_Barcode;
-		CRelationList m_RelationList;
-		CLabelInfoList m_LabelInfoList;
-		CArtistCredit m_ArtistCredit;
-		CReleaseGroup m_ReleaseGroup;
-		CMediumList m_MediumList;
+		std::string m_ASIN;
+		CGenericList<CLabelInfo> *m_LabelInfoList;
+		CGenericList<CMedium> *m_MediumList;
+		CGenericList<CRelation> *m_RelationList;
 	};
 }
 

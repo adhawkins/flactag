@@ -6,23 +6,28 @@
 
 #include "xmlParser/xmlParser.h"
 
-#include "Recording.h"
-
 namespace MusicBrainzADH
 {
+	class CRecording;
+	
 	class CTrack
 	{
 	public:
 		CTrack(const XMLNode& Node=XMLNode::emptyNode());
+		CTrack(const CTrack& Other);
+		CTrack& operator =(const CTrack& Other);
+		~CTrack();
 	
 		int Position() const;
 		std::string Title() const;
-		CRecording Recording() const;
+		CRecording *Recording() const;
 			
 	private:
+		void Cleanup();
+		
 		int m_Position;
 		std::string m_Title;
-		CRecording m_Recording;
+		CRecording *m_Recording;
 	};
 }
 

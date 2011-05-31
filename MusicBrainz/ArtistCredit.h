@@ -14,6 +14,8 @@ namespace MusicBrainzADH
 	{
 	public:
 		CArtistCredit(const XMLNode& Node=XMLNode::emptyNode());
+		CArtistCredit(const CArtistCredit& Other);
+		CArtistCredit& operator =(const CArtistCredit& Other);
 	
 		std::vector<CNameCredit> NameCredits() const;
 				

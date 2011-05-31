@@ -6,21 +6,26 @@
 
 #include "xmlParser/xmlParser.h"
 
-#include "Label.h"
-
 namespace MusicBrainzADH
 {
+	class CLabel;
+	
 	class CLabelInfo
 	{
 	public:
 		CLabelInfo(const XMLNode& Node=XMLNode::emptyNode());
+		CLabelInfo(const CLabelInfo& Other);
+		CLabelInfo& operator =(const CLabelInfo& Other);
+		~CLabelInfo();
 	
 		std::string CatalogNumber() const;
-		CLabel Label() const;
+		CLabel *Label() const;
 	
 	private:
+		void Cleanup();
+		
 		std::string m_CatalogNumber;
-		CLabel m_Label;
+		CLabel *m_Label;
 	};
 }
 

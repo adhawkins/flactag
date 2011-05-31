@@ -26,6 +26,22 @@ MusicBrainzADH::CTextRepresentation::CTextRepresentation(const XMLNode& Node)
 	}
 }
 
+MusicBrainzADH::CTextRepresentation::CTextRepresentation(const CTextRepresentation& Other)
+{
+	*this=Other;
+}
+
+MusicBrainzADH::CTextRepresentation& MusicBrainzADH::CTextRepresentation::operator =(const CTextRepresentation& Other)
+{
+	if (this!=&Other)
+	{
+		m_Language=Other.m_Language;
+		m_Script=Other.m_Script;
+	}
+	
+	return *this;
+}
+
 std::string MusicBrainzADH::CTextRepresentation::Language() const
 {
 	return m_Language;

@@ -12,6 +12,8 @@ namespace MusicBrainzADH
 	{
 	public:
 		CTextRepresentation(const XMLNode& Node=XMLNode::emptyNode());
+		CTextRepresentation(const CTextRepresentation& Other);
+		CTextRepresentation& operator =(const CTextRepresentation& Other);
 		
 		std::string Language() const;
 		std::string Script() const;
