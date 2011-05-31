@@ -10,7 +10,7 @@ FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
-						WriteInfo.o HTTPFetch.o
+						WriteInfo.o
 
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
@@ -85,8 +85,11 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	@$(CXX) -MM $(CXXFLAGS) $< | \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
-flactag: $(FLACTAGOBJS)
-	g++ `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
+MusicBrainz/libmusicbrainz-adh.a: .phony
+	$(MAKE) -C MusicBrainz
+	
+flactag: $(FLACTAGOBJS) MusicBrainz/libmusicbrainz-adh.a
+	g++ `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg $^ 
 
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^
