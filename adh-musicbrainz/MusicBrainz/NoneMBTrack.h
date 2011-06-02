@@ -1,0 +1,31 @@
+#ifndef _NONE_MB_TRACK_H
+#define _NONE_MB_TRACK_H
+
+#include <string>
+#include <iostream>
+
+#include "xmlParser/xmlParser.h"
+
+namespace MusicBrainzADH
+{
+	class CNoneMBTrack
+	{
+	public:
+		CNoneMBTrack(const XMLNode& Node);
+		CNoneMBTrack(const CNoneMBTrack& Other);
+		CNoneMBTrack& operator =(const CNoneMBTrack& Other);
+
+		std::string Title() const;
+		std::string Artist() const;
+		std::string Length() const;
+	
+	private:
+		std::string m_Title;
+		std::string m_Artist;
+		std::string m_Length;
+	};
+}
+
+std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNoneMBTrack& NoneMBTrack);
+
+#endif
