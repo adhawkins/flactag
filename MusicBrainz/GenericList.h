@@ -51,8 +51,7 @@ std::ostream& operator << (std::ostream& os, MusicBrainzADH::CGenericList<T>& Li
 	TVectorConstIterator ThisItem=Items.begin();
 	while (ThisItem!=Items.end())
 	{
-		T Item=*ThisItem;
-		os << Item << std::endl;
+		os << *ThisItem << std::endl;
 		
 		++ThisItem;
 	}
