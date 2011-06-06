@@ -77,6 +77,8 @@ bool CConfigFile::LoadFile(const std::string& FileName)
 				}
 			}
 		}			
+		
+		fclose(fptr);
 	}
 	
 	return RetVal;
