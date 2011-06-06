@@ -102,10 +102,10 @@ void CUTF8Tag::Convert()
 		}
 	
 		if (In)
-			free(In);
+			delete[] In;
 			
 		if (Out)
-			free(Out);
+			delete[] Out;
 			
 		if (m_DisplayValue.empty())
 		{
