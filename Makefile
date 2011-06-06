@@ -3,8 +3,22 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
 VERSION=1.2-alpha
 
+# For linking C++ code
+LD=g++
+
+# Set these to get a specific g++ version, for example:
+#CXX=g++-4.3
+#LD=g++-4.3
+
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 CXXFLAGS+=-g -ggdb
+# De-optimize for debugging
+#CXXFLAGS+=-O0
+# More pedantic warnings about code issues:
+CXXFLAGS+=-Wextra -pedantic-errors
+# To enable tracing into the libraries and also expose some more
+# obscure bugs during development:
+#CXXFLAGS+=-D_GLIBCXX_DEBUG
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
@@ -86,10 +100,10 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	g++ `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
+	$(LD) `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
 
 discid: $(DISCIDOBJS)
-	g++ -o $@ -ldiscid $^
+	$(LD) -o $@ -ldiscid $^
 
 include $(SRCS:.cc=.d)
 
