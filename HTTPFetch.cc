@@ -40,7 +40,7 @@ int CHTTPFetch::Fetch(const std::string& URL)
 	
 	m_Data.clear();
 			
-	ne_uri uri={0};
+	ne_uri uri={0, 0, 0, 0, 0, 0, 0};
 	
 	if (0==ne_uri_parse(URL.c_str(), &uri))
 	{
