@@ -34,11 +34,11 @@ namespace MusicBrainzADH
 	class CTag;
 	class CUserTag;
 	class CCollection;
-		
+
 	class CMetadata
 	{
 	public:
-		CMetadata(const XMLNode& Node);
+		CMetadata(const XMLNode& Node=XMLNode::emptyNode());
 		CMetadata(const CMetadata& Other);
 		CMetadata& operator =(const CMetadata& Other);
 		~CMetadata();
@@ -71,10 +71,10 @@ namespace MusicBrainzADH
 		CGenericList<CTag> *TagList() const;
 		CGenericList<CUserTag> *UserTagList() const;
 		CGenericList<CCollection> *CollectionList() const;
-	
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_Generator;
 		std::string m_Created;
 		CArtist *m_Artist;

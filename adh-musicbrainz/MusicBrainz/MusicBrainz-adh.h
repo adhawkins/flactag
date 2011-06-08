@@ -5,6 +5,7 @@
 
 #include "GenericList.h"
 #include "Release.h"
+#include "Metadata.h"
 
 namespace MusicBrainzADH
 {
@@ -13,6 +14,9 @@ namespace MusicBrainzADH
 	public:
 		CGenericList<CRelease> LookupDiscID(const std::string& DiscID);
 		CRelease LookupRelease(const std::string& Release);
+
+	private:
+		CMetadata PerformQuery(const std::string& Query);
 	};
 }
 
