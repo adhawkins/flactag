@@ -64,6 +64,8 @@ int CHTTPFetch::Fetch(const std::string& URL)
 		ne_session_destroy(sess);
 	}
 	
+	ne_sock_exit();
+	
 	return Ret;
 }
 
