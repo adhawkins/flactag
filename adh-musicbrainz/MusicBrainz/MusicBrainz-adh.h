@@ -12,10 +12,14 @@ namespace MusicBrainzADH
 	class CMusicBrainzADH
 	{
 	public:
+		CMusicBrainzADH(const std::string& Server="www.musicbrainz.org");
+
 		CGenericList<CRelease> LookupDiscID(const std::string& DiscID);
 		CRelease LookupRelease(const std::string& Release);
 
 	private:
+		std::string m_Server;
+
 		CMetadata PerformQuery(const std::string& Query);
 	};
 }
