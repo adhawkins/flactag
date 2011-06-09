@@ -9,11 +9,16 @@
 
 #include "Disc.h"
 
+MusicBrainzADH::CMusicBrainzADH::CMusicBrainzADH(const std::string& Server)
+:	m_Server(Server)
+{
+}
+
 MusicBrainzADH::CMetadata MusicBrainzADH::CMusicBrainzADH::PerformQuery(const std::string& Query)
 {
 	CMetadata Metadata;
 
-	CHTTPFetch Fetch("www.musicbrainz.org");
+	CHTTPFetch Fetch(m_Server);
 
 	int Ret=Fetch.Fetch(Query);
 	if (Ret>0)

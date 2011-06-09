@@ -51,6 +51,85 @@ CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& C
 		m_Server="musicbrainz.org";
 }
 
+bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
+{
+	bool RetVal=false;
+
+	CDiscIDWrapper DiscIDWrapper;
+	DiscIDWrapper.FromCuesheet(m_Cuesheet);
+	std::string DiskID=DiscIDWrapper.ID();
+
+	//Test Disk ID for album title containing extended characters
+	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
+
+	//CErrorLog::Log("DiskID: " + DiskID);
+	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
+
+	MusicBrainzADH::CMusicBrainzADH MusicBrainz(m_Server);
+
+	WaitRequest();
+
+	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
+	std::vector<MusicBrainzADH::CRelease> Releases=ReleaseList.Items();
+
+	if (Releases.size())
+	{
+		RetVal=true;
+
+		std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
+		while (ThisRelease!=Releases.end())
+		{
+			MusicBrainzADH::CRelease Release=*ThisRelease;
+
+			WaitRequest();
+			MusicBrainzADH::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
+
+			std::vector<MusicBrainzADH::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
+			std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
+			while (ThisMedium!=Media.end())
+			{
+				MusicBrainzADH::CMedium Medium=*ThisMedium;
+
+				CAlbum Album=ParseAlbum(FullRelease,Medium);
+
+				MusicBrainzADH::CGenericList<MusicBrainzADH::CTrack> *TrackList=Medium.TrackList();
+				if (TrackList)
+				{
+					std::vector<MusicBrainzADH::CTrack> Tracks=TrackList->Items();
+					std::vector<MusicBrainzADH::CTrack>::const_iterator ThisTrack=Tracks.begin();
+					while (ThisTrack!=Tracks.end())
+					{
+						MusicBrainzADH::CTrack MBTrack=*ThisTrack;
+
+						CTrack Track=ParseTrack(MBTrack);
+
+						Album.AddTrack(Track);
+
+						++ThisTrack;
+					}
+				}
+
+				m_Albums.push_back(Album);
+
+				++ThisMedium;
+			}
+
+			++ThisRelease;
+		}
+	}
+	else
+	{
+		std::stringstream os;
+		os << "No albums found for file '" << FlacFile << "'";
+		CErrorLog::Log(os.str());
+
+		CErrorLog::Log("Please submit the DiskID using the following URL:");
+		CErrorLog::Log(DiscIDWrapper.SubmitURL());
+	}
+
+	return RetVal;
+}
+
 std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
 {
 	std::vector<unsigned char> Data;
@@ -202,84 +281,6 @@ CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainzADH::CTrack& MBTrack)
 		Track.SetTrackID(MBTrack.Recording()->ID());
 
 	return Track;
-}
-bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
-{
-	bool RetVal=false;
-
-	CDiscIDWrapper DiscIDWrapper;
-	DiscIDWrapper.FromCuesheet(m_Cuesheet);
-	std::string DiskID=DiscIDWrapper.ID();
-
-	//Test Disk ID for album title containing extended characters
-	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
-
-	//CErrorLog::Log("DiskID: " + DiskID);
-	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
-
-	MusicBrainzADH::CMusicBrainzADH MusicBrainz;
-
-	WaitRequest();
-
-	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-	std::vector<MusicBrainzADH::CRelease> Releases=ReleaseList.Items();
-
-	if (Releases.size())
-	{
-		RetVal=true;
-
-		std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
-		while (ThisRelease!=Releases.end())
-		{
-			MusicBrainzADH::CRelease Release=*ThisRelease;
-
-			WaitRequest();
-			MusicBrainzADH::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
-
-			std::vector<MusicBrainzADH::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
-			std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
-			while (ThisMedium!=Media.end())
-			{
-				MusicBrainzADH::CMedium Medium=*ThisMedium;
-
-				CAlbum Album=ParseAlbum(FullRelease,Medium);
-
-				MusicBrainzADH::CGenericList<MusicBrainzADH::CTrack> *TrackList=Medium.TrackList();
-				if (TrackList)
-				{
-					std::vector<MusicBrainzADH::CTrack> Tracks=TrackList->Items();
-					std::vector<MusicBrainzADH::CTrack>::const_iterator ThisTrack=Tracks.begin();
-					while (ThisTrack!=Tracks.end())
-					{
-						MusicBrainzADH::CTrack MBTrack=*ThisTrack;
-
-						CTrack Track=ParseTrack(MBTrack);
-
-						Album.AddTrack(Track);
-
-						++ThisTrack;
-					}
-				}
-
-				m_Albums.push_back(Album);
-
-				++ThisMedium;
-			}
-
-			++ThisRelease;
-		}
-	}
-	else
-	{
-		std::stringstream os;
-		os << "No albums found for file '" << FlacFile << "'";
-		CErrorLog::Log(os.str());
-
-		CErrorLog::Log("Please submit the DiskID using the following URL:");
-		CErrorLog::Log(DiscIDWrapper.SubmitURL());
-	}
-
-	return RetVal;
 }
 
 std::vector<CAlbum> CMusicBrainzInfo::Albums() const
