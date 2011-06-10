@@ -34,6 +34,7 @@ namespace MusicBrainzADH
 	class CTag;
 	class CUserTag;
 	class CCollection;
+	class CCDStub;
 
 	class CMetadata
 	{
@@ -71,6 +72,7 @@ namespace MusicBrainzADH
 		CGenericList<CTag> *TagList() const;
 		CGenericList<CUserTag> *UserTagList() const;
 		CGenericList<CCollection> *CollectionList() const;
+		CCDStub *CDStub() const;
 
 	private:
 		void Cleanup();
@@ -103,6 +105,7 @@ namespace MusicBrainzADH
 		CGenericList<CTag> *m_TagList;
 		CGenericList<CUserTag> *m_UserTagList;
 		CGenericList<CCollection> *m_CollectionList;
+		CCDStub *m_CDStub;
 	};
 }
 
