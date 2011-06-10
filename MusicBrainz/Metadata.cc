@@ -18,6 +18,7 @@
 #include "Tag.h"
 #include "UserTag.h"
 #include "LabelInfo.h"
+#include "CDStub.h"
 
 MusicBrainzADH::CMetadata::CMetadata(const XMLNode& Node)
 :	m_Artist(0),
@@ -45,7 +46,8 @@ MusicBrainzADH::CMetadata::CMetadata(const XMLNode& Node)
 	m_FreeDBDiscList(0),
 	m_TagList(0),
 	m_UserTagList(0),
-	m_CollectionList(0)
+	m_CollectionList(0),
+	m_CDStub(0)
 {
 	if (!Node.isEmpty())
 	{
@@ -165,6 +167,10 @@ MusicBrainzADH::CMetadata::CMetadata(const XMLNode& Node)
 			{
 				m_CollectionList=new CGenericList<CCollection>(ChildNode,"collection");
 			}
+			else if ("cdstub"==NodeName)
+			{
+				m_CDStub=new CCDStub(ChildNode);
+			}
 			else
 			{
 				std::cerr << "Unrecognised metadata node: '" << NodeName << "'" << std::endl;
@@ -199,7 +205,8 @@ MusicBrainzADH::CMetadata::CMetadata(const CMetadata& Other)
 	m_FreeDBDiscList(0),
 	m_TagList(0),
 	m_UserTagList(0),
-	m_CollectionList(0)
+	m_CollectionList(0),
+	m_CDStub(0)
 {
 	*this=Other;
 }
@@ -290,6 +297,9 @@ MusicBrainzADH::CMetadata& MusicBrainzADH::CMetadata::operator =(const CMetadata
 		
 		if (Other.m_CollectionList)
 			m_CollectionList=new CGenericList<CCollection>(*Other.m_CollectionList);
+			
+		if (Other.m_CDStub)
+			m_CDStub=new CCDStub(*Other.m_CDStub);
 	}
 	
 	return *this;
@@ -379,6 +389,9 @@ void MusicBrainzADH::CMetadata::Cleanup()
 	
 	delete m_CollectionList;
 	m_CollectionList=0;
+	
+	delete m_CDStub;
+	m_CDStub=0;
 }
 
 std::string MusicBrainzADH::CMetadata::Generator() const
@@ -516,6 +529,11 @@ MusicBrainzADH::CGenericList<MusicBrainzADH::CCollection> *MusicBrainzADH::CMeta
 	return m_CollectionList;
 }
 
+MusicBrainzADH::CCDStub *MusicBrainzADH::CMetadata::CDStub() const
+{
+	return m_CDStub;
+}
+
 std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMetadata& Metadata)
 {
 	os << "Metadata:" << std::endl;
@@ -598,5 +616,8 @@ std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMetadata& Me
 	if (Metadata.CollectionList())
 		os << *Metadata.CollectionList() << std::endl;
 
+	if (Metadata.CDStub())
+		os << *Metadata.CDStub() << std::endl;
+			
 	return os;
 }
