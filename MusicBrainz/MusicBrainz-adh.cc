@@ -1,3 +1,5 @@
+//http://bugs.musicbrainz.org/browser/mmd-schema/trunk/schema/musicbrainz_mmd-2.0.rng
+
 #include "MusicBrainz-adh.h"
 
 #include <sstream>
