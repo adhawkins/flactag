@@ -117,18 +117,10 @@ bool CFlacInfo::Read()
 									{
 										FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
 											
-										char *Name=new char[Entry.get_field_name_length()+1];
-										strncpy(Name,Entry.get_field_name(),Entry.get_field_name_length());
-										Name[Entry.get_field_name_length()]='\0';
-		
-										char *Value=new char[Entry.get_field_value_length()+1];
-										strncpy(Value,Entry.get_field_value(),Entry.get_field_value_length());
-										Value[Entry.get_field_value_length()]='\0';
-		
-										m_Tags[CTagName(Name)]=CUTF8Tag(Value);
+										std::string Name(Entry.get_field_name(),Entry.get_field_name_length());
+										std::string Value(Entry.get_field_value(),Entry.get_field_value_length());
 
-										delete[] Name;
-										delete[] Value;										
+										m_Tags[CTagName(Name)]=CUTF8Tag(Value);
 									}
 								}
 								
