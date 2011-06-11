@@ -41,6 +41,11 @@ CFlacInfo::CFlacInfo()
 
 CFlacInfo::~CFlacInfo()
 {
+	if (m_TagBlock)
+		delete m_TagBlock;
+		
+	if (m_PictureBlock)
+		delete m_PictureBlock;
 }
 
 bool CFlacInfo::CuesheetFound() const
@@ -143,6 +148,9 @@ bool CFlacInfo::Read()
 									else
 										m_Cuesheet.AddTrack(CCuesheetTrack(Track.get_number(),CalculateOffset(Track)));
 								}
+								
+								delete Cuesheet;
+								
 								break;
 							}
 								
