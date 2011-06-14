@@ -339,22 +339,3 @@ std::string CMusicBrainzInfo::AlbumStatus(const std::string Status) const
 	return Ret;
 }
 
-void CMusicBrainzInfo::WaitRequest() const
-{
-	if (m_Server.find("musicbrainz.org")!=std::string::npos)
-	{
-		static time_t LastRequest=0;
-		const time_t TimeBetweenRequests=2;
-
-		time_t TimeNow;
-
-		do
-		{
-			TimeNow=time(NULL);
-			if (abs(TimeNow-LastRequest)<TimeBetweenRequests)
-				usleep(100000);
-		}	while (abs(TimeNow-LastRequest)<TimeBetweenRequests);
-
-		LastRequest=TimeNow;
-	}
-}
