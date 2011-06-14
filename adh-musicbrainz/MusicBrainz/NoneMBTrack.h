@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CNoneMBTrack
 	{
@@ -18,7 +18,7 @@ namespace MusicBrainzADH
 		std::string Title() const;
 		std::string Artist() const;
 		std::string Length() const;
-	
+
 	private:
 		std::string m_Title;
 		std::string m_Artist;
@@ -26,6 +26,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNoneMBTrack& NoneMBTrack);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CNoneMBTrack& NoneMBTrack);
 
 #endif

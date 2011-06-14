@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CLifespan
 	{
@@ -14,16 +14,16 @@ namespace MusicBrainzADH
 		CLifespan(const XMLNode& Node=XMLNode::emptyNode());
 		CLifespan(const CLifespan& Other);
 		CLifespan& operator =(const CLifespan& Other);
-			
+
 		std::string Begin() const;
 		std::string End() const;
-	
+
 	private:
 		std::string m_Begin;
 		std::string m_End;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLifespan& Lifespan);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CLifespan& Lifespan);
 
 #endif

@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CAttribute
 	{
@@ -14,14 +14,14 @@ namespace MusicBrainzADH
 		CAttribute(const XMLNode& Node=XMLNode::emptyNode());
 		CAttribute(const CAttribute& Other);
 		CAttribute& operator =(const CAttribute& Other);
-			
+
 		std::string Text() const;
-	
+
 	private:
 		std::string m_Text;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CAttribute& Attribute);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CAttribute& Attribute);
 
 #endif

@@ -5,7 +5,7 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CArtistCredit;
 	class CISWC;
@@ -15,7 +15,7 @@ namespace MusicBrainzADH
 	class CUserTag;
 	class CRating;
 	class CUserRating;
-	
+
 	class CWork
 	{
 	public:
@@ -23,7 +23,7 @@ namespace MusicBrainzADH
 		CWork(const CWork& Other);
 		CWork& operator =(const CWork& Other);
 		~CWork();
-		
+
 		std::string ID() const;
 		std::string Type() const;
 		std::string Title() const;
@@ -39,7 +39,7 @@ namespace MusicBrainzADH
 
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		std::string m_Type;
 		std::string m_Title;
@@ -55,7 +55,7 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CWork& Work);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CWork& Work);
 
 #endif
 

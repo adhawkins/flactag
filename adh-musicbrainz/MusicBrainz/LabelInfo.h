@@ -6,10 +6,10 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CLabel;
-	
+
 	class CLabelInfo
 	{
 	public:
@@ -17,19 +17,19 @@ namespace MusicBrainzADH
 		CLabelInfo(const CLabelInfo& Other);
 		CLabelInfo& operator =(const CLabelInfo& Other);
 		~CLabelInfo();
-	
+
 		std::string CatalogNumber() const;
 		CLabel *Label() const;
-	
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_CatalogNumber;
 		CLabel *m_Label;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CLabelInfo& LabelInfo);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CLabelInfo& LabelInfo);
 
 #endif
 

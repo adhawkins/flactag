@@ -1,11 +1,11 @@
 #include "NoneMBTrack.h"
 
-MusicBrainzADH::CNoneMBTrack::CNoneMBTrack(const XMLNode& Node)
+MusicBrainz4::CNoneMBTrack::CNoneMBTrack(const XMLNode& Node)
 {
 	if (!Node.isEmpty())
 	{
 		//std::cout << "NoneMBTrack node: " << std::endl << Node.createXMLString(true) << std::endl;
-			
+
 		for (int count=0;count<Node.nChildNode();count++)
 		{
 			XMLNode ChildNode=Node.getChildNode(count);
@@ -13,7 +13,7 @@ MusicBrainzADH::CNoneMBTrack::CNoneMBTrack(const XMLNode& Node)
 			std::string NodeValue;
 			if (ChildNode.getText())
 				NodeValue=ChildNode.getText();
-			
+
 			if ("title"==NodeName)
 			{
 				m_Title=NodeValue;
@@ -34,12 +34,12 @@ MusicBrainzADH::CNoneMBTrack::CNoneMBTrack(const XMLNode& Node)
 	}
 }
 
-MusicBrainzADH::CNoneMBTrack::CNoneMBTrack(const CNoneMBTrack& Other)
+MusicBrainz4::CNoneMBTrack::CNoneMBTrack(const CNoneMBTrack& Other)
 {
 	*this=Other;
 }
 
-MusicBrainzADH::CNoneMBTrack& MusicBrainzADH::CNoneMBTrack::operator =(const CNoneMBTrack& Other)
+MusicBrainz4::CNoneMBTrack& MusicBrainz4::CNoneMBTrack::operator =(const CNoneMBTrack& Other)
 {
 	if (this!=&Other)
 	{
@@ -47,32 +47,32 @@ MusicBrainzADH::CNoneMBTrack& MusicBrainzADH::CNoneMBTrack::operator =(const CNo
 		m_Artist=Other.m_Artist;
 		m_Length=Other.m_Length;
 	}
-	
+
 	return *this;
 }
 
-std::string MusicBrainzADH::CNoneMBTrack::Title() const
+std::string MusicBrainz4::CNoneMBTrack::Title() const
 {
 	return m_Title;
 }
 
-std::string MusicBrainzADH::CNoneMBTrack::Artist() const
+std::string MusicBrainz4::CNoneMBTrack::Artist() const
 {
 	return m_Artist;
 }
 
-std::string MusicBrainzADH::CNoneMBTrack::Length() const
+std::string MusicBrainz4::CNoneMBTrack::Length() const
 {
 	return m_Length;
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CNoneMBTrack& NoneMBTrack)
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CNoneMBTrack& NoneMBTrack)
 {
 	os << "NoneMBTrack:" << std::endl;
-		
+
 	os << "\tTitle:  " << NoneMBTrack.Title() << std::endl;
 	os << "\tArtist: " << NoneMBTrack.Artist() << std::endl;
 	os << "\tLength: " << NoneMBTrack.Length() << std::endl;
-		
+
 	return os;
 }

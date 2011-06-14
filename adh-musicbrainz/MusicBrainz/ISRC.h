@@ -4,7 +4,7 @@
 #include "GenericList.h"
 #include "Recording.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CISRC
 	{
@@ -13,18 +13,18 @@ namespace MusicBrainzADH
 		CISRC(const CISRC& Other);
 		CISRC& operator =(const CISRC& Other);
 		~CISRC();
-		
+
 		std::string ID() const;
 		CGenericList<CRecording> *RecordingList() const;
-		
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		CGenericList<CRecording> *m_RecordingList;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CISRC& ISRC);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CISRC& ISRC);
 
 #endif

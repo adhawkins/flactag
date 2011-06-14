@@ -4,7 +4,10 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 VERSION=1.2-alpha
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
-CXXFLAGS+=-g -ggdb
+CXXFLAGS+=-g -ggdb -O0
+# To enable tracing into the libraries and also expose some more
+# obscure bugs during development:
+CXXFLAGS+=-D_GLIBCXX_DEBUG
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
@@ -63,6 +66,7 @@ flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
 
 clean:
+	$(MAKE) -C MusicBrainz clean
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1.html flactag.1
 
 flactag-$(VERSION).tar.gz: dist

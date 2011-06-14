@@ -8,7 +8,7 @@
 #include "Work.h"
 #include "Attribute.h"
 
-MusicBrainzADH::CRelation::CRelation(const XMLNode& Node)
+MusicBrainz4::CRelation::CRelation(const XMLNode& Node)
 :	m_AttributeList(0),
 	m_Artist(0),
 	m_Release(0),
@@ -20,10 +20,10 @@ MusicBrainzADH::CRelation::CRelation(const XMLNode& Node)
 	if (!Node.isEmpty())
 	{
 		//std::cout << "Relation node: " << std::endl << Node.createXMLString(true) << std::endl;
-			
-		if (Node.isAttributeSet("type"))			
+
+		if (Node.isAttributeSet("type"))
 			m_Type=Node.getAttribute("type");
-		
+
 		for (int count=0;count<Node.nChildNode();count++)
 		{
 			XMLNode ChildNode=Node.getChildNode(count);
@@ -31,7 +31,7 @@ MusicBrainzADH::CRelation::CRelation(const XMLNode& Node)
 			std::string NodeValue;
 			if (ChildNode.getText())
 				NodeValue=ChildNode.getText();
-			
+
 			if ("target"==NodeName)
 			{
 				m_Target=NodeValue;
@@ -81,10 +81,10 @@ MusicBrainzADH::CRelation::CRelation(const XMLNode& Node)
 				std::cerr << "Unrecognised relation node: '" << NodeName << "'" << std::endl;
 			}
 		}
-	}	
+	}
 }
 
-MusicBrainzADH::CRelation::CRelation(const CRelation& Other)
+MusicBrainz4::CRelation::CRelation(const CRelation& Other)
 :	m_AttributeList(0),
 	m_Artist(0),
 	m_Release(0),
@@ -96,161 +96,161 @@ MusicBrainzADH::CRelation::CRelation(const CRelation& Other)
 	*this=Other;
 }
 
-MusicBrainzADH::CRelation& MusicBrainzADH::CRelation::operator =(const CRelation& Other)
+MusicBrainz4::CRelation& MusicBrainz4::CRelation::operator =(const CRelation& Other)
 {
 	if (this!=&Other)
 	{
 		Cleanup();
-		
+
 		m_Type=Other.m_Type;
 		m_Target=Other.m_Target;
 		m_Direction=Other.m_Direction;
-		
+
 		if (Other.m_AttributeList)
 			m_AttributeList=new CGenericList<CAttribute>(*Other.m_AttributeList);
-		
+
 		m_Begin=Other.m_Begin;
 		m_End=Other.m_End;
-		
+
 		if (Other.m_Artist)
 			m_Artist=new CArtist(*Other.m_Artist);
-		
+
 		if (Other.m_Release)
 			m_Release=new CRelease(*Other.m_Release);
-		
+
 		if (Other.m_ReleaseGroup)
 			m_ReleaseGroup=new CReleaseGroup(*Other.m_ReleaseGroup);
-		
+
 		if (Other.m_Recording)
 			m_Recording=new CRecording(*Other.m_Recording);
-		
+
 		if (Other.m_Label)
 			m_Label=new CLabel(*Other.m_Label);
-		
+
 		if (Other.m_Work)
 			m_Work=new CWork(*Other.m_Work);
 	}
-	
+
 	return *this;
 }
 
-MusicBrainzADH::CRelation::~CRelation()
+MusicBrainz4::CRelation::~CRelation()
 {
 	Cleanup();
 }
 
-void MusicBrainzADH::CRelation::Cleanup()
+void MusicBrainz4::CRelation::Cleanup()
 {
 	delete m_AttributeList;
 	m_AttributeList=0;
-	
+
 	delete m_Artist;
 	m_Artist=0;
-	
+
 	delete m_Release;
 	m_Release=0;
-	
+
 	delete m_ReleaseGroup;
 	m_ReleaseGroup=0;
-	
+
 	delete m_Recording;
 	m_Recording=0;
-	
+
 	delete m_Label;
 	m_Label=0;
-	
+
 	delete m_Work;
 	m_Work=0;
 }
 
-std::string MusicBrainzADH::CRelation::Type() const
+std::string MusicBrainz4::CRelation::Type() const
 {
 	return m_Type;
 }
 
-std::string MusicBrainzADH::CRelation::Target() const
+std::string MusicBrainz4::CRelation::Target() const
 {
 	return m_Target;
 }
 
-std::string MusicBrainzADH::CRelation::Direction() const
+std::string MusicBrainz4::CRelation::Direction() const
 {
 	return m_Direction;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CAttribute> *MusicBrainzADH::CRelation::AttributeList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CAttribute> *MusicBrainz4::CRelation::AttributeList() const
 {
 	return m_AttributeList;
 }
 
-std::string MusicBrainzADH::CRelation::Begin() const
+std::string MusicBrainz4::CRelation::Begin() const
 {
 	return m_Begin;
 }
 
-std::string MusicBrainzADH::CRelation::End() const
+std::string MusicBrainz4::CRelation::End() const
 {
 	return m_End;
 }
 
-MusicBrainzADH::CArtist *MusicBrainzADH::CRelation::Artist() const
+MusicBrainz4::CArtist *MusicBrainz4::CRelation::Artist() const
 {
 	return m_Artist;
 }
 
-MusicBrainzADH::CRelease *MusicBrainzADH::CRelation::Release() const
+MusicBrainz4::CRelease *MusicBrainz4::CRelation::Release() const
 {
 	return m_Release;
 }
 
-MusicBrainzADH::CReleaseGroup *MusicBrainzADH::CRelation::ReleaseGroup() const
+MusicBrainz4::CReleaseGroup *MusicBrainz4::CRelation::ReleaseGroup() const
 {
 	return m_ReleaseGroup;
 }
 
-MusicBrainzADH::CRecording *MusicBrainzADH::CRelation::Recording() const
+MusicBrainz4::CRecording *MusicBrainz4::CRelation::Recording() const
 {
 	return m_Recording;
 }
 
-MusicBrainzADH::CLabel *MusicBrainzADH::CRelation::Label() const
+MusicBrainz4::CLabel *MusicBrainz4::CRelation::Label() const
 {
 	return m_Label;
 }
 
-MusicBrainzADH::CWork *MusicBrainzADH::CRelation::Work() const
+MusicBrainz4::CWork *MusicBrainz4::CRelation::Work() const
 {
 	return m_Work;
 }
-	
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelation& Relation)
+
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CRelation& Relation)
 {
 	os << "Relation:" << std::endl;
-		
+
 	os << "\tType:      " << Relation.Type() << std::endl;
 	os << "\tTarget:    " << Relation.Target() << std::endl;
 	os << "\tDirection: " << Relation.Direction() << std::endl;
 	os << Relation.AttributeList() << std::endl;
 	os << "\tBegin:     " << Relation.Begin() << std::endl;
 	os << "\tEnd:       " << Relation.End() << std::endl;
-		
+
 	if (Relation.Artist())
 		os << *Relation.Artist() << std::endl;
-		
+
 	if (Relation.Release())
 		os << *Relation.Release() << std::endl;
-		
+
 	if (Relation.ReleaseGroup())
 		os << *Relation.ReleaseGroup() << std::endl;
-		
+
 	if (Relation.Recording())
 		os << *Relation.Recording() << std::endl;
-		
+
 	if (Relation.Label())
 		os << *Relation.Label() << std::endl;
-		
+
 	if (Relation.Work())
 		os << *Relation.Work() << std::endl;
-		
+
 	return os;
 }

@@ -8,7 +8,7 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CAttribute;
 	class CArtist;
@@ -17,7 +17,7 @@ namespace MusicBrainzADH
 	class CRecording;
 	class CLabel;
 	class CWork;
-	
+
 	class CRelation
 	{
 	public:
@@ -25,7 +25,7 @@ namespace MusicBrainzADH
 		CRelation(const CRelation& Other);
 		CRelation& operator =(const CRelation& Other);
 		~CRelation();
-		
+
 		std::string Type() const;
 		std::string Target() const;
 		std::string Direction() const;
@@ -38,10 +38,10 @@ namespace MusicBrainzADH
 		CRecording *Recording() const;
 		CLabel *Label() const;
 		CWork *Work() const;
-			
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_Type;
 		std::string m_Target;
 		std::string m_Direction;
@@ -57,6 +57,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelation& Relation);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CRelation& Relation);
 
 #endif
