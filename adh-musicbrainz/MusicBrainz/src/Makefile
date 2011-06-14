@@ -45,4 +45,6 @@ clean:
 	@$(CXX) -MM $(CXXFLAGS) $< | \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
-include $(CPPSRCS:.cpp=.d) $(CCSRCS:.cc=.d) $(PROGSRCS:.cc=.d)
+ifneq "$(MAKECMDGOALS)" "clean"
+-include $(CPPSRCS:.cpp=.d) $(CCSRCS:.cc=.d) $(PROGSRCS:.cc=.d)
+endif

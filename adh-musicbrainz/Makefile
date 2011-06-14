@@ -98,6 +98,8 @@ flactag: $(FLACTAGOBJS) libmusicbrainz
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^
 
-include $(SRCS:.cc=.d)
+ifneq "$(MAKECMDGOALS)" "clean"
+-include $(SRCS:.cc=.d)
+endif
 
 .phony:
