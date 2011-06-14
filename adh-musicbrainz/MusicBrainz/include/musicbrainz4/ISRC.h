@@ -4,7 +4,7 @@
 #include "GenericList.h"
 #include "Recording.h"
 
-#include "xmlParser/xmlParser.h"
+#include "xmlParser.h"
 
 namespace MusicBrainz4
 {

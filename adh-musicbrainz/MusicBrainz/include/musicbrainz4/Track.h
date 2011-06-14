@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include "xmlParser/xmlParser.h"
+#include "xmlParser.h"
 
 namespace MusicBrainz4
 {
