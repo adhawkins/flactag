@@ -1,5 +1,5 @@
-#ifndef _TAG_H
-#define _TAG_H
+#ifndef _MUSICBRAINZ4_TAG_H
+#define _MUSICBRAINZ4_TAG_H
 
 #include <string>
 #include <iostream>

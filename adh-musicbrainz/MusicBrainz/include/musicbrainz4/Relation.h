@@ -1,5 +1,5 @@
-#ifndef _MBADH_RELATION_H
-#define _MBADH_RELATION_H
+#ifndef _MUSICBRAINZ4_RELATION_H
+#define _MUSICBRAINZ4_RELATION_H
 
 #include <string>
 #include <iostream>

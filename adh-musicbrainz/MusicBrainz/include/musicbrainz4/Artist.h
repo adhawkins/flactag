@@ -1,5 +1,5 @@
-#ifndef _MBADH_ARTIST_H
-#define _MBADH_ARTIST_H
+#ifndef _MUSICBRAINZ4_ARTIST_H
+#define _MUSICBRAINZ4_ARTIST_H
 
 #include <string>
 #include <iostream>

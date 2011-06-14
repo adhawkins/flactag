@@ -1,5 +1,5 @@
-#ifndef _MBADH_MEDIUM_H
-#define _MBADH_MEDIUM_H
+#ifndef _MUSICBRAINZ4_MEDIUM_H
+#define _MUSICBRAINZ4_MEDIUM_H
 
 #include <string>
 #include <iostream>

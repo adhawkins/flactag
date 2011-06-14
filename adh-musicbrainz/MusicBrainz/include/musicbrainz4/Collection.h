@@ -1,5 +1,5 @@
-#ifndef _COLLECTION_H
-#define _COLLECTION_H
+#ifndef _MUSICBRAINZ4_COLLECTION_H
+#define _MUSICBRAINZ4_COLLECTION_H
 
 #include "GenericList.h"
 

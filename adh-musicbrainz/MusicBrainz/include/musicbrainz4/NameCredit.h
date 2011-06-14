@@ -1,5 +1,5 @@
-#ifndef _MBADH_NAME_CREDIT_H
-#define _MBADH_NAME_CREDIT_H
+#ifndef _MUSICBRAINZ4_NAME_CREDIT_H
+#define _MUSICBRAINZ4_NAME_CREDIT_H
 
 #include <string>
 #include <iostream>

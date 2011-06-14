@@ -1,5 +1,5 @@
-#ifndef _MBADH_RELEASE_GROUP_H
-#define _MBADH_RELEASE_GROUP_H
+#ifndef _MUSICBRAINZ4_RELEASE_GROUP_H
+#define _MUSICBRAINZ4_RELEASE_GROUP_H
 
 #include <string>
 #include <iostream>

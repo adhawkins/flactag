@@ -1,5 +1,5 @@
-#ifndef _MBADH_ARTIST_CREDIT_H
-#define _MBADH_ARTIST_CREDIT_H
+#ifndef _MUSICBRAINZ4_ARTIST_CREDIT_H
+#define _MUSICBRAINZ4_ARTIST_CREDIT_H
 
 #include <vector>
 #include <iostream>

@@ -1,5 +1,5 @@
-#ifndef _MBADH_MUSICBRAINZ_ADH_H
-#define _MBADH_MUSICBRAINZ_ADH_H
+#ifndef _MUSICBRAINZ4_QUERY_H
+#define _MUSICBRAINZ4_QUERY_H
 
 #include <string>
 

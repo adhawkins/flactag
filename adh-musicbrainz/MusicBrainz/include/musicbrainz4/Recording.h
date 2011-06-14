@@ -1,5 +1,5 @@
-#ifndef _MBADH_RECORDING_H
-#define _MBADH_RECORDING_H
+#ifndef _MUSICBRAINZ4_RECORDING_H
+#define _MUSICBRAINZ4_RECORDING_H
 
 #include <string>
 #include <iostream>

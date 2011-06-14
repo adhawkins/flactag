@@ -1,5 +1,5 @@
-#ifndef _MBADH_DISC_H
-#define _MBADH_DISC_H
+#ifndef _MUSICBRAINZ4_DISC_H
+#define _MUSICBRAINZ4_DISC_H
 
 #include <string>
 #include <iostream>

@@ -1,5 +1,5 @@
-#ifndef _MBADH_RELEASE_LIST_H
-#define _MBADH_RELEASE_LIST_H
+#ifndef _MUSICBRAINZ4_GENERIC_LIST_H
+#define _MUSICBRAINZ4_GENERIC_LIST_H
 
 #include <vector>
 #include <iostream>

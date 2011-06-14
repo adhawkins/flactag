@@ -1,5 +1,5 @@
-#ifndef _USER_RATING_H
-#define _USER_RATING_H
+#ifndef _MUSICBRAINZ4_USER_RATING_H
+#define _MUSICBRAINZ4_USER_RATING_H
 
 #include <iostream>
 

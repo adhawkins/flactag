@@ -1,5 +1,5 @@
-#ifndef _ALIAS_H
-#define _ALIAS_H
+#ifndef _MUSICBRAINZ4_ALIAS_H
+#define _MUSICBRAINZ4_ALIAS_H
 
 #include <string>
 #include <iostream>
