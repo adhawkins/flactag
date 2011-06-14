@@ -5,10 +5,10 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CRelease;
-		
+
 	class CCollection
 	{
 	public:
@@ -21,10 +21,10 @@ namespace MusicBrainzADH
 		std::string Name() const;
 		std::string Editor() const;
 		CGenericList<CRelease> *ReleaseList() const;
-	
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		std::string m_Name;
 		std::string m_Editor;
@@ -32,6 +32,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CCollection& Collection);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CCollection& Collection);
 
 #endif

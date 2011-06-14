@@ -2,7 +2,7 @@
 
 #include <strings.h>
 
-#include "MusicBrainz-adh.h"
+#include "Query.h"
 
 #include "GenericList.h"
 #include "Release.h"
@@ -23,54 +23,54 @@ void WaitRequest();
 int main(int argc, const char *argv[])
 {
 	LoadTest();
-	
-	return 0;
-	
-	MusicBrainzADH::CMusicBrainzADH MB;
 
-	//MusicBrainzADH::CRelease Test=MB.LookupRelease("8fd13191-2d9a-4670-b789-0c99a06278e0");
-	//MusicBrainzADH::CRelease Test=MB.LookupRelease("ae8c2094-f3a8-45f8-8c1b-09d069425526");
+	return 0;
+
+	MusicBrainz4::CQuery MB;
+
+	//MusicBrainz4::CRelease Test=MB.LookupRelease("8fd13191-2d9a-4670-b789-0c99a06278e0");
+	//MusicBrainz4::CRelease Test=MB.LookupRelease("ae8c2094-f3a8-45f8-8c1b-09d069425526");
 	//std::cout << Test << std::endl;
 	//return 0;
-		
+
 	std::string DiscID="arIS30RPWowvwNEqsqdDnZzDGhk-";
 	//DiscID="kXyckpXOUugZwZXFrAo5jbsap88-";
-	
+
 	if (argc==2)
 		DiscID=argv[1];
-		
-	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList=MB.LookupDiscID(DiscID);
-	
-	std::vector<MusicBrainzADH::CRelease>Releases=ReleaseList.Items();
-	std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
+
+	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MB.LookupDiscID(DiscID);
+
+	std::vector<MusicBrainz4::CRelease>Releases=ReleaseList.Items();
+	std::vector<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
 	while (ThisRelease!=Releases.end())
 	{
-		MusicBrainzADH::CRelease Release=(*ThisRelease);
-		
-		MusicBrainzADH::CRelease FullRelease=MB.LookupRelease(Release.ID());
-		
+		MusicBrainz4::CRelease Release=(*ThisRelease);
+
+		MusicBrainz4::CRelease FullRelease=MB.LookupRelease(Release.ID());
+
 		std::cout << "Full release: " << std::endl;
-			
+
 		std::cout << FullRelease << std::endl;
-			
+
 		std::cout << "Release group title: '" << FullRelease.ReleaseGroup()->Title() << "'" << std::endl;
-			
+
 		std::cout << std::endl << std::endl << "Media matching " << DiscID << ":" << std::endl;
-			
-		std::vector<MusicBrainzADH::CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
-		std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
+
+		std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
+		std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 		while (ThisMedium!=Media.end())
 		{
 			std::cout << *ThisMedium << std::endl;
-				
+
 			++ThisMedium;
 		}
-			
+
 		std::cout << std::endl << std::endl;
-		
+
 		++ThisRelease;
 	}
-	
+
 	return 0;
 }
 
@@ -215,103 +215,103 @@ void LoadTest()
 	DiscIDs.push_back("iFFX7onCnW04.iut9vCmtdQS3VU-");
 	DiscIDs.push_back("CL9ib6Vrs.zbwQtLOdv2h7ACnuE-");
 	DiscIDs.push_back("zYWylyqObrI6baiyHVkTv25TmIY-");
- 
+
 	std::vector<std::string>::const_iterator ThisID=DiscIDs.begin();
 	while (ThisID!=DiscIDs.end())
 	{
 		std::string DiskID=*ThisID;
 		std::cout << std::endl << std::endl << "DiscID: " << DiskID << std::endl;
-			
-		MusicBrainzADH::CMusicBrainzADH MusicBrainz;
-				
+
+		MusicBrainz4::CQuery MusicBrainz;
+
 		WaitRequest();
-	
-		MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-		std::vector<MusicBrainzADH::CRelease> Releases=ReleaseList.Items();
-			
+
+		MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
+		std::vector<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
+
 		if (Releases.size())
 		{
-			std::vector<MusicBrainzADH::CRelease>::const_iterator ThisRelease=Releases.begin();
+			std::vector<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
 			while (ThisRelease!=Releases.end())
 			{
-				MusicBrainzADH::CRelease Release=*ThisRelease;
-				
+				MusicBrainz4::CRelease Release=*ThisRelease;
+
 				WaitRequest();
-				MusicBrainzADH::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
-	
-				std::vector<MusicBrainzADH::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
-				std::vector<MusicBrainzADH::CMedium>::const_iterator ThisMedium=Media.begin();
+				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
+
+				std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
+				std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 				while (ThisMedium!=Media.end())
 				{
-					MusicBrainzADH::CMedium Medium=*ThisMedium;
-								
+					MusicBrainz4::CMedium Medium=*ThisMedium;
+
 					if (FullRelease.ReleaseGroup() || !FullRelease.ReleaseGroup()->Title().empty())
 						std::cout << "Album name: " << FullRelease.ReleaseGroup()->Title() << std::endl;
 					else
 						std::cout << "Album name: " << FullRelease.Title() << std::endl;
-					
+
 					if (FullRelease.MediumList() && FullRelease.MediumList()->Items().size()>1)
 						std::cout << "Disk number: " << Medium.Position() << std::endl;
-			
+
 					std::cout << "AlbumID: " << FullRelease.ID() << std::endl;
-		
+
 					std::string ArtistName;
 					std::string ArtistSort;
-						
+
 					bool FirstArtist=true;
-					MusicBrainzADH::CArtistCredit *ArtistCredit=FullRelease.ArtistCredit();
+					MusicBrainz4::CArtistCredit *ArtistCredit=FullRelease.ArtistCredit();
 					if (ArtistCredit)
 					{
-						std::vector<MusicBrainzADH::CNameCredit> NameCredits=ArtistCredit->NameCredits();
-						std::vector<MusicBrainzADH::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+						std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+						std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 						while (ThisNameCredit!=NameCredits.end())
 						{
-							MusicBrainzADH::CNameCredit NameCredit=*ThisNameCredit;
-							MusicBrainzADH::CArtist *Artist=NameCredit.Artist();
-							
+							MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
+							MusicBrainz4::CArtist *Artist=NameCredit.Artist();
+
 							if (!NameCredit.Name().empty())
 								ArtistName+=NameCredit.Name();
 							else if (Artist)
 								ArtistName+=Artist->Name();
-								
+
 							ArtistName+=NameCredit.JoinPhrase();
-							
+
 							if (Artist)
 							{
 								ArtistSort+=Artist->SortName();
 								ArtistSort+=NameCredit.JoinPhrase();
 							}
-								
-							
+
+
 							if (FirstArtist)
 							{
 								FirstArtist=false;
 								if (Artist)
 									std::cout << "ArtistID: " << Artist->ID() << std::endl;
 							}
-							
+
 							++ThisNameCredit;
 						}
-	
+
 						std::cout << "Artist: " << ArtistName << std::endl;
 						std::cout << "ArtistSort: " << ArtistSort << std::endl;
 					}
-		
+
 					std::cout << "ASIN: " << FullRelease.ASIN() << std::endl;
-		
+
 					if (!FullRelease.ASIN().empty())
 					{
 						std::string URL="/images/P/" + FullRelease.ASIN() + ".02.LZZZZZZZ.jpg";
-		
+
 						CHTTPFetch Fetch("images.amazon.com");
-		
+
 						int Bytes=Fetch.Fetch(URL);
 						if (Bytes<1000)
 						{
 							URL="/images/P/" + FullRelease.ASIN() + ".02.MZZZZZZZ.jpg";
 							Bytes=Fetch.Fetch(URL);
 						}
-		
+
 						if (Bytes>0)
 						{
 							if (Bytes<1000)
@@ -325,90 +325,90 @@ void LoadTest()
 						else
 							std::cout << "Error downloading art: " + Fetch.ErrorMessage() << std::endl;
 					}
-	
-					if (FullRelease.ReleaseGroup())	
+
+					if (FullRelease.ReleaseGroup())
 							std::cout << "Type: " << AlbumType(FullRelease.ReleaseGroup()->Type()) << std::endl;
-							
+
 					std::cout << "Status: " << AlbumStatus(FullRelease.Status()) << std::endl;
-	
-					MusicBrainzADH::CGenericList<MusicBrainzADH::CTrack> *TrackList=Medium.TrackList();
+
+					MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
 					if (TrackList)
 					{
-						std::vector<MusicBrainzADH::CTrack> Tracks=TrackList->Items();
-						std::vector<MusicBrainzADH::CTrack>::const_iterator ThisTrack=Tracks.begin();
+						std::vector<MusicBrainz4::CTrack> Tracks=TrackList->Items();
+						std::vector<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
 						while (ThisTrack!=Tracks.end())
 						{
-							MusicBrainzADH::CTrack MBTrack=*ThisTrack;
-								
+							MusicBrainz4::CTrack MBTrack=*ThisTrack;
+
 							std::cout << std::endl << "TrackNumber: " << MBTrack.Position() << std::endl;
-							
+
 							if (!MBTrack.Title().empty())
 								std::cout << "TrackName: " << MBTrack.Title() << std::endl;
 							else if (MBTrack.Recording())
 								std::cout << "TrackName: " << MBTrack.Recording()->Title() << std::endl;
-		
+
 							std::string ArtistName;
 							std::string ArtistSort;
-								
+
 							bool FirstArtist=true;
 							if (MBTrack.Recording())
 							{
-								MusicBrainzADH::CArtistCredit *ArtistCredit=MBTrack.Recording()->ArtistCredit();
+								MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack.Recording()->ArtistCredit();
 								if (ArtistCredit)
 								{
-									std::vector<MusicBrainzADH::CNameCredit> NameCredits=ArtistCredit->NameCredits();
-									std::vector<MusicBrainzADH::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+									std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+									std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 									while (ThisNameCredit!=NameCredits.end())
 									{
-										MusicBrainzADH::CNameCredit NameCredit=*ThisNameCredit;
-										MusicBrainzADH::CArtist *Artist=NameCredit.Artist();
-										
+										MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
+										MusicBrainz4::CArtist *Artist=NameCredit.Artist();
+
 										if (!NameCredit.Name().empty())
 											ArtistName+=NameCredit.Name();
 										else if (Artist)
 											ArtistName+=Artist->Name();
-											
+
 										ArtistName+=NameCredit.JoinPhrase();
-										
+
 										if (Artist)
 										{
 											ArtistSort+=Artist->SortName();
 											ArtistSort+=NameCredit.JoinPhrase();
 										}
-										
+
 										if (FirstArtist)
 										{
 											FirstArtist=false;
 											if (Artist)
 												std::cout << "TrackArtistID: " << Artist->ID() << std::endl;
 										}
-										
+
 										++ThisNameCredit;
 									}
 								}
 							}
-								
+
 							std::cout << "TrackArtist: " << ArtistName << std::endl;
 							std::cout << "TrackArtistSort: " << ArtistSort << std::endl;
-			
+
 							if (MBTrack.Recording())
 								std::cout << "TrackID: " << MBTrack.Recording()->ID() << std::endl;
-			
+
 							++ThisTrack;
 						}
 					}
-			
+
 					std::string AlbumDate=FullRelease.Date();
-	
+
 					std::string::size_type MinusPos=AlbumDate.find("-");
 					if (std::string::npos!=MinusPos)
 						AlbumDate=AlbumDate.substr(0,MinusPos);
-	
+
 					std::cout << "Date: " << AlbumDate << std::endl;
-		
+
 					++ThisMedium;
 				}
-	
+
 				++ThisRelease;
 			}
 		}
@@ -416,7 +416,7 @@ void LoadTest()
 		{
 			std::cout << "No albums found for DiscID << '" << DiskID << "'" << std::endl;
 		}
-		
+
 		++ThisID;
 	}
 }
@@ -485,6 +485,6 @@ void WaitRequest()
 		if (abs(TimeNow-LastRequest)<TimeBetweenRequests)
 			usleep(100000);
 	}	while (abs(TimeNow-LastRequest)<TimeBetweenRequests);
-		
+
 	LastRequest=TimeNow;
 }

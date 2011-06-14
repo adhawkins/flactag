@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CAlias
 	{
@@ -14,11 +14,11 @@ namespace MusicBrainzADH
 		CAlias(const XMLNode& Node);
 		CAlias(const CAlias& Other);
 		CAlias& operator =(const CAlias& Other);
-		
+
 		std::string Type() const;
 		std::string Script() const;
 		std::string Text() const;
-	
+
 	private:
 		std::string m_Type;
 		std::string m_Script;
@@ -26,6 +26,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CAlias& Alias);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CAlias& Alias);
 
 #endif

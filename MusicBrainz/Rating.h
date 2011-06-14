@@ -5,7 +5,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CRating
 	{
@@ -16,13 +16,13 @@ namespace MusicBrainzADH
 
 		int VotesCount() const;
 		double Rating() const;
-	
+
 	private:
 		int m_VotesCount;
 		double m_Rating;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRating& Rating);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CRating& Rating);
 
 #endif

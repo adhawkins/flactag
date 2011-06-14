@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CAnnotation
 	{
@@ -19,7 +19,7 @@ namespace MusicBrainzADH
 		std::string Entity() const;
 		std::string Name() const;
 		std::string Text() const;
-	
+
 	private:
 		std::string m_Type;
 		std::string m_Entity;
@@ -28,6 +28,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CAnnotation& Annotation);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CAnnotation& Annotation);
 
 #endif

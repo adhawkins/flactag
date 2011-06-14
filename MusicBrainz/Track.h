@@ -6,10 +6,10 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CRecording;
-	
+
 	class CTrack
 	{
 	public:
@@ -17,20 +17,20 @@ namespace MusicBrainzADH
 		CTrack(const CTrack& Other);
 		CTrack& operator =(const CTrack& Other);
 		~CTrack();
-	
+
 		int Position() const;
 		std::string Title() const;
 		CRecording *Recording() const;
-			
+
 	private:
 		void Cleanup();
-		
+
 		int m_Position;
 		std::string m_Title;
 		CRecording *m_Recording;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CTrack& Track);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CTrack& Track);
 
 #endif

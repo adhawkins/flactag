@@ -8,7 +8,7 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CTextRepresentation;
 	class CArtistCredit;
@@ -16,7 +16,7 @@ namespace MusicBrainzADH
 	class CLabelInfo;
 	class CMedium;
 	class CRelation;
-	
+
 	class CRelease
 	{
 	public:
@@ -24,7 +24,7 @@ namespace MusicBrainzADH
 		CRelease(const CRelease& Other);
 		CRelease& operator =(const CRelease& Other);
 		~CRelease();
-		
+
 		std::string ID() const;
 		std::string Title() const;
 		std::string Status() const;
@@ -41,12 +41,12 @@ namespace MusicBrainzADH
 		CGenericList<CLabelInfo> *LabelInfoList() const;
 		CGenericList<CMedium> *MediumList() const;
 		CGenericList<CRelation> *RelationList() const;
-		
+
 		std::vector<CMedium> MediaMatchingDiscID(const std::string& DiscID) const;
-			
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		std::string m_Title;
 		std::string m_Status;
@@ -66,6 +66,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRelease& Release);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CRelease& Release);
 
 #endif

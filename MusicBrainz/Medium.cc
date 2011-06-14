@@ -5,14 +5,14 @@
 #include "Disc.h"
 #include "Track.h"
 
-MusicBrainzADH::CMedium::CMedium(const XMLNode& Node)
+MusicBrainz4::CMedium::CMedium(const XMLNode& Node)
 :	m_DiscList(0),
 	m_TrackList(0)
 {
 	if (!Node.isEmpty())
 	{
 		//std::cout << "Medium node: " << std::endl << Node.createXMLString(true) << std::endl;
-			
+
 		for (int count=0;count<Node.nChildNode();count++)
 		{
 			XMLNode ChildNode=Node.getChildNode(count);
@@ -20,7 +20,7 @@ MusicBrainzADH::CMedium::CMedium(const XMLNode& Node)
 			std::string NodeValue;
 			if (ChildNode.getText())
 				NodeValue=ChildNode.getText();
-			
+
 			if ("title"==NodeName)
 			{
 				m_Title=NodeValue;
@@ -51,104 +51,104 @@ MusicBrainzADH::CMedium::CMedium(const XMLNode& Node)
 	}
 }
 
-MusicBrainzADH::CMedium::CMedium(const CMedium& Other)
+MusicBrainz4::CMedium::CMedium(const CMedium& Other)
 :	m_DiscList(0),
 	m_TrackList(0)
 {
 	*this=Other;
 }
 
-MusicBrainzADH::CMedium& MusicBrainzADH::CMedium::operator =(const CMedium& Other)
+MusicBrainz4::CMedium& MusicBrainz4::CMedium::operator =(const CMedium& Other)
 {
 	if (this!=&Other)
 	{
 		Cleanup();
-		
+
 		m_Title=Other.m_Title;
 		m_Position=Other.m_Position;
 		m_Format=Other.m_Format;
-		
+
 		if (Other.m_DiscList)
 			m_DiscList=new CGenericList<CDisc>(*Other.m_DiscList);
-		
+
 		if (Other.m_TrackList)
 			m_TrackList=new CGenericList<CTrack>(*Other.m_TrackList);
 	}
-	
+
 	return *this;
 }
 
-MusicBrainzADH::CMedium::~CMedium()
+MusicBrainz4::CMedium::~CMedium()
 {
 	Cleanup();
 }
 
-void MusicBrainzADH::CMedium::Cleanup()
+void MusicBrainz4::CMedium::Cleanup()
 {
 	delete m_DiscList;
 	m_DiscList=0;
-	
+
 	delete m_TrackList;
 	m_TrackList=0;
 }
 
-std::string MusicBrainzADH::CMedium::Title() const
+std::string MusicBrainz4::CMedium::Title() const
 {
 	return m_Title;
 }
 
-int MusicBrainzADH::CMedium::Position() const
+int MusicBrainz4::CMedium::Position() const
 {
 	return m_Position;
 }
 
-std::string MusicBrainzADH::CMedium::Format() const
+std::string MusicBrainz4::CMedium::Format() const
 {
 	return m_Format;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CDisc> *MusicBrainzADH::CMedium::DiscList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CDisc> *MusicBrainz4::CMedium::DiscList() const
 {
 	return m_DiscList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CTrack> *MusicBrainzADH::CMedium::TrackList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *MusicBrainz4::CMedium::TrackList() const
 {
 	return m_TrackList;
 }
 
-bool MusicBrainzADH::CMedium::ContainsDiscID(const std::string& DiscID) const
+bool MusicBrainz4::CMedium::ContainsDiscID(const std::string& DiscID) const
 {
 	bool RetVal=false;
-	
+
 	std::vector<CDisc> DiscList=m_DiscList->Items();
 	std::vector<CDisc>::const_iterator ThisDisc=DiscList.begin();
 	while (!RetVal && ThisDisc!=DiscList.end())
 	{
 		CDisc Disc=*ThisDisc;
-		
+
 		if (Disc.ID()==DiscID)
 			RetVal=true;
-			
+
 		++ThisDisc;
 	}
-	
+
 	return RetVal;
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMedium& Medium)
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CMedium& Medium)
 {
 	os << "Medium:" << std::endl;
-		
+
 	os << "\tTitle:    " << Medium.Title() << std::endl;
 	os << "\tPosition: " << Medium.Position() << std::endl;
 	os << "\tFormat:   " << Medium.Format() << std::endl;
-		
+
 	if (Medium.DiscList())
 		os << *Medium.DiscList() << std::endl;
-			
+
 	if (Medium.TrackList())
 		os << *Medium.TrackList() << std::endl;
-		
+
 	return os;
 }

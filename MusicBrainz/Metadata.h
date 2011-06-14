@@ -7,7 +7,7 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CArtist;
 	class CRelease;
@@ -109,6 +109,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CMetadata& Metadata);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CMetadata& Metadata);
 
 #endif

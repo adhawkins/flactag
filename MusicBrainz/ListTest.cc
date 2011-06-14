@@ -8,10 +8,10 @@ int main(int argc, const char *argv[])
 {
 	argc=argc;
 	argv=argv;
-	
-	MusicBrainzADH::CGenericList<MusicBrainzADH::CAlias> List;
-		
+
+	MusicBrainz4::CGenericList<MusicBrainz4::CAlias> List;
+
 	std::cout << List;
-	
+
 	return 0;
 }

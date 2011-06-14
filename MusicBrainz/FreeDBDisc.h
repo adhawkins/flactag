@@ -8,10 +8,10 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CNoneMBTrack;
-	
+
 	class CFreeDBDisc
 	{
 	public:
@@ -19,17 +19,17 @@ namespace MusicBrainzADH
 		CFreeDBDisc(const CFreeDBDisc& Other);
 		CFreeDBDisc& operator =(const CFreeDBDisc& Other);
 		~CFreeDBDisc();
-		
+
 		std::string ID() const;
 		std::string Title() const;
 		std::string Artist() const;
 		std::string Category() const;
 		std::string Year() const;
 		CGenericList<CNoneMBTrack> *NoneMBTrackList() const;
-	
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		std::string m_Title;
 		std::string m_Artist;
@@ -39,6 +39,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CFreeDBDisc& FreeDBDisc);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CFreeDBDisc& FreeDBDisc);
 
 #endif

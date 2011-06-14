@@ -13,7 +13,7 @@
 #include "Tag.h"
 #include "UserTag.h"
 
-MusicBrainzADH::CArtist::CArtist(const XMLNode& Node)
+MusicBrainz4::CArtist::CArtist(const XMLNode& Node)
 :	m_Lifespan(0),
 	m_AliasList(0),
 	m_RecordingList(0),
@@ -30,13 +30,13 @@ MusicBrainzADH::CArtist::CArtist(const XMLNode& Node)
 	if (!Node.isEmpty())
 	{
 		//std::cout << "Artist node: " << std::endl << Node.createXMLString(true) << std::endl;
-			
-		if (Node.isAttributeSet("id"))			
+
+		if (Node.isAttributeSet("id"))
 			m_ID=Node.getAttribute("id");
-		
-		if (Node.isAttributeSet("type"))			
+
+		if (Node.isAttributeSet("type"))
 			m_Type=Node.getAttribute("type");
-		
+
 		for (int count=0;count<Node.nChildNode();count++)
 		{
 			XMLNode ChildNode=Node.getChildNode(count);
@@ -44,7 +44,7 @@ MusicBrainzADH::CArtist::CArtist(const XMLNode& Node)
 			std::string NodeValue;
 			if (ChildNode.getText())
 				NodeValue=ChildNode.getText();
-			
+
 			if ("name"==NodeName)
 			{
 				m_Name=NodeValue;
@@ -121,7 +121,7 @@ MusicBrainzADH::CArtist::CArtist(const XMLNode& Node)
 	}
 }
 
-MusicBrainzADH::CArtist::CArtist(const CArtist& Other)
+MusicBrainz4::CArtist::CArtist(const CArtist& Other)
 :	m_Lifespan(0),
 	m_AliasList(0),
 	m_RecordingList(0),
@@ -138,12 +138,12 @@ MusicBrainzADH::CArtist::CArtist(const CArtist& Other)
 	*this=Other;
 }
 
-MusicBrainzADH::CArtist::CArtist& MusicBrainzADH::CArtist::operator =(const CArtist& Other)
+MusicBrainz4::CArtist::CArtist& MusicBrainz4::CArtist::operator =(const CArtist& Other)
 {
 	if (this!=&Other)
 	{
 		Cleanup();
-		
+
 		m_ID=Other.m_ID;
 		m_Type=Other.m_Type;
 		m_Name=Other.m_Name;
@@ -151,190 +151,190 @@ MusicBrainzADH::CArtist::CArtist& MusicBrainzADH::CArtist::operator =(const CArt
 		m_Gender=Other.m_Gender;
 		m_Country=Other.m_Country;
 		m_Disambiguation=Other.m_Disambiguation;
-		
+
 		if (Other.m_Lifespan)
 			m_Lifespan=new CLifespan(*Other.m_Lifespan);
-		
+
 		if (Other.m_AliasList)
 			m_AliasList=new CGenericList<CAlias>(*Other.m_AliasList);
-		
+
 		if (Other.m_RecordingList)
 			m_RecordingList=new CGenericList<CRecording>(*Other.m_RecordingList);
-		
+
 		if (Other.m_ReleaseList)
 			m_ReleaseList=new CGenericList<CRelease>(*Other.m_ReleaseList);
-		
+
 		if (Other.m_ReleaseGroupList)
 			m_ReleaseGroupList=new CGenericList<CReleaseGroup>(*Other.m_ReleaseGroupList);
-		
+
 		if (Other.m_LabelList)
 			m_LabelList=new CGenericList<CLabel>(*Other.m_LabelList);
-		
+
 		if (Other.m_WorkList)
 			m_WorkList=new CGenericList<CWork>(*Other.m_WorkList);
-		
+
 		if (Other.m_RelationList)
 			m_RelationList=new CGenericList<CRelation>(*Other.m_RelationList);
-		
+
 		if (Other.m_TagList)
 			m_TagList=new CGenericList<CTag>(*Other.m_TagList);
-		
+
 		if (Other.m_UserTagList)
 			m_UserTagList=new CGenericList<CUserTag>(*Other.m_UserTagList);
-		
+
 		if (Other.m_Rating)
 			m_Rating=new CRating(*Other.m_Rating);
-		
+
 		if (Other.m_UserRating)
 			m_UserRating=new CUserRating(*Other.m_UserRating);
 	}
-	
+
 	return *this;
 }
 
-MusicBrainzADH::CArtist::~CArtist()
+MusicBrainz4::CArtist::~CArtist()
 {
 	Cleanup();
 }
 
-void MusicBrainzADH::CArtist::Cleanup()
+void MusicBrainz4::CArtist::Cleanup()
 {
 	delete m_Lifespan;
 	m_Lifespan=0;
-	
+
 	delete m_AliasList;
 	m_AliasList=0;
-	
+
 	delete m_RecordingList;
 	m_RecordingList=0;
-	
+
 	delete m_ReleaseList;
 	m_ReleaseList=0;
-	
+
 	delete m_ReleaseGroupList;
 	m_ReleaseGroupList=0;
-	
+
 	delete m_LabelList;
 	m_LabelList=0;
-	
+
 	delete m_WorkList;
 	m_WorkList=0;
-	
+
 	delete m_RelationList;
 	m_RelationList=0;
-	
+
 	delete m_TagList;
 	m_TagList=0;
-	
+
 	delete m_UserTagList;
 	m_UserTagList=0;
-	
+
 	delete m_Rating;
 	m_Rating=0;
-	
+
 	delete m_UserRating;
 	m_UserRating=0;
 }
 
-std::string MusicBrainzADH::CArtist::ID() const
+std::string MusicBrainz4::CArtist::ID() const
 {
 	return m_ID;
 }
 
-std::string MusicBrainzADH::CArtist::Type() const
+std::string MusicBrainz4::CArtist::Type() const
 {
 	return m_Type;
 }
 
-std::string MusicBrainzADH::CArtist::Name() const
+std::string MusicBrainz4::CArtist::Name() const
 {
 	return m_Name;
 }
 
-std::string MusicBrainzADH::CArtist::SortName() const
+std::string MusicBrainz4::CArtist::SortName() const
 {
 	return m_SortName;
 }
 
-std::string MusicBrainzADH::CArtist::Gender() const
+std::string MusicBrainz4::CArtist::Gender() const
 {
 	return m_Gender;
 }
 
-std::string MusicBrainzADH::CArtist::Country() const
+std::string MusicBrainz4::CArtist::Country() const
 {
 	return m_Country;
 }
 
-std::string MusicBrainzADH::CArtist::Disambiguation() const
+std::string MusicBrainz4::CArtist::Disambiguation() const
 {
 	return m_Disambiguation;
 }
 
-MusicBrainzADH::CLifespan *MusicBrainzADH::CArtist::Lifespan() const
+MusicBrainz4::CLifespan *MusicBrainz4::CArtist::Lifespan() const
 {
 	return m_Lifespan;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CAlias> *MusicBrainzADH::CArtist::AliasList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CAlias> *MusicBrainz4::CArtist::AliasList() const
 {
 	return m_AliasList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CRecording> *MusicBrainzADH::CArtist::RecordingList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CRecording> *MusicBrainz4::CArtist::RecordingList() const
 {
 	return m_RecordingList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> *MusicBrainzADH::CArtist::ReleaseList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CRelease> *MusicBrainz4::CArtist::ReleaseList() const
 {
 	return m_ReleaseList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CReleaseGroup> *MusicBrainzADH::CArtist::ReleaseGroupList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CReleaseGroup> *MusicBrainz4::CArtist::ReleaseGroupList() const
 {
 	return m_ReleaseGroupList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CLabel> *MusicBrainzADH::CArtist::LabelList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CLabel> *MusicBrainz4::CArtist::LabelList() const
 {
 	return m_LabelList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CWork> *MusicBrainzADH::CArtist::WorkList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CWork> *MusicBrainz4::CArtist::WorkList() const
 {
 	return m_WorkList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CRelation> *MusicBrainzADH::CArtist::RelationList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CRelation> *MusicBrainz4::CArtist::RelationList() const
 {
 	return m_RelationList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CTag> *MusicBrainzADH::CArtist::TagList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CTag> *MusicBrainz4::CArtist::TagList() const
 {
 	return m_TagList;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CUserTag> *MusicBrainzADH::CArtist::UserTagList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CUserTag> *MusicBrainz4::CArtist::UserTagList() const
 {
 	return m_UserTagList;
 }
 
-MusicBrainzADH::CRating *MusicBrainzADH::CArtist::Rating() const
+MusicBrainz4::CRating *MusicBrainz4::CArtist::Rating() const
 {
 	return m_Rating;
 }
 
-MusicBrainzADH::CUserRating *MusicBrainzADH::CArtist::UserRating() const
+MusicBrainz4::CUserRating *MusicBrainz4::CArtist::UserRating() const
 {
 	return m_UserRating;
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CArtist& Artist)
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CArtist& Artist)
 {
 	os << "Artist:" << std::endl;
-		
+
 	os << "\tID:             " << Artist.ID() << std::endl;
 	os << "\tType:           " << Artist.Type() << std::endl;
 	os << "\tName:           " << Artist.Name() << std::endl;
@@ -342,43 +342,43 @@ std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CArtist& Arti
 	os << "\tGender:         " << Artist.Gender() << std::endl;
 	os << "\tCountry:        " << Artist.Country() << std::endl;
 	os << "\tDisambiguation: " << Artist.Disambiguation() << std::endl;
-	
+
 	if (Artist.Lifespan())
 		os << *Artist.Lifespan() << std::endl;
-	
+
 	if (Artist.AliasList())
 		os << *Artist.AliasList() << std::endl;
-	
+
 	if (Artist.RecordingList())
 		os << *Artist.RecordingList() << std::endl;
-	
+
 	if (Artist.ReleaseList())
 		os << *Artist.ReleaseList() << std::endl;
-	
+
 	if (Artist.ReleaseGroupList())
 		os << *Artist.ReleaseGroupList() << std::endl;
-	
+
 	if (Artist.LabelList())
 		os << *Artist.LabelList() << std::endl;
-	
+
 	if (Artist.WorkList())
 		os << *Artist.WorkList() << std::endl;
-	
+
 	if (Artist.RelationList())
 		os << *Artist.RelationList() << std::endl;
-	
+
 	if (Artist.TagList())
 		os << *Artist.TagList() << std::endl;
-	
+
 	if (Artist.UserTagList())
 		os << *Artist.UserTagList() << std::endl;
-	
+
 	if (Artist.Rating())
 		os << *Artist.Rating() << std::endl;
-	
+
 	if (Artist.UserRating())
 		os << *Artist.UserRating() << std::endl;
 
 	return os;
 }
-	
+

@@ -8,7 +8,7 @@
 
 #include "GenericList.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CArtistCredit;
 	class CRelease;
@@ -19,7 +19,7 @@ namespace MusicBrainzADH
 	class CUserTag;
 	class CRating;
 	class CUserRating;
-	
+
 	class CRecording
 	{
 	public:
@@ -27,7 +27,7 @@ namespace MusicBrainzADH
 		CRecording(const CRecording& Other);
 		CRecording& operator =(const CRecording& Other);
 		~CRecording();
-	
+
 		std::string ID() const;
 		std::string Title() const;
 		std::string Length() const;
@@ -41,10 +41,10 @@ namespace MusicBrainzADH
 		CGenericList<CUserTag> *UserTagList() const;
 		CRating *Rating() const;
 		CUserRating *UserRating() const;
-			
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		std::string m_Title;
 		std::string m_Length;
@@ -61,6 +61,6 @@ namespace MusicBrainzADH
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CRecording& Recording);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CRecording& Recording);
 
 #endif

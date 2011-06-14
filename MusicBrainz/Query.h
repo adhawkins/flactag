@@ -7,12 +7,12 @@
 #include "Release.h"
 #include "Metadata.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
-	class CMusicBrainzADH
+	class CQuery
 	{
 	public:
-		CMusicBrainzADH(const std::string& Server="www.musicbrainz.org");
+		CQuery(const std::string& Server="www.musicbrainz.org");
 
 		CGenericList<CRelease> LookupDiscID(const std::string& DiscID);
 		CRelease LookupRelease(const std::string& Release);

@@ -6,7 +6,7 @@
 
 #include "xmlParser/xmlParser.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CUserTag
 	{
@@ -14,14 +14,14 @@ namespace MusicBrainzADH
 		CUserTag(const XMLNode& Node);
 		CUserTag(const CUserTag& Other);
 		CUserTag& operator =(const CUserTag& Other);
-		
+
 		std::string Name() const;
-			
+
 	private:
 		std::string m_Name;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CUserTag& UserTag);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CUserTag& UserTag);
 
 #endif

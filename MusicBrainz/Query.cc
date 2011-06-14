@@ -1,6 +1,6 @@
 //http://bugs.musicbrainz.org/browser/mmd-schema/trunk/schema/musicbrainz_mmd-2.0.rng
 
-#include "MusicBrainz-adh.h"
+#include "Query.h"
 
 #include <sstream>
 #include <iostream>
@@ -11,12 +11,12 @@
 
 #include "Disc.h"
 
-MusicBrainzADH::CMusicBrainzADH::CMusicBrainzADH(const std::string& Server)
+MusicBrainz4::CQuery::CQuery(const std::string& Server)
 :	m_Server(Server)
 {
 }
 
-MusicBrainzADH::CMetadata MusicBrainzADH::CMusicBrainzADH::PerformQuery(const std::string& Query)
+MusicBrainz4::CMetadata MusicBrainz4::CQuery::PerformQuery(const std::string& Query)
 {
 	CMetadata Metadata;
 
@@ -44,12 +44,12 @@ MusicBrainzADH::CMetadata MusicBrainzADH::CMusicBrainzADH::PerformQuery(const st
 
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> MusicBrainzADH::CMusicBrainzADH::LookupDiscID(const std::string& DiscID)
+MusicBrainz4::CGenericList<MusicBrainz4::CRelease> MusicBrainz4::CQuery::LookupDiscID(const std::string& DiscID)
 {
 	//Will this work soon (and return disc IDs as well)?
 	//http://www.musicbrainz.org/ws/2/discid/arIS30RPWowvwNEqsqdDnZzDGhk-?inc=artists+labels+recordings+release-groups+artist-credits
 
-	MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> ReleaseList;
+	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList;
 
 	std::stringstream os;
 	os << "/ws/2/discid/" << DiscID;
@@ -62,9 +62,9 @@ MusicBrainzADH::CGenericList<MusicBrainzADH::CRelease> MusicBrainzADH::CMusicBra
 	return ReleaseList;
 }
 
-MusicBrainzADH::CRelease MusicBrainzADH::CMusicBrainzADH::LookupRelease(const std::string& ReleaseID)
+MusicBrainz4::CRelease MusicBrainz4::CQuery::LookupRelease(const std::string& ReleaseID)
 {
-	MusicBrainzADH::CRelease Release;
+	MusicBrainz4::CRelease Release;
 
 	std::stringstream os;
 	os << "/ws/2/release/" << ReleaseID << "?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits";

@@ -6,7 +6,7 @@
 #include "GenericList.h"
 #include "Recording.h"
 
-namespace MusicBrainzADH
+namespace MusicBrainz4
 {
 	class CPUID
 	{
@@ -15,18 +15,18 @@ namespace MusicBrainzADH
 		CPUID(const CPUID& Other);
 		CPUID& operator =(const CPUID& Other);
 		~CPUID();
-		
+
 		std::string ID() const;
 		CGenericList<CRecording> *RecordingList() const;
-		
+
 	private:
 		void Cleanup();
-		
+
 		std::string m_ID;
 		CGenericList<CRecording> *m_RecordingList;
 	};
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CPUID& PUID);
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CPUID& PUID);
 
 #endif

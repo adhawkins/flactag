@@ -2,16 +2,16 @@
 
 #include "NoneMBTrack.h"
 
-MusicBrainzADH::CFreeDBDisc::CFreeDBDisc(const XMLNode& Node)
+MusicBrainz4::CFreeDBDisc::CFreeDBDisc(const XMLNode& Node)
 :	m_NoneMBTrackList(0)
 {
 	if (!Node.isEmpty())
 	{
 		//std::cout << "FreeDBDisc node: " << std::endl << Node.createXMLString(true) << std::endl;
-			
-		if (Node.isAttributeSet("id"))			
+
+		if (Node.isAttributeSet("id"))
 			m_ID=Node.getAttribute("id");
-		
+
 		for (int count=0;count<Node.nChildNode();count++)
 		{
 			XMLNode ChildNode=Node.getChildNode(count);
@@ -19,7 +19,7 @@ MusicBrainzADH::CFreeDBDisc::CFreeDBDisc(const XMLNode& Node)
 			std::string NodeValue;
 			if (ChildNode.getText())
 				NodeValue=ChildNode.getText();
-			
+
 			if ("title"==NodeName)
 			{
 				m_Title=NodeValue;
@@ -48,76 +48,76 @@ MusicBrainzADH::CFreeDBDisc::CFreeDBDisc(const XMLNode& Node)
 	}
 }
 
-MusicBrainzADH::CFreeDBDisc::CFreeDBDisc(const CFreeDBDisc& Other)
+MusicBrainz4::CFreeDBDisc::CFreeDBDisc(const CFreeDBDisc& Other)
 :	m_NoneMBTrackList(0)
 {
 	*this=Other;
 }
 
-MusicBrainzADH::CFreeDBDisc& MusicBrainzADH::CFreeDBDisc::operator =(const CFreeDBDisc& Other)
+MusicBrainz4::CFreeDBDisc& MusicBrainz4::CFreeDBDisc::operator =(const CFreeDBDisc& Other)
 {
 	if (this!=&Other)
 	{
 		Cleanup();
-		
+
 		m_ID=Other.m_ID;
 		m_Title=Other.m_Title;
 		m_Artist=Other.m_Artist;
 		m_Category=Other.m_Category;
 		m_Year=Other.m_Year;
-		
+
 		if (Other.m_NoneMBTrackList)
 			m_NoneMBTrackList=new CGenericList<CNoneMBTrack>(*Other.m_NoneMBTrackList);
 	}
-	
+
 	return *this;
 }
 
-MusicBrainzADH::CFreeDBDisc::~CFreeDBDisc()
+MusicBrainz4::CFreeDBDisc::~CFreeDBDisc()
 {
 	Cleanup();
 }
 
-void MusicBrainzADH::CFreeDBDisc::Cleanup()
+void MusicBrainz4::CFreeDBDisc::Cleanup()
 {
 	delete m_NoneMBTrackList;
 	m_NoneMBTrackList=0;
 }
 
-std::string MusicBrainzADH::CFreeDBDisc::ID() const
+std::string MusicBrainz4::CFreeDBDisc::ID() const
 {
 	return m_ID;
 }
 
-std::string MusicBrainzADH::CFreeDBDisc::Title() const
+std::string MusicBrainz4::CFreeDBDisc::Title() const
 {
 	return m_Title;
 }
 
-std::string MusicBrainzADH::CFreeDBDisc::Artist() const
+std::string MusicBrainz4::CFreeDBDisc::Artist() const
 {
 	return m_Artist;
 }
 
-std::string MusicBrainzADH::CFreeDBDisc::Category() const
+std::string MusicBrainz4::CFreeDBDisc::Category() const
 {
 	return m_Category;
 }
 
-std::string MusicBrainzADH::CFreeDBDisc::Year() const
+std::string MusicBrainz4::CFreeDBDisc::Year() const
 {
 	return m_Year;
 }
 
-MusicBrainzADH::CGenericList<MusicBrainzADH::CNoneMBTrack> *MusicBrainzADH::CFreeDBDisc::NoneMBTrackList() const
+MusicBrainz4::CGenericList<MusicBrainz4::CNoneMBTrack> *MusicBrainz4::CFreeDBDisc::NoneMBTrackList() const
 {
 	return m_NoneMBTrackList;
 }
 
-std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CFreeDBDisc& FreeDBDisc)
+std::ostream& operator << (std::ostream& os, const MusicBrainz4::CFreeDBDisc& FreeDBDisc)
 {
 	os << "FreeDBDisc:" << std::endl;
-		
+
 	os << "\tID:       " << FreeDBDisc.ID() << std::endl;
 	os << "\tTitle:    " << FreeDBDisc.Title() << std::endl;
 	os << "\tArtist:   " << FreeDBDisc.Artist() << std::endl;
@@ -126,6 +126,6 @@ std::ostream& operator << (std::ostream& os, const MusicBrainzADH::CFreeDBDisc& 
 
 	if (FreeDBDisc.NoneMBTrackList())
 		os << *FreeDBDisc.NoneMBTrackList() << std::endl;
-		
+
 	return os;
 }
