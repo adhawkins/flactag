@@ -67,8 +67,6 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 	MusicBrainz4::CQuery MusicBrainz(m_Server);
 
-	WaitRequest();
-
 	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
 	std::vector<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
 
@@ -81,7 +79,6 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 		{
 			MusicBrainz4::CRelease Release=*ThisRelease;
 
-			WaitRequest();
 			MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
 
 			std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
