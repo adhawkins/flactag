@@ -1,5 +1,5 @@
-#ifndef _FREEDB_DISC_H
-#define _FREEDB_DISC_H
+#ifndef _MUSICBRAINZ4_FREEDB_DISC_H
+#define _MUSICBRAINZ4_FREEDB_DISC_H
 
 #include <string>
 #include <iostream>

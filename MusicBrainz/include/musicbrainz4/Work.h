@@ -1,5 +1,5 @@
-#ifndef _WORK_H
-#define _WORK_H
+#ifndef _MUSICBRAINZ4_WORK_H
+#define _MUSICBRAINZ4_WORK_H
 
 #include <string>
 

@@ -1,5 +1,5 @@
-#ifndef _MBADH_RELEASE_H
-#define _MBADH_RELEASE_H
+#ifndef _MUSICBRAINZ4_RELEASE_H
+#define _MUSICBRAINZ4_RELEASE_H
 
 #include <string>
 #include <iostream>

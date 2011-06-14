@@ -1,5 +1,5 @@
-#ifndef _METADATA_H
-#define _METADATA_H
+#ifndef _MUSICBRAINZ4_METADATA_H
+#define _MUSICBRAINZ4_METADATA_H
 
 #include <string>
 

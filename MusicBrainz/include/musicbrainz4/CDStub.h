@@ -1,5 +1,5 @@
-#ifndef _CDSTUB_H
-#define _CDSTUB_H
+#ifndef _MUSICBRAINZ4_CDSTUB_H
+#define _MUSICBRAINZ4_CDSTUB_H
 
 #include <string>
 #include <iostream>

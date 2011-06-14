@@ -1,5 +1,5 @@
-#ifndef _ANNOTATION_H
-#define _ANNOTATION_H
+#ifndef _MUSICBRAINZ4_ANNOTATION_H
+#define _MUSICBRAINZ4_ANNOTATION_H
 
 #include <string>
 #include <iostream>

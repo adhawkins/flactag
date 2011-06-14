@@ -1,5 +1,5 @@
-#ifndef _MBADH_LABEL_INFO_H
-#define _MBADH_LABEL_INFO_H
+#ifndef _MUSICBRAINZ4_LABEL_INFO_H
+#define _MUSICBRAINZ4_LABEL_INFO_H
 
 #include <string>
 #include <iostream>

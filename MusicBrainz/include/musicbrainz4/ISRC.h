@@ -1,5 +1,5 @@
-#ifndef _ISRC_H
-#define _ISRC_H
+#ifndef _MUSICBRAINZ4_ISRC_H
+#define _MUSICBRAINZ4_ISRC_H
 
 #include "GenericList.h"
 #include "Recording.h"

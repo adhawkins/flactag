@@ -1,5 +1,5 @@
-#ifndef _NONE_MB_TRACK_H
-#define _NONE_MB_TRACK_H
+#ifndef _MUSICBRAINZ4_NONE_MB_TRACK_H
+#define _MUSICBRAINZ4_NONE_MB_TRACK_H
 
 #include <string>
 #include <iostream>

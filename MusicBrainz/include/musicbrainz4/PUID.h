@@ -1,5 +1,5 @@
-#ifndef _PUID_H
-#define _PUID_H
+#ifndef _MUSICBRAINZ4_PUID_H
+#define _MUSICBRAINZ4_PUID_H
 
 #include <string>
 

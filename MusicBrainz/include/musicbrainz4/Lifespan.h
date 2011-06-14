@@ -1,5 +1,5 @@
-#ifndef _LIFESPAN_H
-#define _LIFESPAN_H
+#ifndef _MUSICBRAINZ4_LIFESPAN_H
+#define _MUSICBRAINZ4_LIFESPAN_H
 
 #include <string>
 #include <iostream>

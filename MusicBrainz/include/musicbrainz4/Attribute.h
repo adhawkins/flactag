@@ -1,5 +1,5 @@
-#ifndef _ATTRIBUTE_H
-#define _ATTRIBUTE_H
+#ifndef _MUSICBRAINZ4_ATTRIBUTE_H
+#define _MUSICBRAINZ4_ATTRIBUTE_H
 
 #include <string>
 #include <iostream>
