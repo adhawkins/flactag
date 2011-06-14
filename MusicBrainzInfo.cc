@@ -33,15 +33,15 @@
 #include "DiscIDWrapper.h"
 #include "ErrorLog.h"
 
-#include "MusicBrainz/HTTPFetch.h"
-#include "MusicBrainz/Query.h"
-#include "MusicBrainz/Track.h"
-#include "MusicBrainz/Release.h"
-#include "MusicBrainz/Medium.h"
-#include "MusicBrainz/ReleaseGroup.h"
-#include "MusicBrainz/ArtistCredit.h"
-#include "MusicBrainz/Artist.h"
-#include "MusicBrainz/Recording.h"
+#include "musicbrainz4/HTTPFetch.h"
+#include "musicbrainz4/Query.h"
+#include "musicbrainz4/Track.h"
+#include "musicbrainz4/Release.h"
+#include "musicbrainz4/Medium.h"
+#include "musicbrainz4/ReleaseGroup.h"
+#include "musicbrainz4/ArtistCredit.h"
+#include "musicbrainz4/Artist.h"
+#include "musicbrainz4/Recording.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet)
 :	m_Server(Server),

@@ -7,7 +7,7 @@
 #include "Release.h"
 #include "Metadata.h"
 
-#include "xmlParser/xmlParser.h"
+#include "xmlParser.h"
 
 namespace MusicBrainz4
 {

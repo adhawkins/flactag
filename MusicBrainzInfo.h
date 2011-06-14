@@ -32,10 +32,10 @@
 #include "Album.h"
 #include "Cuesheet.h"
 
-#include "MusicBrainz/Release.h"
-#include "MusicBrainz/Medium.h"
-#include "MusicBrainz/Track.h"
-#include "MusicBrainz/ArtistCredit.h"
+#include "musicbrainz4/Release.h"
+#include "musicbrainz4/Medium.h"
+#include "musicbrainz4/Track.h"
+#include "musicbrainz4/ArtistCredit.h"
 
 class CMusicBrainzInfo
 {
