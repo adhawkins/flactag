@@ -5,6 +5,9 @@
 #include <sstream>
 #include <iostream>
 
+#include <string.h>
+#include <sys/time.h>
+
 #include "musicbrainz4/HTTPFetch.h"
 #include "musicbrainz4/Disc.h"
 
@@ -15,6 +18,8 @@ MusicBrainz4::CQuery::CQuery(const std::string& Server)
 
 MusicBrainz4::CMetadata MusicBrainz4::CQuery::PerformQuery(const std::string& Query)
 {
+	WaitRequest();
+	
 	CMetadata Metadata;
 
 	CHTTPFetch Fetch(m_Server);
@@ -71,4 +76,32 @@ MusicBrainz4::CRelease MusicBrainz4::CQuery::LookupRelease(const std::string& Re
 		Release=*Metadata.Release();
 
 	return Release;
+}
+
+void MusicBrainz4::CQuery::WaitRequest() const
+{
+	if (m_Server.find("musicbrainz.org")!=std::string::npos)
+	{
+		static struct timeval LastRequest;
+		const int TimeBetweenRequests=2;
+	
+		struct timeval TimeNow;
+		gettimeofday(&TimeNow,0);
+
+		if (LastRequest.tv_sec!=0 || LastRequest.tv_usec!=0)
+		{
+			struct timeval Diff;
+	
+			do
+			{
+				gettimeofday(&TimeNow,0);
+				timersub(&TimeNow,&LastRequest,&Diff);
+	
+				if (Diff.tv_sec<TimeBetweenRequests)
+					usleep(100000);
+			}	while (Diff.tv_sec<TimeBetweenRequests);
+		}
+
+		memcpy(&LastRequest,&TimeNow,sizeof(LastRequest));
+	}
 }

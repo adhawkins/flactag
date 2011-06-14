@@ -23,6 +23,7 @@ namespace MusicBrainz4
 		std::string m_Server;
 
 		CMetadata PerformQuery(const std::string& Query);
+		void WaitRequest() const;
 	};
 }
 

@@ -48,7 +48,6 @@ public:
 private:
 	std::string AlbumType(const std::string Type) const;
 	std::string AlbumStatus(const std::string Status) const;
-	void WaitRequest() const;
 	CAlbum ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium& Medium);
 	CTrack ParseTrack(const MusicBrainz4::CTrack& MBTrack);
 	void ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
