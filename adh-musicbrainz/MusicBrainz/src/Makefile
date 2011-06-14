@@ -1,4 +1,4 @@
-CPPSRCS=xmlParser/xmlParser.cpp
+CPPSRCS=xmlParser.cpp
 CCSRCS=Alias.cc Annotation.cc Artist.cc ArtistCredit.cc Attribute.cc CDStub.cc Collection.cc \
 				Disc.cc FreeDBDisc.cc HTTPFetch.cc ISRC.cc Label.cc LabelInfo.cc Lifespan.cc \
 				Medium.cc Metadata.cc NameCredit.cc NoneMBTrack.cc \
