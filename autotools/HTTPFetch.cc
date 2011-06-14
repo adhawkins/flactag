@@ -24,6 +24,8 @@
 
 ----------------------------------------------------------------------------*/
 
+#include "config.h"
+
 #include "HTTPFetch.h"
 
 #include "ne_session.h"
