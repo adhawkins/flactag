@@ -31,7 +31,7 @@ MusicBrainz4::CArtistCredit& MusicBrainz4::CArtistCredit::operator =(const CArti
 	return *this;
 }
 
-std::vector<MusicBrainz4::CNameCredit> MusicBrainz4::CArtistCredit::NameCredits() const
+std::list<MusicBrainz4::CNameCredit> MusicBrainz4::CArtistCredit::NameCredits() const
 {
 	return m_NameCredits;
 }
@@ -40,8 +40,8 @@ std::ostream& operator << (std::ostream& os, const MusicBrainz4::CArtistCredit& 
 {
 	os << "Artist credit:" << std::endl;
 
-	std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit.NameCredits();
-	std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+	std::list<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit.NameCredits();
+	std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 	while (ThisNameCredit!=NameCredits.end())
 	{
 		os << *ThisNameCredit;

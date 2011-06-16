@@ -42,7 +42,7 @@ namespace MusicBrainz4
 		CGenericList<CMedium> *MediumList() const;
 		CGenericList<CRelation> *RelationList() const;
 
-		std::vector<CMedium> MediaMatchingDiscID(const std::string& DiscID) const;
+		std::list<CMedium> MediaMatchingDiscID(const std::string& DiscID) const;
 
 	private:
 		void Cleanup();

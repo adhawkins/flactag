@@ -121,8 +121,8 @@ bool MusicBrainz4::CMedium::ContainsDiscID(const std::string& DiscID) const
 {
 	bool RetVal=false;
 
-	std::vector<CDisc> DiscList=m_DiscList->Items();
-	std::vector<CDisc>::const_iterator ThisDisc=DiscList.begin();
+	std::list<CDisc> DiscList=m_DiscList->Items();
+	std::list<CDisc>::const_iterator ThisDisc=DiscList.begin();
 	while (!RetVal && ThisDisc!=DiscList.end())
 	{
 		CDisc Disc=*ThisDisc;

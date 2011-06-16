@@ -1,7 +1,7 @@
 #ifndef _MUSICBRAINZ4_GENERIC_LIST_H
 #define _MUSICBRAINZ4_GENERIC_LIST_H
 
-#include <vector>
+#include <list>
 #include <iostream>
 #include <string>
 
@@ -31,11 +31,11 @@ namespace MusicBrainz4
 		}
 
 		std::string SubNodeName() const { return m_SubNodeName; }
-		std::vector<T> Items() const { return m_Items; }
+		std::list<T> Items() const { return m_Items; }
 
 	private:
 		std::string m_SubNodeName;
-		std::vector<T> m_Items;
+		std::list<T> m_Items;
 	};
 }
 
@@ -44,11 +44,11 @@ std::ostream& operator << (std::ostream& os, MusicBrainz4::CGenericList<T>& List
 {
 	os << List.SubNodeName() << " list:" << std::endl;
 
-	typedef std::vector<T> TVector;
-	typedef typename TVector::const_iterator TVectorConstIterator;
+	typedef std::list<T> TList;
+	typedef typename TList::const_iterator TListConstIterator;
 
-	TVector Items=List.Items();
-	TVectorConstIterator ThisItem=Items.begin();
+	TList Items=List.Items();
+	TListConstIterator ThisItem=Items.begin();
 	while (ThisItem!=Items.end())
 	{
 		os << *ThisItem << std::endl;

@@ -264,13 +264,12 @@ MusicBrainz4::CGenericList<MusicBrainz4::CRelation> *MusicBrainz4::CRelease::Rel
 	return m_RelationList;
 }
 
-std::vector<MusicBrainz4::CMedium> MusicBrainz4::CRelease::MediaMatchingDiscID(const std::string& DiscID) const
+std::list<MusicBrainz4::CMedium> MusicBrainz4::CRelease::MediaMatchingDiscID(const std::string& DiscID) const
 {
-	std::vector<MusicBrainz4::CMedium> Ret;
+	std::list<MusicBrainz4::CMedium> Ret;
 
-	std::vector<MusicBrainz4::CMedium> Media=m_MediumList->Items();
-
-	std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
+	std::list<MusicBrainz4::CMedium> Media=m_MediumList->Items();
+	std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 	while (ThisMedium!=Media.end())
 	{
 		MusicBrainz4::CMedium Medium=(*ThisMedium);
