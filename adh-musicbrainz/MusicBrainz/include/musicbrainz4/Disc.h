@@ -4,10 +4,11 @@
 #include <string>
 #include <iostream>
 
-#include "Lifespan.h"
-#include "GenericList.h"
+#include "musicbrainz4/GenericList.h"
 
-#include "xmlParser.h"
+#include "musicbrainz4/Lifespan.h"
+
+#include "musicbrainz4/xmlParser.h"
 
 namespace MusicBrainz4
 {

@@ -14,7 +14,7 @@ PROGS=$(PROGSRCS:.cc=)
 LIB=libmusicbrainz4.so
 
 LD=g++
-CXXFLAGS=-Wall -Werror -Wextra -pedantic-errors `neon-config --cflags` -DVERSION=\"1.0\" -I../include -I.
+CXXFLAGS=-Wall -Werror -Wextra -pedantic-errors `neon-config --cflags` -DVERSION=\"1.0\" -I../include
 CXXFLAGS+=-g -ggdb -O0
 # To enable tracing into the libraries and also expose some more
 # obscure bugs during development:

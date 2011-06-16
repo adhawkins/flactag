@@ -1,9 +1,9 @@
 #ifndef _MUSICBRAINZ4_COLLECTION_H
 #define _MUSICBRAINZ4_COLLECTION_H
 
-#include "GenericList.h"
+#include "musicbrainz4/GenericList.h"
 
-#include "xmlParser.h"
+#include "musicbrainz4/xmlParser.h"
 
 namespace MusicBrainz4
 {
