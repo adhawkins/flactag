@@ -270,10 +270,12 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 
 								if (m_RenameFile!=RealPath)
 								{
+									std::string OrigFile=m_FlacFile;
+
 									if (RenameFile())
-										printf("%s: File renamed to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+										printf("%s: File renamed to %s\n",OrigFile.c_str(),m_RenameFile.c_str());
 									else
-										printf("%s: Error renaming file to %s\n",m_FlacFile.c_str(),m_RenameFile.c_str());
+										printf("%s: Error renaming file to %s\n",OrigFile.c_str(),m_RenameFile.c_str());
 								}
 							}
 						}
