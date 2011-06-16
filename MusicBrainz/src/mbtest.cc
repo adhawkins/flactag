@@ -21,9 +21,9 @@ void WaitRequest();
 
 int main(int argc, const char *argv[])
 {
-	LoadTest();
+//	LoadTest();
 
-	return 0;
+//	return 0;
 
 	MusicBrainz4::CQuery MB;
 
