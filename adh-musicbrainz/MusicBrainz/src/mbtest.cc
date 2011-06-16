@@ -40,8 +40,8 @@ int main(int argc, const char *argv[])
 
 	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MB.LookupDiscID(DiscID);
 
-	std::vector<MusicBrainz4::CRelease>Releases=ReleaseList.Items();
-	std::vector<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
+	std::list<MusicBrainz4::CRelease>Releases=ReleaseList.Items();
+	std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
 	while (ThisRelease!=Releases.end())
 	{
 		MusicBrainz4::CRelease Release=(*ThisRelease);
@@ -56,8 +56,8 @@ int main(int argc, const char *argv[])
 
 		std::cout << std::endl << std::endl << "Media matching " << DiscID << ":" << std::endl;
 
-		std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
-		std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
+		std::list<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiscID);
+		std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 		while (ThisMedium!=Media.end())
 		{
 			std::cout << *ThisMedium << std::endl;
@@ -75,7 +75,7 @@ int main(int argc, const char *argv[])
 
 void LoadTest()
 {
-	std::vector<std::string> DiscIDs;
+	std::list<std::string> DiscIDs;
 	DiscIDs.push_back("arIS30RPWowvwNEqsqdDnZzDGhk-");
 	DiscIDs.push_back("kXyckpXOUugZwZXFrAo5jbsap88-");
 	DiscIDs.push_back("Jm179QQTLC5nMygsPonxvh.ol1E-");
@@ -215,7 +215,7 @@ void LoadTest()
 	DiscIDs.push_back("CL9ib6Vrs.zbwQtLOdv2h7ACnuE-");
 	DiscIDs.push_back("zYWylyqObrI6baiyHVkTv25TmIY-");
 
-	std::vector<std::string>::const_iterator ThisID=DiscIDs.begin();
+	std::list<std::string>::const_iterator ThisID=DiscIDs.begin();
 	while (ThisID!=DiscIDs.end())
 	{
 		std::string DiskID=*ThisID;
@@ -223,23 +223,20 @@ void LoadTest()
 
 		MusicBrainz4::CQuery MusicBrainz;
 
-		WaitRequest();
-
 		MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-		std::vector<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
+		std::list<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
 
 		if (Releases.size())
 		{
-			std::vector<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
+			std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
 			while (ThisRelease!=Releases.end())
 			{
 				MusicBrainz4::CRelease Release=*ThisRelease;
 
-				WaitRequest();
 				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
 
-				std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
-				std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
+				std::list<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
+				std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 				while (ThisMedium!=Media.end())
 				{
 					MusicBrainz4::CMedium Medium=*ThisMedium;
@@ -261,8 +258,8 @@ void LoadTest()
 					MusicBrainz4::CArtistCredit *ArtistCredit=FullRelease.ArtistCredit();
 					if (ArtistCredit)
 					{
-						std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
-						std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+						std::list<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+						std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 						while (ThisNameCredit!=NameCredits.end())
 						{
 							MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
@@ -333,8 +330,8 @@ void LoadTest()
 					MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
 					if (TrackList)
 					{
-						std::vector<MusicBrainz4::CTrack> Tracks=TrackList->Items();
-						std::vector<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
+						std::list<MusicBrainz4::CTrack> Tracks=TrackList->Items();
+						std::list<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
 						while (ThisTrack!=Tracks.end())
 						{
 							MusicBrainz4::CTrack MBTrack=*ThisTrack;
@@ -355,8 +352,8 @@ void LoadTest()
 								MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack.Recording()->ArtistCredit();
 								if (ArtistCredit)
 								{
-									std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
-									std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+									std::list<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+									std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 									while (ThisNameCredit!=NameCredits.end())
 									{
 										MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
@@ -469,21 +466,4 @@ std::string AlbumStatus(const std::string Status)
 	}
 
 	return Ret;
-}
-
-void WaitRequest()
-{
-	static time_t LastRequest=0;
-	const time_t TimeBetweenRequests=2;
-
-	time_t TimeNow;
-
-	do
-	{
-		TimeNow=time(NULL);
-		if (abs(TimeNow-LastRequest)<TimeBetweenRequests)
-			usleep(100000);
-	}	while (abs(TimeNow-LastRequest)<TimeBetweenRequests);
-
-	LastRequest=TimeNow;
 }

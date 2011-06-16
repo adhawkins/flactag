@@ -1,7 +1,7 @@
 #ifndef _MUSICBRAINZ4_ARTIST_CREDIT_H
 #define _MUSICBRAINZ4_ARTIST_CREDIT_H
 
-#include <vector>
+#include <list>
 #include <iostream>
 
 #include "NameCredit.h"
@@ -17,10 +17,10 @@ namespace MusicBrainz4
 		CArtistCredit(const CArtistCredit& Other);
 		CArtistCredit& operator =(const CArtistCredit& Other);
 
-		std::vector<CNameCredit> NameCredits() const;
+		std::list<CNameCredit> NameCredits() const;
 
 	private:
-		std::vector<CNameCredit> m_NameCredits;
+		std::list<CNameCredit> m_NameCredits;
 	};
 }
 
