@@ -68,21 +68,21 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	MusicBrainz4::CQuery MusicBrainz(m_Server);
 
 	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-	std::vector<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
+	std::list<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
 
 	if (Releases.size())
 	{
 		RetVal=true;
 
-		std::vector<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
+		std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
 		while (ThisRelease!=Releases.end())
 		{
 			MusicBrainz4::CRelease Release=*ThisRelease;
 
 			MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
 
-			std::vector<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
-			std::vector<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
+			std::list<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
+			std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 			while (ThisMedium!=Media.end())
 			{
 				MusicBrainz4::CMedium Medium=*ThisMedium;
@@ -92,8 +92,8 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
 				if (TrackList)
 				{
-					std::vector<MusicBrainz4::CTrack> Tracks=TrackList->Items();
-					std::vector<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
+					std::list<MusicBrainz4::CTrack> Tracks=TrackList->Items();
+					std::list<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
 					while (ThisTrack!=Tracks.end())
 					{
 						MusicBrainz4::CTrack MBTrack=*ThisTrack;
@@ -214,8 +214,8 @@ void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCred
 {
 	bool FirstArtist=true;
 
-	std::vector<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
-	std::vector<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
+	std::list<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+	std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 	while (ThisNameCredit!=NameCredits.end())
 	{
 		MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
