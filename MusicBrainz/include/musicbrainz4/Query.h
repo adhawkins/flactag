@@ -4,11 +4,12 @@
 #include <string>
 #include <map>
 
-#include "GenericList.h"
-#include "Release.h"
-#include "Metadata.h"
+#include "musicbrainz4/GenericList.h"
 
-#include "xmlParser.h"
+#include "musicbrainz4/Release.h"
+#include "musicbrainz4/Metadata.h"
+
+#include "musicbrainz4/xmlParser.h"
 
 namespace MusicBrainz4
 {

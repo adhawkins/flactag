@@ -4,9 +4,9 @@
 #include <list>
 #include <iostream>
 
-#include "NameCredit.h"
+#include "musicbrainz4/NameCredit.h"
 
-#include "xmlParser.h"
+#include "musicbrainz4/xmlParser.h"
 
 namespace MusicBrainz4
 {

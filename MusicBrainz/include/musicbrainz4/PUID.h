@@ -3,10 +3,11 @@
 
 #include <string>
 
-#include "GenericList.h"
-#include "Recording.h"
+#include "musicbrainz4/GenericList.h"
 
-#include "xmlParser.h"
+#include "musicbrainz4/Recording.h"
+
+#include "musicbrainz4/xmlParser.h"
 
 namespace MusicBrainz4
 {
