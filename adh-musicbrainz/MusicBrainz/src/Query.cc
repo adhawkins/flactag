@@ -19,7 +19,7 @@ MusicBrainz4::CQuery::CQuery(const std::string& Server)
 MusicBrainz4::CMetadata MusicBrainz4::CQuery::PerformQuery(const std::string& Query)
 {
 	WaitRequest();
-	
+
 	CMetadata Metadata;
 
 	CHTTPFetch Fetch(m_Server);
@@ -46,6 +46,73 @@ MusicBrainz4::CMetadata MusicBrainz4::CQuery::PerformQuery(const std::string& Qu
 
 }
 
+MusicBrainz4::CMetadata MusicBrainz4::CQuery::Query(const std::string& Resource, const std::string& ID, const tParamMap& Params)
+{
+	std::stringstream os;
+
+	os << "/ws/2/" << Resource;
+
+	if (!ID.empty())
+		os << "/" << ID;
+
+	if (!Params.empty())
+	{
+		bool FirstParam=true;
+
+		std::map<std::string,std::string>::const_iterator ThisParam=Params.begin();
+		while (ThisParam!=Params.end())
+		{
+			std::string Name=(*ThisParam).first;
+			std::string Values=(*ThisParam).second;
+
+			if (FirstParam)
+			{
+				os << "?";
+				FirstParam=false;
+			}
+			else
+				os << "&";
+
+			os << Name;
+
+			if (!Values.empty())
+			{
+				bool FirstValue=true;
+
+				os << "=";
+
+				std::string::size_type ThisSpace=Values.find(" ");
+				while (ThisSpace!=std::string::npos)
+				{
+					std::string ThisValue=Values.substr(0,ThisSpace);
+
+					if (FirstValue)
+						FirstValue=false;
+					else
+						os << "+";
+
+					os << ThisValue;
+					Values=Values.substr(ThisSpace+1);
+
+					ThisSpace=Values.find(" ");
+				}
+
+				if (!Values.empty())
+				{
+					if (!FirstValue)
+						os << "+";
+
+					os << Values;
+				}
+			}
+
+			++ThisParam;
+		}
+	}
+
+	return PerformQuery(os.str());
+}
+
 MusicBrainz4::CGenericList<MusicBrainz4::CRelease> MusicBrainz4::CQuery::LookupDiscID(const std::string& DiscID)
 {
 	//Will this work soon (and return disc IDs as well)?
@@ -53,9 +120,8 @@ MusicBrainz4::CGenericList<MusicBrainz4::CRelease> MusicBrainz4::CQuery::LookupD
 
 	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList;
 
-	std::stringstream os;
-	os << "/ws/2/discid/" << DiscID;
-	CMetadata Metadata=PerformQuery(os.str());
+	std::map<std::string,std::string> Params;
+	CMetadata Metadata=Query("discid",DiscID,Params);
 
 	CDisc *Disc=Metadata.Disc();
 	if (Disc && Disc->ReleaseList())
@@ -68,10 +134,10 @@ MusicBrainz4::CRelease MusicBrainz4::CQuery::LookupRelease(const std::string& Re
 {
 	MusicBrainz4::CRelease Release;
 
-	std::stringstream os;
-	os << "/ws/2/release/" << ReleaseID << "?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits";
+	std::map<std::string,std::string> Params;
+	Params["inc"]="artists labels recordings release-groups url-rels discids artist-credits";
 
-	CMetadata Metadata=PerformQuery(os.str());
+	CMetadata Metadata=Query("release",ReleaseID,Params);
 	if (Metadata.Release())
 		Release=*Metadata.Release();
 
@@ -84,19 +150,19 @@ void MusicBrainz4::CQuery::WaitRequest() const
 	{
 		static struct timeval LastRequest;
 		const int TimeBetweenRequests=2;
-	
+
 		struct timeval TimeNow;
 		gettimeofday(&TimeNow,0);
 
 		if (LastRequest.tv_sec!=0 || LastRequest.tv_usec!=0)
 		{
 			struct timeval Diff;
-	
+
 			do
 			{
 				gettimeofday(&TimeNow,0);
 				timersub(&TimeNow,&LastRequest,&Diff);
-	
+
 				if (Diff.tv_sec<TimeBetweenRequests)
 					usleep(100000);
 			}	while (Diff.tv_sec<TimeBetweenRequests);
