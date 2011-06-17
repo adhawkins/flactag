@@ -3,7 +3,7 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
 VERSION=1.2-alpha
 
-CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags` -IMusicBrainz/include
+CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 CXXFLAGS+=-g -ggdb -O0
 # To enable tracing into the libraries and also expose some more
 # obscure bugs during development:
@@ -93,7 +93,7 @@ libmusicbrainz: .phony
 	$(MAKE) -C MusicBrainz
 
 flactag: $(FLACTAGOBJS) libmusicbrainz
-	g++ `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg -LMusicBrainz/src -lmusicbrainz4 $(FLACTAGOBJS)
+	g++ `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg -lmusicbrainz4 $(FLACTAGOBJS)
 
 discid: $(DISCIDOBJS)
 	g++ -o $@ -ldiscid $^
