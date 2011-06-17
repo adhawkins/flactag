@@ -1,3 +1,4 @@
+VERSION=1.0-alpha1
 BASEDIR=/usr
 
 all: src
@@ -11,7 +12,7 @@ clean: .phony
 
 dist: clean
 	mkdir libmusicbrainz4
-	cp -r Makefile src include libmusicbrainz4 && tar cf - --exclude "\.svn" libmusicbrainz4 | gzip -9 > libmusicbrainz4.tar.gz
+	cp -r COPYING Makefile src include libmusicbrainz4 && tar cf - --exclude "\.svn" libmusicbrainz4 | gzip -9 > libmusicbrainz4-$(VERSION).tar.gz
 
 install: all
 	mkdir -p $(BASEDIR)/include
