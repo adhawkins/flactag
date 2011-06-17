@@ -1,3 +1,28 @@
+/* --------------------------------------------------------------------------
+
+   libmusicbrainz4 - Client library to access MusicBrainz
+
+   Copyright (C) 2011 Andrew Hawkins
+
+   This file is part of libmusicbrainz4.
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of v2 of the GNU Lesser General Public
+   License as published by the Free Software Foundation.
+
+   Flactag is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+     $Id$
+
+----------------------------------------------------------------------------*/
+
 //http://bugs.musicbrainz.org/browser/mmd-schema/trunk/schema/musicbrainz_mmd-2.0.rng
 //http://wiki.musicbrainz.org/Picard_Tag_Mapping
 //http://www.musicbrainz.org/ws/2/release/2bd8551b-7910-3647-a833-38b616257ed5?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits
