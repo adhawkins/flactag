@@ -24,6 +24,7 @@
 ----------------------------------------------------------------------------*/
 
 //http://bugs.musicbrainz.org/browser/mmd-schema/trunk/schema/musicbrainz_mmd-2.0.rng
+//http://wiki.musicbrainz.org/Picard_Tag_Mapping
 
 #include "musicbrainz4/Query.h"
 
