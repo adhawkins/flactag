@@ -66,7 +66,6 @@ flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
 
 clean:
-	$(MAKE) -C MusicBrainz clean
 	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1.html flactag.1
 
 flactag-$(VERSION).tar.gz: dist
