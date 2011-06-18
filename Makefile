@@ -89,10 +89,7 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
 	@$(CXX) -MM $(CXXFLAGS) $< | \
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
-libmusicbrainz: .phony
-	$(MAKE) -C MusicBrainz
-
-flactag: $(FLACTAGOBJS) libmusicbrainz
+flactag: $(FLACTAGOBJS)
 	g++ `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg -lmusicbrainz4 $(FLACTAGOBJS)
 
 discid: $(DISCIDOBJS)
