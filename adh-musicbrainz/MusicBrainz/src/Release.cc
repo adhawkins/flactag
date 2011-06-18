@@ -23,12 +23,6 @@
 
 ----------------------------------------------------------------------------*/
 
-//http://bugs.musicbrainz.org/browser/mmd-schema/trunk/schema/musicbrainz_mmd-2.0.rng
-//http://wiki.musicbrainz.org/Picard_Tag_Mapping
-//http://www.musicbrainz.org/ws/2/release/2bd8551b-7910-3647-a833-38b616257ed5?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits
-//http://www.musicbrainz.org/ws/2/release/ae8c2094-f3a8-45f8-8c1b-09d069425526?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits
-//http://www.musicbrainz.org/ws/2/release/8fd13191-2d9a-4670-b789-0c99a06278e0?inc=artists+labels+recordings+release-groups+url-rels+discids+artist-credits
-
 #include "musicbrainz4/Release.h"
 
 #include <string.h>
