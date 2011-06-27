@@ -81,7 +81,8 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 			MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
 
-			std::list<MusicBrainz4::CMedium> Media=FullRelease.MediaMatchingDiscID(DiskID);
+			MusicBrainz4::CGenericList<MusicBrainz4::CMedium> MediaList=FullRelease.MediaMatchingDiscID(DiskID);
+			std::list<MusicBrainz4::CMedium> Media=MediaList.Items();
 			std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
 			while (ThisMedium!=Media.end())
 			{
@@ -133,7 +134,7 @@ std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
 
 	std::string URL="/images/P/" + ASIN.DisplayValue() + ".02.LZZZZZZZ.jpg";
 
-	CHTTPFetch Fetch("images.amazon.com");
+	MusicBrainz4::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
 
 	int Bytes=Fetch.Fetch(URL);
 	if (Bytes<1000)
@@ -214,7 +215,8 @@ void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCred
 {
 	bool FirstArtist=true;
 
-	std::list<MusicBrainz4::CNameCredit> NameCredits=ArtistCredit->NameCredits();
+	MusicBrainz4::CGenericList<MusicBrainz4::CNameCredit> *NameCreditsList=ArtistCredit->NameCreditList();
+	std::list<MusicBrainz4::CNameCredit> NameCredits=NameCreditsList->Items();
 	std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
 	while (ThisNameCredit!=NameCredits.end())
 	{
