@@ -67,62 +67,70 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 	MusicBrainz4::CQuery MusicBrainz(m_Server);
 
-	MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-	std::list<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
-
-	if (Releases.size())
+	try
 	{
-		RetVal=true;
+		MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
+		std::list<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
 
-		std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
-		while (ThisRelease!=Releases.end())
+		if (Releases.size())
 		{
-			MusicBrainz4::CRelease Release=*ThisRelease;
+			RetVal=true;
 
-			MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
-
-			MusicBrainz4::CGenericList<MusicBrainz4::CMedium> MediaList=FullRelease.MediaMatchingDiscID(DiskID);
-			std::list<MusicBrainz4::CMedium> Media=MediaList.Items();
-			std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
-			while (ThisMedium!=Media.end())
+			std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
+			while (ThisRelease!=Releases.end())
 			{
-				MusicBrainz4::CMedium Medium=*ThisMedium;
+				MusicBrainz4::CRelease Release=*ThisRelease;
 
-				CAlbum Album=ParseAlbum(FullRelease,Medium);
+				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
 
-				MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
-				if (TrackList)
+				MusicBrainz4::CGenericList<MusicBrainz4::CMedium> MediaList=FullRelease.MediaMatchingDiscID(DiskID);
+				std::list<MusicBrainz4::CMedium> Media=MediaList.Items();
+				std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
+				while (ThisMedium!=Media.end())
 				{
-					std::list<MusicBrainz4::CTrack> Tracks=TrackList->Items();
-					std::list<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
-					while (ThisTrack!=Tracks.end())
+					MusicBrainz4::CMedium Medium=*ThisMedium;
+
+					CAlbum Album=ParseAlbum(FullRelease,Medium);
+
+					MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
+					if (TrackList)
 					{
-						MusicBrainz4::CTrack MBTrack=*ThisTrack;
+						std::list<MusicBrainz4::CTrack> Tracks=TrackList->Items();
+						std::list<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
+						while (ThisTrack!=Tracks.end())
+						{
+							MusicBrainz4::CTrack MBTrack=*ThisTrack;
 
-						CTrack Track=ParseTrack(MBTrack);
+							CTrack Track=ParseTrack(MBTrack);
 
-						Album.AddTrack(Track);
+							Album.AddTrack(Track);
 
-						++ThisTrack;
+							++ThisTrack;
+						}
 					}
+
+					m_Albums.push_back(Album);
+
+					++ThisMedium;
 				}
 
-				m_Albums.push_back(Album);
-
-				++ThisMedium;
+				++ThisRelease;
 			}
+		}
+		else
+		{
+			std::stringstream os;
+			os << "No albums found for file '" << FlacFile << "'";
+			CErrorLog::Log(os.str());
 
-			++ThisRelease;
+			CErrorLog::Log("Please submit the DiskID using the following URL:");
+			CErrorLog::Log(DiscIDWrapper.SubmitURL());
 		}
 	}
-	else
-	{
-		std::stringstream os;
-		os << "No albums found for file '" << FlacFile << "'";
-		CErrorLog::Log(os.str());
 
-		CErrorLog::Log("Please submit the DiskID using the following URL:");
-		CErrorLog::Log(DiscIDWrapper.SubmitURL());
+	catch (MusicBrainz4::CExceptionBase Exception)
+	{
+		std::cerr << FlacFile << ": Exception: " << Exception.what() << std::endl;
 	}
 
 	return RetVal;

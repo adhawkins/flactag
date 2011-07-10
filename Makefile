@@ -1,7 +1,7 @@
 INSTALLROOT=/
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=1.2-alpha
+VERSION=2.0alpha1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 CXXFLAGS+=-g -ggdb -O0
