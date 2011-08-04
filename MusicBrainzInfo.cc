@@ -42,6 +42,7 @@
 #include "musicbrainz4/ArtistCredit.h"
 #include "musicbrainz4/Artist.h"
 #include "musicbrainz4/Recording.h"
+#include "musicbrainz4/NameCredit.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet)
 :	m_Server(Server),
@@ -69,52 +70,40 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 	try
 	{
-		MusicBrainz4::CGenericList<MusicBrainz4::CRelease> ReleaseList=MusicBrainz.LookupDiscID(DiskID);
-		std::list<MusicBrainz4::CRelease> Releases=ReleaseList.Items();
+		MusicBrainz4::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(DiskID);
 
-		if (Releases.size())
+		if (ReleaseList.NumItems())
 		{
 			RetVal=true;
 
-			std::list<MusicBrainz4::CRelease>::const_iterator ThisRelease=Releases.begin();
-			while (ThisRelease!=Releases.end())
+			for (int ReleaseNum=0;ReleaseNum<ReleaseList.NumItems();ReleaseNum++)
 			{
-				MusicBrainz4::CRelease Release=*ThisRelease;
+				MusicBrainz4::CRelease *Release=ReleaseList.Item(ReleaseNum);
 
-				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release.ID());
+				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
 
-				MusicBrainz4::CGenericList<MusicBrainz4::CMedium> MediaList=FullRelease.MediaMatchingDiscID(DiskID);
-				std::list<MusicBrainz4::CMedium> Media=MediaList.Items();
-				std::list<MusicBrainz4::CMedium>::const_iterator ThisMedium=Media.begin();
-				while (ThisMedium!=Media.end())
+				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(DiskID);
+	 				for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
 				{
-					MusicBrainz4::CMedium Medium=*ThisMedium;
+					MusicBrainz4::CMedium *Medium=MediaList.Item(MediumNumber);
 
 					CAlbum Album=ParseAlbum(FullRelease,Medium);
 
-					MusicBrainz4::CGenericList<MusicBrainz4::CTrack> *TrackList=Medium.TrackList();
+					MusicBrainz4::CTrackList *TrackList=Medium->TrackList();
 					if (TrackList)
 					{
-						std::list<MusicBrainz4::CTrack> Tracks=TrackList->Items();
-						std::list<MusicBrainz4::CTrack>::const_iterator ThisTrack=Tracks.begin();
-						while (ThisTrack!=Tracks.end())
+						for (int TrackNumber=0;TrackNumber<TrackList->NumItems();TrackNumber++)
 						{
-							MusicBrainz4::CTrack MBTrack=*ThisTrack;
+							MusicBrainz4::CTrack *MBTrack=TrackList->Item(TrackNumber);
 
 							CTrack Track=ParseTrack(MBTrack);
 
 							Album.AddTrack(Track);
-
-							++ThisTrack;
 						}
 					}
 
 					m_Albums.push_back(Album);
-
-					++ThisMedium;
 				}
-
-				++ThisRelease;
 			}
 		}
 		else
@@ -166,7 +155,7 @@ std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
 	return Data;
 }
 
-CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium& Medium)
+CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium* Medium)
 {
 	CAlbum Album;
 
@@ -175,8 +164,8 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const
 	else
 		Album.SetName(Release.Title());
 
-	if (Release.MediumList() && Release.MediumList()->Items().size()>1)
-		Album.SetDiskNumber(Medium.Position());
+	if (Release.MediumList() && Release.MediumList()->NumItems()>1)
+		Album.SetDiskNumber(Medium->Position());
 
 	Album.SetAlbumID(Release.ID());
 
@@ -223,53 +212,52 @@ void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCred
 {
 	bool FirstArtist=true;
 
-	MusicBrainz4::CGenericList<MusicBrainz4::CNameCredit> *NameCreditsList=ArtistCredit->NameCreditList();
-	std::list<MusicBrainz4::CNameCredit> NameCredits=NameCreditsList->Items();
-	std::list<MusicBrainz4::CNameCredit>::const_iterator ThisNameCredit=NameCredits.begin();
-	while (ThisNameCredit!=NameCredits.end())
+	MusicBrainz4::CNameCreditList *NameCreditsList=ArtistCredit->NameCreditList();
+	if (NameCreditsList)
 	{
-		MusicBrainz4::CNameCredit NameCredit=*ThisNameCredit;
-
-		MusicBrainz4::CArtist *Artist=NameCredit.Artist();
-
-		if (!NameCredit.Name().empty())
-			ArtistName+=NameCredit.Name();
-		else if (Artist)
-			ArtistName+=Artist->Name();
-
-		ArtistName+=NameCredit.JoinPhrase();
-
-		if (Artist)
+		for (int NameCreditNumber=0;NameCreditNumber<NameCreditsList->NumItems();NameCreditNumber++)
 		{
-			ArtistSort+=Artist->SortName();
-			ArtistSort+=NameCredit.JoinPhrase();
-		}
+			MusicBrainz4::CNameCredit *NameCredit=NameCreditsList->Item(NameCreditNumber);
 
-		if (FirstArtist)
-		{
-			FirstArtist=false;
+			MusicBrainz4::CArtist *Artist=NameCredit->Artist();
+
+			if (!NameCredit->Name().empty())
+				ArtistName+=NameCredit->Name();
+			else if (Artist)
+				ArtistName+=Artist->Name();
+
+			ArtistName+=NameCredit->JoinPhrase();
+
 			if (Artist)
-				ArtistID=Artist->ID();
-		}
+			{
+				ArtistSort+=Artist->SortName();
+				ArtistSort+=NameCredit->JoinPhrase();
+			}
 
-		++ThisNameCredit;
+			if (FirstArtist)
+			{
+				FirstArtist=false;
+				if (Artist)
+					ArtistID=Artist->ID();
+			}
+		}
 	}
 }
 
-CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack& MBTrack)
+CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack* MBTrack)
 {
 	CTrack Track;
 
-	Track.SetNumber(MBTrack.Position());
+	Track.SetNumber(MBTrack->Position());
 
-	if (!MBTrack.Title().empty())
-		Track.SetName(MBTrack.Title());
-	else if (MBTrack.Recording())
-		Track.SetName(MBTrack.Recording()->Title());
+	if (!MBTrack->Title().empty())
+		Track.SetName(MBTrack->Title());
+	else if (MBTrack->Recording())
+		Track.SetName(MBTrack->Recording()->Title());
 
-	if (MBTrack.Recording())
+	if (MBTrack->Recording())
 	{
-		MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack.Recording()->ArtistCredit();
+		MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack->Recording()->ArtistCredit();
 		if (ArtistCredit)
 		{
 			std::string ArtistID;
@@ -282,10 +270,9 @@ CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack& MBTrack)
 			Track.SetArtist(ArtistName);
 			Track.SetArtistSort(ArtistSort);
 		}
-	}
 
-	if (MBTrack.Recording())
-		Track.SetTrackID(MBTrack.Recording()->ID());
+		Track.SetTrackID(MBTrack->Recording()->ID());
+	}
 
 	return Track;
 }
