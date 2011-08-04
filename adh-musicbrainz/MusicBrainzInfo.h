@@ -48,8 +48,8 @@ public:
 private:
 	std::string AlbumType(const std::string Type) const;
 	std::string AlbumStatus(const std::string Status) const;
-	CAlbum ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium& Medium);
-	CTrack ParseTrack(const MusicBrainz4::CTrack& MBTrack);
+	CAlbum ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium* Medium);
+	CTrack ParseTrack(const MusicBrainz4::CTrack* MBTrack);
 	void ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
 	std::vector<unsigned char> GetCoverArt(const CUTF8Tag& ASIN);
 
