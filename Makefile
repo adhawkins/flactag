@@ -4,7 +4,7 @@ INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 VERSION=2.0alpha1
 
 CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
-CXXFLAGS+=-g -ggdb -O0
+#CXXFLAGS+=-g -ggdb -O0
 # To enable tracing into the libraries and also expose some more
 # obscure bugs during development:
 #CXXFLAGS+=-D_GLIBCXX_DEBUG
