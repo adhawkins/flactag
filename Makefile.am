@@ -31,6 +31,8 @@ bin_SCRIPTS = ripflac
 flactagdatadir = $(datadir)/flactag
 dist_flactagdata_DATA = tocfix.sed
 
+doc_DATA = flactag.html
+
 ripflac_subst = sed -e "s!INSTALLPATH!$(flactagdatadir)!"
 
 # it is better to process ripflac.in from the Makefile than by adding
@@ -48,8 +50,10 @@ flactag.1:	flactag.1.xml Makefile
 flactag.1.xml:	flactag.1.txt Makefile
 	asciidoc -d manpage -b docbook flactag.1.txt
 
+flactag.html:	flactag.txt Makefile
+	asciidoc -a numbered flactag.txt
 
-CLEANFILES = ripflac flactag.1.xml flactag.1
+CLEANFILES = ripflac flactag.1.xml flactag.1 flactag.html
 
 install-data-hook:
 	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/ripflac.1
