@@ -1,7 +1,7 @@
 AUTOMAKE_OPTIONS = foreign dist-tarZ
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = checkflac COPYING debian flactag.1.txt flactag.jpg flactag.txt Makefile.raw ripdataflac ripflac tocfix.sed
+EXTRA_DIST = COPYING debian flactag.1.txt flactag.jpg flactag.txt Makefile.raw ripflac.in
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
 
@@ -22,4 +22,19 @@ flactag_SOURCES = flactag.cc Album.cc Track.cc AlbumWindow.cc TrackWindow.cc Fla
 #discid_LDADD = 
 discid_SOURCES = discid.cc DiscIDWrapper.cc Cuesheet.cc CuesheetTrack.cc
 
+dist_bin_SCRIPTS = ripdataflac checkflac
+bin_SCRIPTS = ripflac
+CLEANFILES = ripflac
+
+flactagdatadir = $(datadir)/flactag
+dist_flactagdata_DATA = tocfix.sed
+
+ripflac_subst = sed -e "s!INSTALLPATH!$(flactagdatadir)!"
+
+# it is better to process ripflac.in from the Makefile than by adding
+# ripflac.in to AC_CONFIG_FILES, because this method should ensure that
+# variables are fully resolved (like libexecdir)
+ripflac:	ripflac.in Makefile
+	$(ripflac_subst) < $(srcdir)/ripflac.in > ripflac
+	chmod +x ripflac
 
