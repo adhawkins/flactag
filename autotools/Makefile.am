@@ -51,3 +51,10 @@ flactag.1.xml:	flactag.1.txt Makefile
 
 CLEANFILES = ripflac flactag.1.xml flactag.1
 
+install-data-hook:
+	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/ripflac.1
+	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 \
+		$(DESTDIR)$(man1dir)/ripdataflac.1
+	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/checkflac.1
+	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/discid.1
+
