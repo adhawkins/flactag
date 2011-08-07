@@ -1,7 +1,10 @@
 AUTOMAKE_OPTIONS = foreign dist-tarZ
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = COPYING debian flactag.1.txt flactag.jpg flactag.txt Makefile.raw ripflac.in
+EXTRA_DIST = COPYING flactag.1.txt flactag.txt flactag.jpg \
+	ripflac.in \
+	debian
+
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
 
@@ -24,7 +27,6 @@ discid_SOURCES = discid.cc DiscIDWrapper.cc Cuesheet.cc CuesheetTrack.cc
 
 dist_bin_SCRIPTS = ripdataflac checkflac
 bin_SCRIPTS = ripflac
-CLEANFILES = ripflac
 
 flactagdatadir = $(datadir)/flactag
 dist_flactagdata_DATA = tocfix.sed
@@ -37,4 +39,15 @@ ripflac_subst = sed -e "s!INSTALLPATH!$(flactagdatadir)!"
 ripflac:	ripflac.in Makefile
 	$(ripflac_subst) < $(srcdir)/ripflac.in > ripflac
 	chmod +x ripflac
+
+man1_MANS = flactag.1
+
+flactag.1:	flactag.1.xml Makefile
+	xmlto man flactag.1.xml
+
+flactag.1.xml:	flactag.1.txt Makefile
+	asciidoc -d manpage -b docbook flactag.1.txt
+
+
+CLEANFILES = ripflac flactag.1.xml flactag.1
 
