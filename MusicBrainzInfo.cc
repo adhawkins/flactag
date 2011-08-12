@@ -44,12 +44,16 @@
 #include "musicbrainz4/Recording.h"
 #include "musicbrainz4/NameCredit.h"
 
-CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet)
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet)
 :	m_Server(Server),
+	m_Port(Port),
 	m_Cuesheet(Cuesheet)
 {
 	if (m_Server.empty())
 		m_Server="musicbrainz.org";
+
+	if (0==m_Port)
+		m_Port=80;
 }
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
@@ -66,7 +70,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 
-	MusicBrainz4::CQuery MusicBrainz(m_Server);
+	MusicBrainz4::CQuery MusicBrainz("flactag-" VERSION,m_Server,m_Port);
 
 	try
 	{
