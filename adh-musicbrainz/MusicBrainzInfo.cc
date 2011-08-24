@@ -58,6 +58,8 @@ CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CC
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 {
+	//http://www.musicbrainz.org/ws/2/discid/arIS30RPWowvwNEqsqdDnZzDGhk-?inc=recordings+artists+artist-credits+url-rels+aliases
+
 	bool RetVal=false;
 
 	CDiscIDWrapper DiscIDWrapper;
@@ -119,6 +121,16 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			CErrorLog::Log("Please submit the DiskID using the following URL:");
 			CErrorLog::Log(DiscIDWrapper.SubmitURL());
 		}
+	}
+
+	catch (MusicBrainz4::CResourceNotFoundError Exception)
+	{
+			std::stringstream os;
+			os << "No albums found for file '" << FlacFile << "'";
+			CErrorLog::Log(os.str());
+
+			CErrorLog::Log("Please submit the DiskID using the following URL:");
+			CErrorLog::Log(DiscIDWrapper.SubmitURL());
 	}
 
 	catch (MusicBrainz4::CExceptionBase Exception)
