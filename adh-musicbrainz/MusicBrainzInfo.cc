@@ -89,7 +89,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
 
 				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(DiskID);
-	 				for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
+	 			for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
 				{
 					MusicBrainz4::CMedium *Medium=MediaList.Item(MediumNumber);
 
@@ -175,10 +175,10 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const
 {
 	CAlbum Album;
 
-	if (Release.ReleaseGroup() || !Release.ReleaseGroup()->Title().empty())
-		Album.SetName(Release.ReleaseGroup()->Title());
-	else
+	if (!Release.Title().empty())
 		Album.SetName(Release.Title());
+	else if (Release.ReleaseGroup() && !Release.ReleaseGroup()->Title().empty())
+		Album.SetName(Release.ReleaseGroup()->Title());
 
 	if (Release.MediumList() && Release.MediumList()->NumItems()>1)
 		Album.SetDiskNumber(Medium->Position());
