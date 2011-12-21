@@ -756,8 +756,9 @@ bool CFlacTag::MakeDirectory(const std::string& Directory, mode_t Mode) const
 bool CFlacTag::MakeCuesheetFile()
 {
 	bool RetVal=false;
+	std::string FlacFilename(m_FlacFile.substr(m_FlacFile.find_last_of('/') + 1));
 
-	m_FlacCuesheet.setFileName(m_FlacFile.c_str());
+	m_FlacCuesheet.setFileName(FlacFilename.c_str());
 		
 	// If the user hasn't added %E to their ~/.flactag, we shouldn't
 	// clobber the FLAC file
