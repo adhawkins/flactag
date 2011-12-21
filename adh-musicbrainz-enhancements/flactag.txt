@@ -206,6 +206,9 @@ are part of a multi-disk set.
 - *DirectoryCreatePermissions* - The permissions to be set on any 
 directory that is created (e.g. 0755).
 
+- *CreateCuesheetAfterRename* - If set to true, flactag will generate
+a cuesheet file to accompany the renamed FLAC file.
+
 The FileName templates can accept the following parameters:
 
 - *%A* - This will be replaced with the artist name

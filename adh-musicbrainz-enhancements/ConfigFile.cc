@@ -27,6 +27,7 @@
 #include "ConfigFile.h"
 
 #include <stdio.h>
+#include <strings.h>
 
 CConfigFile::CConfigFile()
 {
@@ -36,6 +37,7 @@ CConfigFile::CConfigFile()
 	m_Values["DirectoryCreatePermissions"]="0755";
 	m_Values["Server"]="musicbrainz.org";
 	m_Values["Port"]="80";
+	m_Values["CreateCuesheetAfterRename"]="0";
 }
 
 std::string CConfigFile::Value(const std::string& Name) const
@@ -47,6 +49,23 @@ std::string CConfigFile::Value(const std::string& Name) const
 		Value=(*ThisValue).second;
 
 	return Value;
+}
+
+bool CConfigFile::BoolValue(const std::string& Name) const
+{
+	std::string _val(Value(Name));
+
+	for(unsigned int i = 0; i < _val.size(); i++)
+		_val[i] = std::tolower(_val[i]);
+
+	if(_val == "1")
+		return true;
+	if(_val.compare("true") == 0)
+		return true;
+	if(_val.compare("yes") == 0)
+		return true;
+
+	return false;
 }
 
 bool CConfigFile::LoadFile(const std::string& FileName)

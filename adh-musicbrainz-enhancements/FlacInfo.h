@@ -56,6 +56,7 @@ public:
 private:
 	int CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) const;
 	void SetPictureBlock(const CCoverArt& CoverArt);
+	bool UpdateCuesheet();
 
 	std::string m_FileName;
 	tTagMap m_Tags;

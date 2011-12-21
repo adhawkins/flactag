@@ -164,7 +164,48 @@ bool CFlacInfo::Read()
 		}
 	}
 
+	if(m_CuesheetFound)
+		UpdateCuesheet();
+
 	return RetVal;
+}
+
+bool CFlacInfo::UpdateCuesheet()
+{
+	std::map<int, std::string> Titles;
+	std::map<int, std::string> Artists;
+	std::map<int, int> trackMappings;
+	tTagMap::iterator iterator;
+	std::map<int, int>::iterator it2;
+
+	for(iterator=m_Tags.begin(); iterator!=m_Tags.end(); iterator++)
+	{
+		const CTagName& tagName = iterator->first;
+		const CUTF8Tag& tagValue = iterator->second;
+	
+		if(tagName == CTagName("ALBUM"))
+			m_Cuesheet.setTitle(tagValue.UTF8Value());
+		else if(tagName == CTagName("ARTIST"))
+			m_Cuesheet.setPerformer(tagValue.UTF8Value());
+
+		if(tagName.Number() > -1)
+		{
+			if(tagName.Name() == "TRACKNUMBER")
+				trackMappings[tagName.Number()] = atoi(tagValue.DisplayValue().c_str());
+			else if(tagName.Name() == "ARTIST")
+				Artists[tagName.Number()] = tagValue.DisplayValue();
+			else if(tagName.Name() == "TITLE")
+				Titles[tagName.Number()] = tagValue.DisplayValue();
+		}
+	}
+
+	for(it2=trackMappings.begin(); it2!=trackMappings.end(); it2++)
+	{
+		int trackNum = it2->second;
+		m_Cuesheet.setTrackPerformer(trackNum, Artists[it2->first]);
+		m_Cuesheet.setTrackTitle(trackNum, Titles[it2->first]);
+	}
+	return true;
 }
 
 tTagMap CFlacInfo::Tags() const
