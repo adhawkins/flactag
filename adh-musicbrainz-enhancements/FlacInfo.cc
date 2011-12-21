@@ -362,7 +362,10 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 		}
 	}
 	else
+	{
+		m_WriteError.assign("no tag block exists in the FLAC file, create one with metaflac --set-tag=ARTIST=unset <filename.flac>");
 		RetVal=false;
+	}
 
 	return RetVal;
 }
