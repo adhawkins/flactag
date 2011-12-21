@@ -42,7 +42,8 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	m_DiscID(false),
 	m_ForceWrite(false),
 	m_SubmitURL(false),
-	m_OverwriteExisting(false)
+	m_OverwriteExisting(false),
+	m_OverrideDiscID("")
 {
 	struct option LongOptions[] =
 	{
@@ -54,6 +55,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		{"check", no_argument, 0, 'c'},
 		{"submit-url", no_argument, 0, 's'},
 		{"overwrite-existing", no_argument, 0, 'o'},
+		{"override-discid", required_argument, 0, 'O'},
 		{0, 0, 0, 0}
 	};
              
@@ -64,7 +66,7 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 		
 	do
 	{
-		Ret=getopt_long(argc,argv,"fdvrwcso",LongOptions,&OptionIndex);
+		Ret=getopt_long(argc,argv,"fdvrwcsoO:",LongOptions,&OptionIndex);
 		switch (Ret)
 		{
 			case 's':
@@ -99,6 +101,10 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 				m_OverwriteExisting=true;
 				break;
 
+			case 'O':
+				m_OverrideDiscID.assign(optarg);
+				break;
+
 			case -1:
 				//Reached end of options
 				break;
@@ -121,6 +127,8 @@ CCommandLine::CCommandLine(int argc, char *const argv[])
 	}
 	
 	if (m_FileNames.empty() && !m_Version)
+		m_Valid=false;
+	else if ((m_FileNames.size() > 1) && (m_OverrideDiscID.size() > 0))
 		m_Valid=false;
 	else if ((m_DiscID || m_SubmitURL) && (m_Check || m_Write || m_Rename || m_ForceWrite))
 		m_Valid=false;
@@ -176,6 +184,16 @@ bool CCommandLine::OverwriteExisting() const
 	return m_OverwriteExisting;
 }
 
+bool CCommandLine::OverrideDiscID() const
+{
+        return m_OverrideDiscID.size() > 0;
+}
+
+std::string CCommandLine::OverrideDiscID_val() const
+{
+	return m_OverrideDiscID;
+}
+
 std::vector<std::string> CCommandLine::FileNames() const
 {
 	return m_FileNames;
@@ -186,5 +204,6 @@ void CCommandLine::Usage(const std::string& ProgName) const
 	printf("Usage: %s [ --version | -v ] [ --submit-url | -s ] [ --discid | -d]\n"
 					"\t\t[ --check | -c ] [ --write | -w ] [ --force-write | -f ]\n"
 					"\t\t[ --rename | -r ] [ --overwrite-existing | -o ]\n"
+					"\t\t[ --override-discid discid ]\n"
 					"\t\tflacfile [ flacfile ] [ flacfile ]\n",ProgName.c_str());
 }

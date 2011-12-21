@@ -167,6 +167,14 @@ rename rules, and if it doesn't match, the file will be renamed.
 - *--overwrite-existing (-o)* - If --rename is specified then flactag will
 overwrite existing files when renaming.
 
+- *--override-discid (-O)* - Instead of calculating disc ID from the cuesheet,
+flactag will use the provided disc ID to query MusicBrainz.  Only one FLAC
+file can be processed when this option is used.  This is useful if you
+do not want to add the disc ID to the real MusicBrainz database, for
+example: because the original disc has not been sighted, the FLAC was 
+made by ripping a disc that was only a copy of the original and 
+the copy was not made in disc-at-once mode.
+
 Example uses of these options could be as follows (note the use of the find 
 option \'-print0\' and the xargs option \'-0\' to handle filenames containing 
 spaces):
