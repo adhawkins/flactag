@@ -97,6 +97,12 @@ OPTIONS
 	If --rename is specified then existing files will be overwritten when 
 	renaming.
 
+-O <discID>, --override-discid <discID>::
+        Instead of calculating disc ID from the cuesheet, flactag will use the
+        provided disc ID to query MusicBrainz.  Only one FLAC file can be
+        processed when this option is used.
+        
+
 BATCH MODE
 ----------
 *flactag* can be used in batch mode to process an entire music collection. For

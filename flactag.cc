@@ -601,11 +601,16 @@ bool CFlacTag::LoadData()
 		os << m_ConfigFile.Value("Port");
 		os >> Port;
 
-		CMusicBrainzInfo Info(m_ConfigFile.Value("Server"),Port,m_FlacCuesheet);
-		if (Info.LoadInfo(m_FlacFile))
-			m_Albums=Info.Albums();
+		CMusicBrainzInfo *Info;
+		if(m_CommandLine.OverrideDiscID())
+			Info = new CMusicBrainzInfo(m_ConfigFile.Value("Server"),Port,m_FlacCuesheet, m_CommandLine.OverrideDiscID_val());
+		else
+			Info = new CMusicBrainzInfo(m_ConfigFile.Value("Server"),Port,m_FlacCuesheet);
+		if (Info->LoadInfo(m_FlacFile))
+			m_Albums=Info->Albums();
 		else
 			RetVal=false;
+		delete Info;
 	}
 	else
 	{
