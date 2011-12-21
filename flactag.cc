@@ -360,6 +360,11 @@ void CFlacTag::Interactive()
 		SLsmg_normal_video();
 		SLsmg_write_string(const_cast<char *>("uit "));
 
+                SLsmg_reverse_video();
+                SLsmg_write_string(const_cast<char *>("M"));
+                SLsmg_normal_video();
+                SLsmg_write_string(const_cast<char *>("ake cuesheet file "));
+
 		if (m_Albums.size())
 		{
 			SLsmg_reverse_video();
@@ -525,6 +530,11 @@ void CFlacTag::Interactive()
 
 					break;
 
+				case 'm':
+				case 'M':
+					MakeCuesheetFile();
+					break;
+
 				case 'q':
 				case 'Q':
 					Quit=true;
@@ -565,7 +575,14 @@ bool CFlacTag::LoadData()
 														m_ConfigFile.Value("SingleDiskFileName"),
 														m_ConfigFile.Value("MultiDiskFileName"));
 
+		CFileNameBuilder CueFileNameBuilder(m_FlacInfo.Tags(),
+			m_ConfigFile.Value("BasePath"),
+			m_ConfigFile.Value("SingleDiskFileName"),
+			m_ConfigFile.Value("MultiDiskFileName"),
+			"cue");
+
 		m_RenameFile=FileNameBuilder.FileName();
+		m_RenameFileCue=CueFileNameBuilder.FileName();
 
 		tTagMap WriteTags=m_WriteInfo.Tags();
 
@@ -736,6 +753,26 @@ bool CFlacTag::MakeDirectory(const std::string& Directory, mode_t Mode) const
 	return RetVal;
 }
 
+bool CFlacTag::MakeCuesheetFile()
+{
+	bool RetVal=false;
+
+	m_FlacCuesheet.setFileName(m_FlacFile.c_str());
+		
+	// If the user hasn't added %E to their ~/.flactag, we shouldn't
+	// clobber the FLAC file
+	if(m_RenameFileCue == m_RenameFile)
+		return false;
+
+	std::ofstream cueFile;
+	cueFile.open(m_RenameFileCue.c_str());
+	cueFile << m_FlacCuesheet;
+	cueFile.close();
+	RetVal = true;
+
+	return RetVal;
+}
+
 bool CFlacTag::RenameFile()
 {
 	bool RetVal=false;
@@ -763,6 +800,8 @@ bool CFlacTag::RenameFile()
 
 					m_FlacFile=m_RenameFile;
 					LoadData();
+					if(m_ConfigFile.BoolValue("CreateCuesheetAfterRename"))
+						MakeCuesheetFile();
 				}
 				else
 				{
@@ -774,6 +813,8 @@ bool CFlacTag::RenameFile()
 
 							m_FlacFile=m_RenameFile;
 							LoadData();
+							if(m_ConfigFile.BoolValue("CreateCuesheetAfterRename"))
+								MakeCuesheetFile();
 						}
 					}
 					else

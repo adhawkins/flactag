@@ -27,6 +27,9 @@
 #ifndef _CUESHEET_TRACK_H
 #define _CUESHEET_TRACK_H
 
+#include <iostream>
+#include <string>
+
 #include <FLAC++/metadata.h>
 
 class CCuesheetTrack
@@ -36,10 +39,17 @@ public:
 
 	FLAC__byte Number() const;
 	FLAC__uint64 Offset() const;
+
+        void setPerformer(const std::string& Performer);
+        void setTitle(const std::string& Title);
+
+        friend std::ostream& operator<<(std::ostream& os, const CCuesheetTrack& track);
 		
 private:
 	FLAC__byte m_Number;
 	FLAC__uint64 m_Offset;
+	std::string m_Performer;
+	std::string m_Title;
 };
 
 #endif

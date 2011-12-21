@@ -27,6 +27,8 @@
 #ifndef _FLACTAG_H
 #define _FLACTAG_H
 
+#include <fstream>
+#include <iostream>
 #include <string>
 
 #include "Album.h"
@@ -55,6 +57,7 @@ private:
 	bool MakeDirectoryTree(const std::string& Directory) const;
 	bool CheckMakeDirectory(const std::string& Directory) const;
 	bool MakeDirectory(const std::string& Directory, mode_t Mode) const;
+	bool MakeCuesheetFile();
 	bool RenameFile();
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
 	void CopyTags(int AlbumNumber);
@@ -69,6 +72,7 @@ private:
 	tWindowType m_SelectedWindow;
 	CConfigFile m_ConfigFile;
 	std::string m_RenameFile;
+	std::string m_RenameFileCue;
 };
 
 #endif
