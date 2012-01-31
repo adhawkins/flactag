@@ -54,6 +54,8 @@ bool ScreenSizeChanged=false;
 
 static void sigwinch_handler (int sig)
 {
+	if (sig != SIGWINCH)
+		return;
 	ScreenSizeChanged=true;
 	SLsignal (SIGWINCH, sigwinch_handler);
 }
