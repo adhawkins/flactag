@@ -44,7 +44,7 @@ public:
 	{
 		eWindow_Albums,
 		eWindow_Tracks,
-		eWindow_Tags,
+		eWindow_Tags
 	} tWindowType;
 	
 	CFlacTag(const CCommandLine& CommandLine);
