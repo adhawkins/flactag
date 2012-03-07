@@ -47,13 +47,36 @@
 CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet)
 :	m_Server(Server),
 	m_Port(Port),
-	m_Cuesheet(Cuesheet)
+	m_Cuesheet(Cuesheet),
+	m_DiscIDWrapper(),
+	m_DiskID(""),
+	m_OverrideDiskID(false)
 {
 	if (m_Server.empty())
 		m_Server="musicbrainz.org";
 
 	if (0==m_Port)
 		m_Port=80;
+
+	m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
+	m_DiskID.assign(m_DiscIDWrapper.ID());
+}
+
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet, std::string DiskID)
+:       m_Server(Server),
+        m_Port(Port),
+        m_Cuesheet(Cuesheet),
+        m_DiscIDWrapper(),
+	m_DiskID(DiskID),
+	m_OverrideDiskID(true)
+{
+        if (m_Server.empty())
+                m_Server="musicbrainz.org";
+
+        if (0==m_Port)
+                m_Port=80;
+
+        m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
 }
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
@@ -62,9 +85,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 	bool RetVal=false;
 
-	CDiscIDWrapper DiscIDWrapper;
-	DiscIDWrapper.FromCuesheet(m_Cuesheet);
-	std::string DiskID=DiscIDWrapper.ID();
+	//std::string DiskID=DiscIDWrapper.ID();
 
 	//Test Disk ID for album title containing extended characters
 	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
@@ -76,7 +97,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 	try
 	{
-		MusicBrainz4::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(DiskID);
+		MusicBrainz4::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(m_DiskID);
 
 		if (ReleaseList.NumItems())
 		{
@@ -88,7 +109,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
 
-				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(DiskID);
+				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(m_DiskID);
 	 			for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
 				{
 					MusicBrainz4::CMedium *Medium=MediaList.Item(MediumNumber);
@@ -118,8 +139,11 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			os << "No albums found for file '" << FlacFile << "'";
 			CErrorLog::Log(os.str());
 
-			CErrorLog::Log("Please submit the DiskID using the following URL:");
-			CErrorLog::Log(DiscIDWrapper.SubmitURL());
+			if(!m_OverrideDiskID)
+			{
+				CErrorLog::Log("Please submit the DiskID using the following URL:");
+				CErrorLog::Log(m_DiscIDWrapper.SubmitURL());
+			}
 		}
 	}
 
@@ -130,7 +154,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			CErrorLog::Log(os.str());
 
 			CErrorLog::Log("Please submit the DiskID using the following URL:");
-			CErrorLog::Log(DiscIDWrapper.SubmitURL());
+			CErrorLog::Log(m_DiscIDWrapper.SubmitURL());
 	}
 
 	catch (MusicBrainz4::CExceptionBase Exception)

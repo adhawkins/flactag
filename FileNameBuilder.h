@@ -35,11 +35,13 @@ class CFileNameBuilder
 {
 public:
 	CFileNameBuilder(const tTagMap& m_Tags, const std::string& BasePath, const std::string& SingleDiskFileName, const std::string& MultiDiskFileName);
+	CFileNameBuilder(const tTagMap& m_Tags, const std::string& BasePath, const std::string& SingleDiskFileName, const std::string& MultiDiskFileName, const std::string& Extension);
 	
 	std::string FileName() const;
 private:
 	void BuildPath();
-	void ReplaceString(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly);
+	void ReplaceStringFromTag(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly);
+	void ReplaceString(const std::string& Search, const std::string& Replace);
 	std::string FixString(const std::string& String) const;
 
 	tTagMap m_Tags;
@@ -47,6 +49,7 @@ private:
 	std::string m_SingleDiskFileName;
 	std::string m_MultiDiskFileName;
 	std::string m_FileName;
+	std::string m_Extension;
 };
 
 #endif
