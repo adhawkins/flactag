@@ -31,6 +31,7 @@
 
 #include "Album.h"
 #include "Cuesheet.h"
+#include "DiscIDWrapper.h"
 
 #include "musicbrainz4/Release.h"
 #include "musicbrainz4/Medium.h"
@@ -41,6 +42,7 @@ class CMusicBrainzInfo
 {
 public:
 	CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet);
+	CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet, std::string OverrideDiscID);
 
 	bool LoadInfo(const std::string& FlacFile);
 	std::vector<CAlbum> Albums() const;
@@ -57,6 +59,9 @@ private:
 	std::string m_Server;
 	int m_Port;
 	CCuesheet m_Cuesheet;
+	CDiscIDWrapper m_DiscIDWrapper;
+	std::string m_DiskID;
+	bool m_OverrideDiskID;
 };
 
 #endif

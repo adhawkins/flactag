@@ -37,10 +37,22 @@ CFileNameBuilder::CFileNameBuilder(const tTagMap& Tags, const std::string& BaseP
 :	m_Tags(Tags),
 	m_BasePath(BasePath),
 	m_SingleDiskFileName(SingleDiskFileName),
-	m_MultiDiskFileName(MultiDiskFileName)
+	m_MultiDiskFileName(MultiDiskFileName),
+	m_Extension("flac")
 {
 	BuildPath();
 }
+
+CFileNameBuilder::CFileNameBuilder(const tTagMap& Tags, const std::string& BasePath, const std::string& SingleDiskFileName, const std::string& MultiDiskFileName, const std::string& Extension)
+:       m_Tags(Tags),
+        m_BasePath(BasePath),
+        m_SingleDiskFileName(SingleDiskFileName),
+        m_MultiDiskFileName(MultiDiskFileName),
+        m_Extension(Extension)
+{
+        BuildPath();
+}
+
 	
 std::string CFileNameBuilder::FileName() const
 {
@@ -62,16 +74,18 @@ void CFileNameBuilder::BuildPath()
 		
 	m_FileName+=Template;
 	
-	ReplaceString("%A","ARTIST",false);
-	ReplaceString("%S","ARTISTSORT",false);
-	ReplaceString("%T","ALBUM",false);
-	ReplaceString("%D","DISCNUMBER",false);
-	ReplaceString("%Y","YEAR",false);
-	ReplaceString("%G","GENRE",false);
-	ReplaceString("%1","ARTISTSORT",true);
+	ReplaceStringFromTag("%A","ARTIST",false);
+	ReplaceStringFromTag("%S","ARTISTSORT",false);
+	ReplaceStringFromTag("%T","ALBUM",false);
+	ReplaceStringFromTag("%D","DISCNUMBER",false);
+	ReplaceStringFromTag("%Y","YEAR",false);
+	ReplaceStringFromTag("%G","GENRE",false);
+	ReplaceStringFromTag("%1","ARTISTSORT",true);
+
+	ReplaceString("%E",m_Extension);
 }
 
-void CFileNameBuilder::ReplaceString(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly)
+void CFileNameBuilder::ReplaceStringFromTag(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly)
 {
 	std::string Replace="NO"+ReplaceTag;
 	
@@ -100,7 +114,11 @@ void CFileNameBuilder::ReplaceString(const std::string& Search, const std::strin
 		if (!Found)
 			Replace="extended";
 	}
-			
+	ReplaceString(Search, Replace);
+}
+
+void CFileNameBuilder::ReplaceString(const std::string& Search, const std::string& Replace)
+{
 	std::string::size_type SearchPos=m_FileName.find(Search);
 	while(std::string::npos!=SearchPos)
 	{
