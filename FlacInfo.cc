@@ -4,18 +4,18 @@
    						using data retrieved from the MusicBrainz service
 
    Copyright (C) 2006 Andrew Hawkins
-   
+
    This file is part of flactag.
-   
+
    Flactag is free software; you can redistribute it and/or
    modify it under the terms of v2 of the GNU Lesser General Public
    License as published by the Free Software Foundation.
-   
+
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
-   
+
    You should have received a copy of the GNU Lesser General Public
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -41,6 +41,11 @@ CFlacInfo::CFlacInfo()
 
 CFlacInfo::~CFlacInfo()
 {
+	if (m_TagBlock)
+		delete m_TagBlock;
+
+	if (m_PictureBlock)
+		delete m_PictureBlock;
 }
 
 bool CFlacInfo::CuesheetFound() const
@@ -53,7 +58,7 @@ void CFlacInfo::SetFileName(const std::string& FileName)
 	m_Tags.clear();
 	m_Cuesheet.Clear();
 	m_CoverArt.Clear();
-			
+
 	m_FileName=FileName;
 
 	m_TagBlock=0;
@@ -69,7 +74,7 @@ bool CFlacInfo::Read()
 	m_Tags.clear();
 	m_Cuesheet.Clear();
 	m_CoverArt.Clear();
-			
+
 	m_TagBlock=0;
 	m_PictureBlock=0;
 
@@ -82,9 +87,9 @@ bool CFlacInfo::Read()
 			if (m_Chain.is_valid())
 			{
 				FLAC::Metadata::Iterator Iterator;
-					
+
 				Iterator.init(m_Chain);
-				
+
 				if (Iterator.is_valid())
 				{
 					do
@@ -93,16 +98,16 @@ bool CFlacInfo::Read()
 						{
 							case FLAC__METADATA_TYPE_STREAMINFO:
 								break;
-								
+
 							case FLAC__METADATA_TYPE_PADDING:
 								break;
-								
+
 							case FLAC__METADATA_TYPE_APPLICATION:
 								break;
-								
+
 							case FLAC__METADATA_TYPE_SEEKTABLE:
 								break;
-								
+
 							case FLAC__METADATA_TYPE_VORBIS_COMMENT:
 								m_TagBlock=(FLAC::Metadata::VorbisComment *)Iterator.get_block();
 
@@ -111,44 +116,39 @@ bool CFlacInfo::Read()
 									for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
 									{
 										FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
-											
-										char *Name=new char[Entry.get_field_name_length()+1];
-										strncpy(Name,Entry.get_field_name(),Entry.get_field_name_length());
-										Name[Entry.get_field_name_length()]='\0';
-		
-										char *Value=new char[Entry.get_field_value_length()+1];
-										strncpy(Value,Entry.get_field_value(),Entry.get_field_value_length());
-										Value[Entry.get_field_value_length()]='\0';
-		
-										m_Tags[CTagName(Name)]=CUTF8Tag(Value);
 
-										delete[] Name;
-										delete[] Value;										
+										std::string Name(Entry.get_field_name(),Entry.get_field_name_length());
+										std::string Value(Entry.get_field_value(),Entry.get_field_value_length());
+
+										m_Tags[CTagName(Name)]=CUTF8Tag(Value);
 									}
 								}
-								
+
 								break;
-								
+
 							case FLAC__METADATA_TYPE_CUESHEET:
 							{
 								m_CuesheetFound=true;
-								
+
 								FLAC::Metadata::CueSheet *Cuesheet=(FLAC::Metadata::CueSheet *)Iterator.get_block();
 								for (unsigned count=0;count<Cuesheet->get_num_tracks();count++)
 								{
 									FLAC::Metadata::CueSheet::Track Track=Cuesheet->get_track(count);
-										
+
 									if (Track.get_number()==170)
 										m_Cuesheet.SetLeadout(CalculateOffset(Track));
 									else
 										m_Cuesheet.AddTrack(CCuesheetTrack(Track.get_number(),CalculateOffset(Track)));
 								}
+
+								delete Cuesheet;
+
 								break;
 							}
-								
-							case FLAC__METADATA_TYPE_UNDEFINED:  
+
+							case FLAC__METADATA_TYPE_UNDEFINED:
 								break;
-								
+
 #ifdef FLAC_API_VERSION_CURRENT
 							case FLAC__METADATA_TYPE_PICTURE:
 								m_PictureBlock=(FLAC::Metadata::Picture *)Iterator.get_block();
@@ -163,8 +163,49 @@ bool CFlacInfo::Read()
 			}
 		}
 	}
-	
+
+	if(m_CuesheetFound)
+		UpdateCuesheet();
+
 	return RetVal;
+}
+
+bool CFlacInfo::UpdateCuesheet()
+{
+	std::map<int, std::string> Titles;
+	std::map<int, std::string> Artists;
+	std::map<int, int> trackMappings;
+	tTagMap::iterator iterator;
+	std::map<int, int>::iterator it2;
+
+	for(iterator=m_Tags.begin(); iterator!=m_Tags.end(); iterator++)
+	{
+		const CTagName& tagName = iterator->first;
+		const CUTF8Tag& tagValue = iterator->second;
+	
+		if(tagName == CTagName("ALBUM"))
+			m_Cuesheet.setTitle(tagValue.UTF8Value());
+		else if(tagName == CTagName("ARTIST"))
+			m_Cuesheet.setPerformer(tagValue.UTF8Value());
+
+		if(tagName.Number() > -1)
+		{
+			if(tagName.Name() == "TRACKNUMBER")
+				trackMappings[tagName.Number()] = atoi(tagValue.DisplayValue().c_str());
+			else if(tagName.Name() == "ARTIST")
+				Artists[tagName.Number()] = tagValue.DisplayValue();
+			else if(tagName.Name() == "TITLE")
+				Titles[tagName.Number()] = tagValue.DisplayValue();
+		}
+	}
+
+	for(it2=trackMappings.begin(); it2!=trackMappings.end(); it2++)
+	{
+		int trackNum = it2->second;
+		m_Cuesheet.setTrackPerformer(trackNum, Artists[it2->first]);
+		m_Cuesheet.setTrackTitle(trackNum, Titles[it2->first]);
+	}
+	return true;
 }
 
 tTagMap CFlacInfo::Tags() const
@@ -182,6 +223,11 @@ CCuesheet CFlacInfo::Cuesheet() const
 	return m_Cuesheet;
 }
 
+std::string CFlacInfo::WriteError() const
+{
+	return m_WriteError;
+}
+
 int CFlacInfo::CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) const
 {
 	FLAC__uint64 Offset=Track.get_offset();
@@ -194,49 +240,49 @@ int CFlacInfo::CalculateOffset(const FLAC::Metadata::CueSheet::Track& Track) con
 		if (Index.number==1)
 			MaxIndexOffset=Index.offset;
 	}
-	
+
 	Offset+=MaxIndexOffset;
 	Offset/=588;
 	Offset+=150;
-	
+
 	return Offset;
 }
 
 bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 {
 	bool RetVal=true;
-	
+
 	if (m_TagBlock)
 	{
 		while (m_TagBlock->get_num_comments())
 			m_TagBlock->delete_comment(0);
-			
+
 		tTagMap Tags=WriteInfo.Tags();
 		tTagMapConstIterator ThisTag=Tags.begin();
-		
+
 		while (Tags.end()!=ThisTag)
 		{
 			CTagName Name=(*ThisTag).first;
 			CUTF8Tag Value=(*ThisTag).second;
 
-			if (!Value.empty())				
+			if (!Value.empty())
 			{
 				FLAC::Metadata::VorbisComment::Entry NewEntry;
-					
+
 				if (!NewEntry.set_field_name(Name.String().c_str()))
 				{
 					std::stringstream os;
 					os << "Error setting field name: '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
-				
+
 				if (!NewEntry.set_field_value(Value.UTF8Value().c_str(),Value.UTF8Value().length()))
 				{
 					std::stringstream os;
 					os << "Error setting field value: '" << Value.DisplayValue() << "' for '" << Name.String() << "'";
 					CErrorLog::Log(os.str());
 				}
-				
+
 				if (!m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry))
 				{
 					std::stringstream os;
@@ -258,13 +304,13 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 				FLAC::Metadata::Iterator Iterator;
 
 				Iterator.init(m_Chain);
-				
+
 				if (Iterator.is_valid())
 				{
 					//Move to the end
 					while (Iterator.next())
 						;
-						
+
 					m_PictureBlock = new FLAC::Metadata::Picture;
 					SetPictureBlock(WriteInfo.CoverArt());
 
@@ -277,13 +323,13 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 			if (m_PictureBlock)
 			{
 				FLAC::Metadata::Iterator Iterator;
-					
+
 				Iterator.init(m_Chain);
-				
+
 				if (Iterator.is_valid())
 				{
 					bool Found=false;
-					
+
 					do
 					{
 						switch (Iterator.get_block_type())
@@ -292,9 +338,9 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 							{
 								Found=true;
 								RetVal=Iterator.delete_block(true);
-								break;							
+								break;
 							}
-								
+
 							default:
 								break;
 						}
@@ -302,29 +348,40 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 				}
 			}
 		}
-		
+
 #endif
 		if (RetVal)
+		{
 			RetVal=m_Chain.write();
+
+			if (!RetVal)
+			{
+				FLAC::Metadata::Chain::Status Status=m_Chain.status();
+				m_WriteError=Status.as_cstring();
+			}
+		}
 	}
 	else
+	{
+		m_WriteError.assign("no tag block exists in the FLAC file, create one with metaflac --set-tag=ARTIST=unset <filename.flac>");
 		RetVal=false;
-	
+	}
+
 	return RetVal;
 }
 
 void CFlacInfo::SetTag(const CTagName& Name, const std::string& Value)
 {
 	bool Found=false;
-	
+
 	for (unsigned count=0;count<m_TagBlock->get_num_comments();count++)
 	{
 		FLAC::Metadata::VorbisComment::Entry Entry=m_TagBlock->get_comment(count);
 		std::string ThisField=Entry.get_field_name();
-			
+
 		if (ThisField==Name.String())
 			Found=true;
-			
+
 		if (Found)
 		{
 			Entry.set_field_name(Name.String().c_str());
@@ -332,14 +389,14 @@ void CFlacInfo::SetTag(const CTagName& Name, const std::string& Value)
 			m_TagBlock->set_comment(count,Entry);
 		}
 	}
-	
+
 	if (!Found)
 	{
 		FLAC::Metadata::VorbisComment::Entry NewEntry;
-			
+
 		NewEntry.set_field_name(Name.String().c_str());
 		NewEntry.set_field_value(Value.c_str(),Value.length());
-		
+
 		m_TagBlock->insert_comment(m_TagBlock->get_num_comments(),NewEntry);
 	}
 }

@@ -27,6 +27,9 @@
 #include "Cuesheet.h"
 
 CCuesheet::CCuesheet()
+:	m_Performer(""),
+	m_Title(""),
+	m_FileName("")
 {
 	Clear();
 }
@@ -58,11 +61,11 @@ FLAC__byte CCuesheet::NumTracks() const
 CCuesheetTrack CCuesheet::Track(FLAC__byte TrackNum) const
 {
 	CCuesheetTrack Ret;
-	
+
 	std::map<FLAC__byte,CCuesheetTrack>::const_iterator ThisTrack=m_Tracks.find(TrackNum);
 	if (m_Tracks.end()!=ThisTrack)
 		Ret=(*ThisTrack).second;
-		
+
 	return Ret;
 }
 
@@ -85,3 +88,44 @@ FLAC__byte CCuesheet::LastTrack() const
 {
 	return m_LastTrack;
 }
+
+void CCuesheet::setPerformer(const std::string& Performer)
+{
+	m_Performer.assign(Performer);
+}
+
+void CCuesheet::setTitle(const std::string& Title)
+{
+	m_Title.assign(Title);
+}
+
+void CCuesheet::setFileName(const std::string& FileName)
+{
+	m_FileName.assign(FileName);
+}
+
+void CCuesheet::setTrackPerformer(int track, const std::string& Performer)
+{
+        m_Tracks[track].setPerformer(Performer);
+}
+
+void CCuesheet::setTrackTitle(int track, const std::string& Title)
+{
+        m_Tracks[track].setTitle(Title);
+}
+
+std::ostream& operator<<(std::ostream& os, const CCuesheet& cuesheet)
+{
+	FLAC__byte i;
+	char Qsym = '"';
+	os << "PERFORMER " << Qsym << cuesheet.m_Performer << Qsym << std::endl;
+	os << "TITLE " << Qsym << cuesheet.m_Title << Qsym << std::endl;
+	os << "FILE " << Qsym << cuesheet.m_FileName << Qsym << " FLAC" << std::endl;
+
+	for(i = 1; i <= cuesheet.NumTracks(); i++)
+	{
+		os << cuesheet.Track(i);
+	}
+	return os;
+}
+

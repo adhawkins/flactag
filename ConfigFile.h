@@ -39,6 +39,7 @@ public:
 	bool SaveFile(const std::string& FileName) const;
 		
 	std::string Value(const std::string& Name) const;
+	bool BoolValue(const std::string& Name) const;
 			
 private:
 	std::map<std::string,std::string> m_Values;

@@ -1,7 +1,7 @@
 INSTALLROOT=/
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=1.2-alpha
+VERSION=2.0alpha1
 
 # For linking C++ code
 LD=g++
@@ -10,8 +10,11 @@ LD=g++
 #CXX=g++-4.3
 #LD=g++-4.3
 
-CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
-CXXFLAGS+=-g -ggdb
+CXXFLAGS+=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
+#CXXFLAGS+=-g -ggdb -O0
+# To enable tracing into the libraries and also expose some more
+# obscure bugs during development:
+#CXXFLAGS+=-D_GLIBCXX_DEBUG
 # De-optimize for debugging
 #CXXFLAGS+=-O0
 # More pedantic warnings about code issues:
@@ -24,7 +27,7 @@ FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
-						WriteInfo.o HTTPFetch.o
+						WriteInfo.o
 
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
@@ -100,11 +103,13 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	$(LD) `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
+	$(LD) $(LDFLAGS) `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg -lmusicbrainz4 $(FLACTAGOBJS)
 
 discid: $(DISCIDOBJS)
-	$(LD) -o $@ -ldiscid $^
+	$(LD) $(LDFLAGS) -o $@ -ldiscid $^
 
-include $(SRCS:.cc=.d)
+ifneq "$(MAKECMDGOALS)" "clean"
+-include $(SRCS:.cc=.d)
+endif
 
 .phony:
