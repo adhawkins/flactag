@@ -1,3 +1,9 @@
+flactag (2.0alpha1) unstable; urgency=low
+
+  * Packaging for new version with libmusicbrainz4 support
+
+ -- Andy Hawkins <andy@gently.org.uk>  Wed, 14 Mar 2012 18:20:00 +0000
+
 flactag (1.1-2) unstable; urgency=low
 
   * Address comments from Jonathan Wiltshire <debian@jwiltshire.org.uk>
