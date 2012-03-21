@@ -275,6 +275,8 @@ v2.0RC1 - 20th March 2012
 
 - More work on packaging for Debian
 
+- Add ability to specify both server and port to query
+
 v1.1 - 16th December 2008
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -373,7 +375,7 @@ v0.04 - 23rd September 2006
 v0.03 - 18th September 2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Fix serious  bug in generating submission URLs
+- Fix serious bug in generating submission URLs
 
 v0.02 - 18th September 2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
