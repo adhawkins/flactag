@@ -234,9 +234,12 @@ Using A Different Musicbrainz Server
 ------------------------------------
 
 To use a different MusicBrainz server (for example if you have a local mirror)
-you can set the 'Server' parameter in the configuration file.
+you can set the 'Server' and 'Port' parameters in the configuration file.
 
-e.g. Server=mbserver.localdomain
+e.g.
+
+Server=mbserver.localdomain
+Port=5000
 
 Bugs / Limitations / Future Enhancements
 ----------------------------------------
