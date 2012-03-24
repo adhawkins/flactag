@@ -19,9 +19,6 @@ CXXFLAGS+=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
 #CXXFLAGS+=-O0
 # More pedantic warnings about code issues:
 CXXFLAGS+=-Wextra -pedantic-errors
-# To enable tracing into the libraries and also expose some more
-# obscure bugs during development:
-#CXXFLAGS+=-D_GLIBCXX_DEBUG
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
