@@ -61,7 +61,14 @@ void CFlacInfo::SetFileName(const std::string& FileName)
 
 	m_FileName=FileName;
 
+	if (m_TagBlock)
+		delete m_TagBlock;
+
 	m_TagBlock=0;
+
+	if (m_PictureBlock)
+		delete m_PictureBlock;
+
 	m_PictureBlock=0;
 
 	m_CuesheetFound=false;
@@ -75,7 +82,14 @@ bool CFlacInfo::Read()
 	m_Cuesheet.Clear();
 	m_CoverArt.Clear();
 
+	if (m_TagBlock)
+		delete m_TagBlock;
+
 	m_TagBlock=0;
+
+	if (m_PictureBlock)
+		delete m_PictureBlock;
+
 	m_PictureBlock=0;
 
 	m_CuesheetFound=false;
@@ -182,7 +196,7 @@ bool CFlacInfo::UpdateCuesheet()
 	{
 		const CTagName& tagName = iterator->first;
 		const CUTF8Tag& tagValue = iterator->second;
-	
+
 		if(tagName == CTagName("ALBUM"))
 			m_Cuesheet.setTitle(tagValue.UTF8Value());
 		else if(tagName == CTagName("ARTIST"))
