@@ -3,7 +3,8 @@
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
    						using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006 Andrew Hawkins
+   Copyright (C) 2006-2012 Andrew Hawkins
+   Copyright (C) 2011-2012 Daniel Pocock
 
    This file is part of flactag.
 

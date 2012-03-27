@@ -3,19 +3,20 @@
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
    						using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006 Andrew Hawkins
-   
+   Copyright (C) 2006-2012 Andrew Hawkins
+   Copyright (C) 2011-2012 Daniel Pocock
+
    This file is part of flactag.
-   
+
    Flactag is free software; you can redistribute it and/or
    modify it under the terms of v2 of the GNU Lesser General Public
    License as published by the Free Software Foundation.
-   
+
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
-   
+
    You should have received a copy of the GNU Lesser General Public
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -48,9 +49,9 @@ public:
 		eWindow_Tracks,
 		eWindow_Tags
 	} tWindowType;
-	
+
 	CFlacTag(const CCommandLine& CommandLine);
-		
+
 private:
 	void Interactive();
 	bool LoadData();
@@ -62,11 +63,11 @@ private:
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
 	void CopyTags(int AlbumNumber);
 	void SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& TagValue);
-	
+
 	CCommandLine m_CommandLine;
 	std::string m_FlacFile;
 	std::vector<CAlbum> m_Albums;
-	CFlacInfo m_FlacInfo;			
+	CFlacInfo m_FlacInfo;
 	CCuesheet m_FlacCuesheet;
 	CWriteInfo m_WriteInfo;
 	tWindowType m_SelectedWindow;
