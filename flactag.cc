@@ -35,6 +35,8 @@
 
 #include <slang.h>
 
+#include "config.h"
+
 #include "flactag.h"
 #include "Album.h"
 #include "AlbumWindow.h"

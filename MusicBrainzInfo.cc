@@ -27,6 +27,8 @@
 
 #include "MusicBrainzInfo.h"
 
+#include "config.h"
+
 #include <sstream>
 
 #include "base64.h"

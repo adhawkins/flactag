@@ -1,7 +1,7 @@
 INSTALLROOT=/
 INSTALLPATH=$(DESTDIR)/$(INSTALLROOT)
 
-VERSION=2.0alpha1
+VERSION=1.2-alpha
 
 # For linking C++ code
 LD=g++
@@ -10,21 +10,21 @@ LD=g++
 #CXX=g++-4.3
 #LD=g++-4.3
 
-CXXFLAGS+=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
-#CXXFLAGS+=-g -ggdb -O0
-# To enable tracing into the libraries and also expose some more
-# obscure bugs during development:
-#CXXFLAGS+=-D_GLIBCXX_DEBUG
+CXXFLAGS=-Wall -Werror -DVERSION=\"${VERSION}\" `neon-config --cflags`
+CXXFLAGS+=-g -ggdb
 # De-optimize for debugging
 #CXXFLAGS+=-O0
 # More pedantic warnings about code issues:
 CXXFLAGS+=-Wextra -pedantic-errors
+# To enable tracing into the libraries and also expose some more
+# obscure bugs during development:
+#CXXFLAGS+=-D_GLIBCXX_DEBUG
 
 FLACTAGOBJS=flactag.o Album.o Track.o AlbumWindow.o TrackWindow.o FlacInfo.o \
 						TagName.o TagsWindow.o CuesheetTrack.o Cuesheet.o DiscIDWrapper.o \
 						base64.o ScrollableWindow.o ConfigFile.o MusicBrainzInfo.o \
 						FileNameBuilder.o ErrorLog.o CommandLine.o CoverArt.o UTF8Tag.o \
-						WriteInfo.o
+						WriteInfo.o HTTPFetch.o
 
 DISCIDOBJS=discid.o DiscIDWrapper.o Cuesheet.o CuesheetTrack.o
 
@@ -77,7 +77,7 @@ flactag.html: flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
 
 clean:
-	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1.html flactag.1 manpage.refs manpage.links
+	rm -f $(FLACTAGOBJS) $(DISCIDOBJS) flactag.html *.d *.bak *~ *.tar.gz flactag discid flactag.man svn-commit.* flactag.1.xml flactag.1.html flactag.1
 
 flactag-$(VERSION).tar.gz: dist
 
@@ -100,13 +100,11 @@ install-webpages: flactag-$(VERSION).tar.gz flactag.html
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' > $@
 
 flactag: $(FLACTAGOBJS)
-	$(LD) $(LDFLAGS) `neon-config --libs` -o $@ -lslang -ldiscid -lFLAC++ -lunac -ljpeg -lmusicbrainz4 $(FLACTAGOBJS)
+	$(LD) `neon-config --libs` -o $@ -lslang -lmusicbrainz3 -ldiscid -lFLAC++ -lunac -ljpeg $^
 
 discid: $(DISCIDOBJS)
-	$(LD) $(LDFLAGS) -o $@ -ldiscid $^
+	$(LD) -o $@ -ldiscid $^
 
-ifneq "$(MAKECMDGOALS)" "clean"
--include $(SRCS:.cc=.d)
-endif
+include $(SRCS:.cc=.d)
 
 .phony:
