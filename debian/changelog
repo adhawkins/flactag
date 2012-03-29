@@ -1,3 +1,25 @@
+flactag (2.0~alpha1-3) unstable; urgency=low
+
+  * Build-dependency use libneon27-gnutls-dev rather than just libneon27-dev
+  * Update description based on lintian comments
+  * Add source format as per lintian comments
+  * Update to latest standards version
+  * Add rules as per lintian comments
+
+ -- Andy Hawkins <andy@gently.org.uk>  Tue, 20 Mar 2012 20:32:12 +0000
+
+flactag (2.0~alpha1-2) unstable; urgency=low
+
+  * Change dependency to 'official' libmusicbrainz4-dev
+
+ -- Andy Hawkins <andy@gently.org.uk>  Mon, 19 Mar 2012 09:10:00 +0000
+
+flactag (2.0~alpha1-1) unstable; urgency=low
+
+  * Packaging for new version with libmusicbrainz4 support
+
+ -- Andy Hawkins <andy@gently.org.uk>  Wed, 14 Mar 2012 18:20:00 +0000
+
 flactag (1.1-2) unstable; urgency=low
 
   * Address comments from Jonathan Wiltshire <debian@jwiltshire.org.uk>

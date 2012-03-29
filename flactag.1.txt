@@ -5,7 +5,7 @@ Andy Hawkins <andy@gently.org.uk>
 NAME
 ----
 
-flactag - A tagger for whole album FLACs using data from the MusicBrainz 
+flactag - A tagger for whole album FLACs using data from the MusicBrainz
 service
 
 SYNOPSIS
@@ -22,31 +22,31 @@ SYNOPSIS
 
 RIPPING CDS TO FLAC
 -------------------
-*IMPORTANT: I think I found a bug in `cueconvert` which means that any FLAC 
-files generated from CDs that used INDEX marks to separate tracks that didn't 
-have any pre-gap would generate invalid disc IDs. I would urge you to use the 
-`checkflac` script provided to compare any disks you may have ripped with 
-their FLAC files to ensure that the discids match correctly. Included in this 
-release is a SED script which will massage the TOC file of a CD to work around 
-this problem. Unfortunately, the only way to recover from this is to re-rip the 
+*IMPORTANT: I think I found a bug in `cueconvert` which means that any FLAC
+files generated from CDs that used INDEX marks to separate tracks that didn't
+have any pre-gap would generate invalid disc IDs. I would urge you to use the
+`checkflac` script provided to compare any disks you may have ripped with
+their FLAC files to ensure that the discids match correctly. Included in this
+release is a SED script which will massage the TOC file of a CD to work around
+this problem. Unfortunately, the only way to recover from this is to re-rip the
 CD.*
 
-To rip a CD to flac, simply enter `ripflac <basename>` (where basename is 
+To rip a CD to flac, simply enter `ripflac <basename>` (where basename is
 used as the base name of the FLAC file you will be creating. The CD in the drive
 will be ripped, and a FLAC file created containing an embedded CUE sheet.
 
-If the original CD contains data tracks, then the FLAC conversion will fail. 
-Should this happen, enter `ripdataflac <basename> <range>` (where basename is 
-the same one specified in the first rip attempt, and range is the range of 
-tracks to rip (e.g. if the CD has 13 tracks, where track 13 is the data track, 
-then the range would be 1-12). 
+If the original CD contains data tracks, then the FLAC conversion will fail.
+Should this happen, enter `ripdataflac <basename> <range>` (where basename is
+the same one specified in the first rip attempt, and range is the range of
+tracks to rip (e.g. if the CD has 13 tracks, where track 13 is the data track,
+then the range would be 1-12).
 
-During the ripping of the data CD, you will be provided with the CUE sheet in an 
-editor. You should delete the data track from this CUE sheet file and save it (I 
+During the ripping of the data CD, you will be provided with the CUE sheet in an
+editor. You should delete the data track from this CUE sheet file and save it (I
 will try to automate this process at some point).
 
-Both these scripts will compare the calculated discid of the FLAC file with the 
-discid of the CD in the drive. If they do not match, a warning will be issued. 
+Both these scripts will compare the calculated discid of the FLAC file with the
+discid of the CD in the drive. If they do not match, a warning will be issued.
 
 The *discid* command can be used to display the disc ID of a CD in the drive.
 
@@ -63,39 +63,45 @@ OPTIONS
 -------
 -v, --version::
 	Display the software version.
-	
+
 -h, --help::
 	Display brief usage information.
-	
+
 -d, --discid::
 	Display the calculated disc ID for the specified FLAC file and exit.
 
 -s, --submit-url::
-	Display the URL used to submit information for this file to the 
-	MusicBrainz service. Use this to submit data for your CD if the 
+	Display the URL used to submit information for this file to the
+	MusicBrainz service. Use this to submit data for your CD if the
 	data returned does not match.
 
 -c, --check::
-	This option will compare the file's tags against those returned from 
-	the MusicBrainz service. A message will be displayed indicating 
+	This option will compare the file's tags against those returned from
+	the MusicBrainz service. A message will be displayed indicating
 	where the tags match or not.
 
 -w, --write::
-	This option implies *--check*. If the files tags differ from those 
-	returned from the MusicBrainz service, the tags will be written to 
+	This option implies *--check*. If the files tags differ from those
+	returned from the MusicBrainz service, the tags will be written to
 	the file.
 
 -f, --force-write::
-	If --write is specified then tags will be written even if they appear 
+	If --write is specified then tags will be written even if they appear
 	to match those already in the file.
 
 -r, --rename::
-	The filename will be compared with that specified by the rename rules, 
+	The filename will be compared with that specified by the rename rules,
 	and if it doesn't match, the file will be renamed.
 
 -o, --overwrite-existing::
-	If --rename is specified then existing files will be overwritten when 
+	If --rename is specified then existing files will be overwritten when
 	renaming.
+
+-O <discID>, --override-discid <discID>::
+        Instead of calculating disc ID from the cuesheet, flactag will use the
+        provided disc ID to query MusicBrainz.  Only one FLAC file can be
+        processed when this option is used.
+
 
 BATCH MODE
 ----------
@@ -106,71 +112,74 @@ example, to check every FLAC file, write new tags and rename appropriately:
 
 INTERACTIVE MODE
 ----------------
-If *flactac* is executed without any options, it will interactively process 
+If *flactac* is executed without any options, it will interactively process
 all FLAC files given as arguments.
 
-If the flactag utility does not find information for your CD, a URL will be 
-provided to submit information for it. Often the MusicBrainz server will 
-have information about the tracks and artist, but cannot match this up to your 
-CD. In these circumstances, it is simply a matter of \'associating\' your CD's 
-DiskID with the correct album data on the MusicBrainz server. In other 
-instances, you may be required to enter the track and album information into the 
-MusicBrainz service. Once you have entered this information, you can re-run 
+If the flactag utility does not find information for your CD, a URL will be
+provided to submit information for it. Often the MusicBrainz server will
+have information about the tracks and artist, but cannot match this up to your
+CD. In these circumstances, it is simply a matter of \'associating\' your CD's
+DiskID with the correct album data on the MusicBrainz server. In other
+instances, you may be required to enter the track and album information into the
+MusicBrainz service. Once you have entered this information, you can re-run
 flactag, and the data should be downloaded from the MusicBrainz server.
 
-If the flactag utility finds information for your CD at the musicbrainz server, 
+If the flactag utility finds information for your CD at the musicbrainz server,
 the application's main window will be shown.
 
 This contains three main areas:
 
-- The *\'Albums\'* window. This will contain a list of albums that match 
+- The *\'Albums\'* window. This will contain a list of albums that match
 the DiskID for your FLAC file.
 
-- The *\'Tracks\'* window. This contains a list of all the tracks on the 
+- The *\'Tracks\'* window. This contains a list of all the tracks on the
 currently selected album.
 
-- The *\'Tags\'* window. At startup, this will contain a list of the tags 
-currently found in your FLAC file. If there are no tags present, then an empty 
-set appropriate for the album will be displayed. If you make changes to these 
-tags, an asterisk (\'*\') will be displayed to indicate that this information has 
-been changed. 
+- The *\'Tags\'* window. At startup, this will contain a list of the tags
+currently found in your FLAC file. If there are no tags present, then an empty
+set appropriate for the album will be displayed. If you make changes to these
+tags, an asterisk (\'*\') will be displayed to indicate that this information has
+been changed.
 
-The currently active window will be highlighted by the border and window title 
-changing colour. To switch between the three windows, press the *TAB* key. To 
-scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to 
-scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half 
-a page at a time). Scrolling in the *\'Albums\'* window will update the information 
+The currently active window will be highlighted by the border and window title
+changing colour. To switch between the three windows, press the *TAB* key. To
+scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to
+scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half
+a page at a time). Scrolling in the *\'Albums\'* window will update the information
 in the *\'Tracks\'* window appropriately.
 
-Once the appropriate album has been selected, pressing *c* will copy the tags 
-for that album into the *\'Tags\'* window. These tags can then be saved to the FLAC 
+Once the appropriate album has been selected, pressing *c* will copy the tags
+for that album into the *\'Tags\'* window. These tags can then be saved to the FLAC
 file by pressing the *w* key.
 
-Pressing *r* will rename the file based on the settings in the 
-configuration file (~/.flactag - this file is created automatically the first 
-time you run *flactag*). Note that this facility uses the tags that are 
-actually written to the file, so should generally be performed after the new 
-tags have been written. This option will be unavailable if the filename and 
+Pressing *r* will rename the file based on the settings in the
+configuration file (~/.flactag - this file is created automatically the first
+time you run *flactag*). Note that this facility uses the tags that are
+actually written to the file, so should generally be performed after the new
+tags have been written. This option will be unavailable if the filename and
 location are already correct.
 
-Pressing *q* will move to the next file specified on the command line. 
+Pressing *q* will move to the next file specified on the command line.
 If all files have been processed, the application will exit.
 
 FILE RENAMING DETAILS
 ---------------------
 The following configuration file (~/.flactag) entries affect file renaming:
 
-- *BasePath* - This is the 'root' directory of where your music files 
+- *BasePath* - This is the 'root' directory of where your music files
 should be stored. (e.g. /var/spool/music)
 
-- *SingleDiskFileName* - This template is used to rename disks that 
+- *SingleDiskFileName* - This template is used to rename disks that
 are not part of a multi-disk set.
 
-- *MultiDiskFileName* - This template is used to rename disks that 
+- *MultiDiskFileName* - This template is used to rename disks that
 are part of a multi-disk set.
 
-- *DirectoryCreatePermissions* - The permissions to be set on any 
+- *DirectoryCreatePermissions* - The permissions to be set on any
 directory that is created (e.g. 0755).
+
+- *CreateCuesheetAfterRename* - If set to true, flactag will generate
+a cuesheet file to accompany the renamed FLAC file.
 
 The FileName templates can accept the following parameters:
 
@@ -188,20 +197,25 @@ The FileName templates can accept the following parameters:
 
 - *%1* - This will be replaced with the first character of the artist sort name
 
-If any item is used but does not have a value, then it will be stored as (for 
+- *%E* - This will be replaced by the appropriate filename extension (flac or cue)
+
+If any item is used but does not have a value, then it will be stored as (for
 example) NOGENRE (if the genre tag is empty).
 
 USING A DIFFERENT MUSICBRAINZ SERVER
 ------------------------------------
 
-To use a different MusicBrainz server (for example if you have a local mirror) 
-you can set the 'Server' parameter in the configuration file.
+To use a different MusicBrainz server (for example if you have a local mirror)
+you can set the 'Server' and 'Port' parameters in the configuration file.
 
-e.g. Server=mbserver.localdomain
+e.g.
+
+Server=mbserver.localdomain
+Port=5000
 
 BUGS / LIMITATIONS / FUTURE ENHANCEMENTS
 ----------------------------------------
-- Once changes are written to the FLAC file, there is no way of reverting 
+- Once changes are written to the FLAC file, there is no way of reverting
 back to the original tags.
 
 AUTHOR

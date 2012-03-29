@@ -3,7 +3,8 @@
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
    						using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006 Andrew Hawkins
+   Copyright (C) 2006-2012 Andrew Hawkins
+   Copyright (C) 2011-2012 Daniel Pocock
 
    This file is part of flactag.
 
@@ -26,35 +27,68 @@
 
 #include "MusicBrainzInfo.h"
 
-#include <sstream>
+#include "config.h"
 
-#include <musicbrainz3/query.h>
-#include <musicbrainz3/filters.h>
-#include <musicbrainz3/release.h>
-#include <musicbrainz3/webservice.h>
-#include <musicbrainz3/utils.h>
+#include <sstream>
 
 #include "base64.h"
 
 #include "DiscIDWrapper.h"
 #include "ErrorLog.h"
-#include "HTTPFetch.h"
 
-CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, const CCuesheet& Cuesheet)
+#include "musicbrainz4/HTTPFetch.h"
+#include "musicbrainz4/Query.h"
+#include "musicbrainz4/Track.h"
+#include "musicbrainz4/Release.h"
+#include "musicbrainz4/Medium.h"
+#include "musicbrainz4/ReleaseGroup.h"
+#include "musicbrainz4/ArtistCredit.h"
+#include "musicbrainz4/Artist.h"
+#include "musicbrainz4/Recording.h"
+#include "musicbrainz4/NameCredit.h"
+
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet)
 :	m_Server(Server),
-	m_Cuesheet(Cuesheet)
+	m_Port(Port),
+	m_Cuesheet(Cuesheet),
+	m_DiscIDWrapper(),
+	m_DiskID(""),
+	m_OverrideDiskID(false)
 {
 	if (m_Server.empty())
 		m_Server="musicbrainz.org";
+
+	if (0==m_Port)
+		m_Port=80;
+
+	m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
+	m_DiskID.assign(m_DiscIDWrapper.ID());
+}
+
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet, std::string DiskID)
+:       m_Server(Server),
+        m_Port(Port),
+        m_Cuesheet(Cuesheet),
+        m_DiscIDWrapper(),
+	m_DiskID(DiskID),
+	m_OverrideDiskID(true)
+{
+        if (m_Server.empty())
+                m_Server="musicbrainz.org";
+
+        if (0==m_Port)
+                m_Port=80;
+
+        m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
 }
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 {
+	//http://www.musicbrainz.org/ws/2/discid/arIS30RPWowvwNEqsqdDnZzDGhk-?inc=recordings+artists+artist-credits+url-rels+aliases
+
 	bool RetVal=false;
 
-	CDiscIDWrapper DiscIDWrapper;
-	DiscIDWrapper.FromCuesheet(m_Cuesheet);
-	std::string DiskID=DiscIDWrapper.ID();
+	//std::string DiskID=DiscIDWrapper.ID();
 
 	//Test Disk ID for album title containing extended characters
 	//DiskID="5EgKduVn7sQH9JGg8JQyrPOjSqc-";
@@ -62,220 +96,44 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 
-	MusicBrainz::WebService Service(m_Server);
-			
-	MusicBrainz::Query Query(&Service);
+	MusicBrainz4::CQuery MusicBrainz("flactag-" VERSION,m_Server,m_Port);
 
 	try
 	{
-		WaitRequest();
+		MusicBrainz4::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(m_DiskID);
 
-		MusicBrainz::ReleaseResultList Releases=Query.getReleases(&MusicBrainz::ReleaseFilter().discId(DiskID));
-
-		if (Releases.size())
+		if (ReleaseList.NumItems())
 		{
 			RetVal=true;
 
-			for (MusicBrainz::ReleaseResultList::size_type count=0; count<Releases.size(); count++)
+			for (int ReleaseNum=0;ReleaseNum<ReleaseList.NumItems();ReleaseNum++)
 			{
-				try
+				MusicBrainz4::CRelease *Release=ReleaseList.Item(ReleaseNum);
+
+				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
+
+				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(m_DiskID);
+	 			for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
 				{
-					WaitRequest();
-					MusicBrainz::Release *Release =
-					Query.getReleaseById(Releases[count]->getRelease()->getId(),
-					&MusicBrainz::ReleaseIncludes().tracks().artist().releaseEvents().urlRelations());
+					MusicBrainz4::CMedium *Medium=MediaList.Item(MediumNumber);
 
-					CAlbum Album;
+					CAlbum Album=ParseAlbum(FullRelease,Medium);
 
-					std::string AlbumName=Release->getTitle();
-					std::string::size_type DiskNumPos=AlbumName.find(" (disc ");
-					if (std::string::npos!=DiskNumPos)
+					MusicBrainz4::CTrackList *TrackList=Medium->TrackList();
+					if (TrackList)
 					{
-						int DiskNumber;
-						std::string NumStr=AlbumName.substr(DiskNumPos+7);
-						AlbumName=AlbumName.substr(0,DiskNumPos);
-						std::stringstream os;
-						os << NumStr;
-						os >> DiskNumber;
-						Album.SetDiskNumber(DiskNumber);
-					}
-
-					Album.SetName(AlbumName);
-
-					Album.SetAlbumID(MusicBrainz::extractUuid(Release->getId()));
-
-					Album.SetArtist(Release->getArtist()->getName());
-					Album.SetArtistSort(Release->getArtist()->getSortName());
-					Album.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
-
-					Album.SetASIN(Release->getAsin());
-
-					if (!Album.ASIN().empty())
-					{
-						std::string URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.LZZZZZZZ.jpg";
-
-						CHTTPFetch Fetch;
-
-						int Bytes=Fetch.Fetch(URL);
-						if (Bytes<1000)
+						for (int TrackNumber=0;TrackNumber<TrackList->NumItems();TrackNumber++)
 						{
-							URL="http://images.amazon.com/images/P/" + Album.ASIN().DisplayValue() + ".02.MZZZZZZZ.jpg";
-							Bytes=Fetch.Fetch(URL);
+							MusicBrainz4::CTrack *MBTrack=TrackList->Item(TrackNumber);
+
+							CTrack Track=ParseTrack(MBTrack);
+
+							Album.AddTrack(Track);
 						}
-
-						if (Bytes>0)
-						{
-							if (Bytes<1000)
-								CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
-							else
-							{
-								std::vector<unsigned char> Data=Fetch.Data();
-								Album.SetCoverArt(CCoverArt(&Data[0],Data.size()));
-							}
-						}
-						else
-							CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
-					}
-
-					std::vector<std::string> Types=Release->getTypes();
-					std::vector<std::string>::const_iterator ThisType=Types.begin();
-					while (ThisType!=Types.end())
-					{
-						std::string ThisName=(*ThisType);
-
-						if (ThisName==MusicBrainz::Release::TYPE_OFFICIAL || ThisName==MusicBrainz::Release::TYPE_PROMOTION || ThisName==MusicBrainz::Release::TYPE_BOOTLEG)
-							Album.SetStatus(AlbumStatus(MusicBrainz::extractFragment(ThisName)));
-						else
-							Album.SetType(AlbumType(MusicBrainz::extractFragment(ThisName)));
-
-						++ThisType;
-					}
-
-					MusicBrainz::TrackList Tracks=Release->getTracks();
-
-					for (MusicBrainz::TrackList::size_type i=0; i<Tracks.size(); i++)
-					{
-						CTrack Track;
-
-						Track.SetNumber(i+1);
-						Track.SetName(Tracks[i]->getTitle());
-						if (Tracks[i]->getArtist())
-						{
-							Track.SetArtist(Tracks[i]->getArtist()->getName());
-							Track.SetArtistSort(Tracks[i]->getArtist()->getSortName());
-							Track.SetArtistID(MusicBrainz::extractUuid(Tracks[i]->getArtist()->getId()));
-						}
-						else
-						{
-							Track.SetArtist(Release->getArtist()->getName());
-							Track.SetArtistSort(Release->getArtist()->getSortName());
-							Track.SetArtistID(MusicBrainz::extractUuid(Release->getArtist()->getId()));
-						}
-
-						Track.SetTrackID(MusicBrainz::extractUuid(Tracks[i]->getId()));
-
-						Album.AddTrack(Track);
-					}
-
-					int EarliestYear=-1;
-
-					MusicBrainz::ReleaseEventList ReleaseEvents = Release->getReleaseEvents();
-					MusicBrainz::ReleaseEventList::const_iterator ThisEvent=ReleaseEvents.begin();
-					while (ReleaseEvents.end()!=ThisEvent)
-					{
-						std::string AlbumDate=(*ThisEvent)->getDate();
-
-						std::string::size_type MinusPos=AlbumDate.find("-");
-						if (std::string::npos!=MinusPos)
-							AlbumDate=AlbumDate.substr(0,MinusPos);
-
-						int ThisYear;
-						std::stringstream os;
-
-						os << AlbumDate;
-						os >> ThisYear;
-						if (!os.fail())
-						{
-							if (-1==EarliestYear || ThisYear<EarliestYear)
-								EarliestYear=ThisYear;
-						}
-
-						++ThisEvent;
-					}
-
-					if (-1!=EarliestYear)
-					{
-						std::stringstream os;
-
-						os << EarliestYear;
-						Album.SetDate(os.str());
 					}
 
 					m_Albums.push_back(Album);
-
-					delete Release;
 				}
-
-				catch (MusicBrainz::ConnectionError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Connection error from getReleaseById: ") + Error.what());
-				}
-				catch (MusicBrainz::ValueError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Value error from getReleaseById: ") + Error.what());
-				}
-/*
-				catch (MusicBrainz::ParseError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Parse error from getReleaseById: ") + Error.what());
-				}
-*/
-				catch (MusicBrainz::RequestError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Request error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::ResponseError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Response error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::ResourceNotFoundError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Resource not found error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::DiscError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Disc error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::TimeOutError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("TimeOut error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::AuthenticationError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("Authentication error from getReleaseById: ") + Error.what());
-				}
-
-				catch (MusicBrainz::WebServiceError Error)
-				{
-					RetVal=false;
-					CErrorLog::Log(std::string("WebService error from getReleaseById: ") + Error.what());
-				}
-
-				delete Releases[count];
 			}
 		}
 		else
@@ -284,48 +142,182 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			os << "No albums found for file '" << FlacFile << "'";
 			CErrorLog::Log(os.str());
 
-			CErrorLog::Log("Please submit the DiskID using the following URL:");
-			CErrorLog::Log(DiscIDWrapper.SubmitURL());
+			if(!m_OverrideDiskID)
+			{
+				CErrorLog::Log("Please submit the DiskID using the following URL:");
+				CErrorLog::Log(m_DiscIDWrapper.SubmitURL());
+			}
 		}
-	}//catch exceptions from getReleases
-
-	catch (MusicBrainz::ConnectionError Error)
-	{
-		RetVal=false;
-		CErrorLog::Log(std::string("Connection error from getReleases: ") + Error.what());
 	}
 
-	catch (MusicBrainz::ValueError Error)
+	catch (MusicBrainz4::CResourceNotFoundError Exception)
 	{
-		RetVal=false;
-		CErrorLog::Log(std::string("ValueError error from getReleases: ") + Error.what());
-	}
-/*
-	catch (MusicBrainz::ParseError Error)
-	{
-		RetVal=false;
-		CErrorLog::Log(std::string("ParseError error from getReleases: ") + Error.what());
-	}
-*/
-	catch (MusicBrainz::RequestError Error)
-	{
-		RetVal=false;
-		CErrorLog::Log(std::string("RequestError error from getReleases: ") + Error.what());
+			std::stringstream os;
+			os << "No albums found for file '" << FlacFile << "'";
+			CErrorLog::Log(os.str());
+
+			CErrorLog::Log("Please submit the DiskID using the following URL:");
+			CErrorLog::Log(m_DiscIDWrapper.SubmitURL());
 	}
 
-	catch (MusicBrainz::ResponseError Error)
+	catch (MusicBrainz4::CExceptionBase Exception)
 	{
-		RetVal=false;
-		CErrorLog::Log(std::string("ResponseError error from getReleases: ") + Error.what());
-	}
-
-	catch (MusicBrainz::WebServiceError Error)
-	{
-		RetVal=false;
-		CErrorLog::Log(std::string("Web service error from getReleases: ") + Error.what());
+		std::cerr << FlacFile << ": Exception: " << Exception.what() << std::endl;
 	}
 
 	return RetVal;
+}
+
+std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
+{
+	std::vector<unsigned char> Data;
+
+	std::string URL="/images/P/" + ASIN.DisplayValue() + ".02.LZZZZZZZ.jpg";
+
+	MusicBrainz4::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
+
+	int Bytes=Fetch.Fetch(URL);
+	if (Bytes<1000)
+	{
+		URL="/images/P/" + ASIN.DisplayValue() + ".02.MZZZZZZZ.jpg";
+		Bytes=Fetch.Fetch(URL);
+	}
+
+	if (Bytes>0)
+	{
+		if (Bytes<1000)
+			CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+		else
+		{
+			Data=Fetch.Data();
+		}
+	}
+	else
+		CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
+
+	return Data;
+}
+
+CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium* Medium)
+{
+	CAlbum Album;
+
+	if (!Release.Title().empty())
+		Album.SetName(Release.Title());
+	else if (Release.ReleaseGroup() && !Release.ReleaseGroup()->Title().empty())
+		Album.SetName(Release.ReleaseGroup()->Title());
+
+	if (Release.MediumList() && Release.MediumList()->NumItems()>1)
+		Album.SetDiskNumber(Medium->Position());
+
+	Album.SetAlbumID(Release.ID());
+
+	MusicBrainz4::CArtistCredit *ArtistCredit=Release.ArtistCredit();
+	if (ArtistCredit)
+	{
+		std::string ArtistID;
+		std::string ArtistName;
+		std::string ArtistSort;
+
+		ParseArtist(ArtistCredit,ArtistID,ArtistName,ArtistSort);
+
+		Album.SetArtistID(ArtistID);
+		Album.SetArtist(ArtistName);
+		Album.SetArtistSort(ArtistSort);
+	}
+
+	Album.SetASIN(Release.ASIN());
+
+	if (!Album.ASIN().empty())
+	{
+		std::vector<unsigned char> Data=GetCoverArt(Album.ASIN());
+		if (Data.size()>1000)
+			Album.SetCoverArt(CCoverArt(&Data[0],Data.size()));
+	}
+
+	if (Release.ReleaseGroup())
+			Album.SetType(AlbumType(Release.ReleaseGroup()->Type()));
+
+	Album.SetStatus(AlbumStatus(Release.Status()));
+
+	std::string AlbumDate=Release.Date();
+
+	std::string::size_type MinusPos=AlbumDate.find("-");
+	if (std::string::npos!=MinusPos)
+		AlbumDate=AlbumDate.substr(0,MinusPos);
+
+	Album.SetDate(AlbumDate);
+
+	return Album;
+}
+
+void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort)
+{
+	bool FirstArtist=true;
+
+	MusicBrainz4::CNameCreditList *NameCreditsList=ArtistCredit->NameCreditList();
+	if (NameCreditsList)
+	{
+		for (int NameCreditNumber=0;NameCreditNumber<NameCreditsList->NumItems();NameCreditNumber++)
+		{
+			MusicBrainz4::CNameCredit *NameCredit=NameCreditsList->Item(NameCreditNumber);
+
+			MusicBrainz4::CArtist *Artist=NameCredit->Artist();
+
+			if (!NameCredit->Name().empty())
+				ArtistName+=NameCredit->Name();
+			else if (Artist)
+				ArtistName+=Artist->Name();
+
+			ArtistName+=NameCredit->JoinPhrase();
+
+			if (Artist)
+			{
+				ArtistSort+=Artist->SortName();
+				ArtistSort+=NameCredit->JoinPhrase();
+			}
+
+			if (FirstArtist)
+			{
+				FirstArtist=false;
+				if (Artist)
+					ArtistID=Artist->ID();
+			}
+		}
+	}
+}
+
+CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack* MBTrack)
+{
+	CTrack Track;
+
+	Track.SetNumber(MBTrack->Position());
+
+	if (!MBTrack->Title().empty())
+		Track.SetName(MBTrack->Title());
+	else if (MBTrack->Recording())
+		Track.SetName(MBTrack->Recording()->Title());
+
+	if (MBTrack->Recording())
+	{
+		MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack->Recording()->ArtistCredit();
+		if (ArtistCredit)
+		{
+			std::string ArtistID;
+			std::string ArtistName;
+			std::string ArtistSort;
+
+			ParseArtist(ArtistCredit,ArtistID,ArtistName,ArtistSort);
+
+			Track.SetArtistID(ArtistID);
+			Track.SetArtist(ArtistName);
+			Track.SetArtistSort(ArtistSort);
+		}
+
+		Track.SetTrackID(MBTrack->Recording()->ID());
+	}
+
+	return Track;
 }
 
 std::vector<CAlbum> CMusicBrainzInfo::Albums() const
@@ -384,22 +376,3 @@ std::string CMusicBrainzInfo::AlbumStatus(const std::string Status) const
 	return Ret;
 }
 
-void CMusicBrainzInfo::WaitRequest() const
-{
-	if (m_Server.find("musicbrainz.org")!=std::string::npos)
-	{
-		static time_t LastRequest=0;
-		const time_t TimeBetweenRequests=2;
-	
-		time_t TimeNow;
-	
-		do
-		{
-			TimeNow=time(NULL);
-			if (abs(TimeNow-LastRequest)<TimeBetweenRequests)
-				usleep(100000);
-		}	while (abs(TimeNow-LastRequest)<TimeBetweenRequests);
-		
-		LastRequest=TimeNow;
-	}
-}
