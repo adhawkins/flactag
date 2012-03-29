@@ -1,6 +1,6 @@
 
 
-AC_INIT(flactag,1.1.0)
+AC_INIT(flactag,2.0.0)
 AC_CONFIG_SRCDIR(flactag.cc)
 
 AC_CONFIG_AUX_DIR([build-aux])
