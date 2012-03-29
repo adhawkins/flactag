@@ -33,12 +33,25 @@ Requirements
 Building and Installing
 -----------------------
 
-Before installing, edit the INSTALLPATH directory in the Makefile to specify the
-install location. Binaries and scripts will be placed in a `bin` directory under
-this path.
+If you take the source code directly from the repository (not a tarball),
+you must run 
 
-To build the software, simply run `*make*` in the directory you have extracted the
-archive into. The build process should complete with no errors. You will be left
+- *autoreconf --install* 
+
+to prepare the autotools environment.
+
+The project is built using autotools.  Once you have obtained the source
+code (either from the repository or a tarball), you run
+
+- *./configure* - this will create the Makefile
+- *make* - this will compile
+- *make install* - this will install everything
+
+See the help output from the *./configure* command for details about
+how to change LDFLAGS, CXXFLAGS, installation directories and other
+settings.
+
+The build process should complete with no errors. You will be left
 with the following executables:
 
 - *flactag* - The main application
@@ -47,6 +60,17 @@ with the following executables:
 To install the software and associated scripts, simply run `*make install*`.
 This step will need to be run as `root` if the install is being done outside of
 the user's home directory.
+
+Developer notes
+---------------
+
+When releasing a new version, it is necessary to change the version
+number in *configure.ac* before making a tag in the version control
+system.
+
+To build a tarball for public distribution, use the command
+
+- *make dist* - this will create flactag-$(VERSION).tar.gz
 
 Ripping CDs to FLAC
 -------------------
