@@ -1,3 +1,9 @@
+flactag (2.0.0-1) unstable; urgency=low
+
+  * Initial release closes: #507876
+
+ -- Andy Hawkins <andy@gently.org.uk>  Mon, 16 Apr 2012 14:34:42 +0200
+
 flactag (2.0~alpha1-3) unstable; urgency=low
 
   * Build-dependency use libneon27-gnutls-dev rather than just libneon27-dev
