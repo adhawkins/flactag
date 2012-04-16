@@ -261,6 +261,7 @@ you can set the 'Server' and 'Port' parameters in the configuration file.
 e.g.
 
 Server=mbserver.localdomain
+
 Port=5000
 
 Bugs / Limitations / Future Enhancements
@@ -287,7 +288,7 @@ Version History
 ---------------
 
 v2.0 - 20th March 2012
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 - Build system updated to use autotools (submitted by Daniel Pocock)
 
