@@ -10,11 +10,9 @@ Flactag is licensed under the GNU Lesser General Public License (LGPL).
 Downloading
 -----------
 
-The latest version of flactag can always be found http://software.gently.org.uk/flactag[here].
+The latest version of flactag can always be found http://sourceforge.net/projects/flactag/files/[here].
 
-The current version is link:flactag-1.1.tar.gz[v1.1].
-
-Flactag v1.0 is available http://software.gently.org.uk/flactag-1.0[here].
+The current version is http://sourceforge.net/projects/flactag/files/v1.1/[v1.1].
 
 Requirements
 ------------
@@ -34,9 +32,9 @@ Building and Installing
 -----------------------
 
 If you take the source code directly from the repository (not a tarball),
-you must run 
+you must run
 
-- *autoreconf --install* 
+- *autoreconf --install*
 
 to prepare the autotools environment.
 
@@ -288,8 +286,10 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
-v2.0RC1 - 20th March 2012
+v2.0 - 20th March 2012
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Build system updated to use autotools (submitted by Daniel Pocock)
 
 - Updated to work with MusicBrainz NGS using libmusicbrainz4
 
