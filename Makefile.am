@@ -62,3 +62,25 @@ install-data-hook:
 	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/checkflac.1
 	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/discid.1
 
+noinst_HEADERS = CuesheetTrack.h \
+        TagName.h \
+        WriteInfo.h \
+        DiscIDWrapper.h \
+        AlbumWindow.h \
+        flactag.h \
+        base64.h \
+        Track.h \
+        Album.h \
+        ScrollableWindow.h \
+        MusicBrainzInfo.h \
+        TagsWindow.h \
+        CommandLine.h \
+        ConfigFile.h \
+        FlacInfo.h \
+        FileNameBuilder.h \
+        UTF8Tag.h \
+        TrackWindow.h \
+        CoverArt.h \
+        ErrorLog.h \
+        Cuesheet.h
+
