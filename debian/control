@@ -2,8 +2,11 @@ Source: flactag
 Section: sound
 Priority: optional
 Maintainer: Andy Hawkins <andy@gently.org.uk>
+Uploaders: Daniel Pocock <daniel@pocock.com.au>
 Build-Depends: cdbs, debhelper (>= 5),libmusicbrainz4-dev(>=4.0.0),libdiscid0-dev,libslang2-dev,libflac++-dev,libneon27-gnutls-dev,libjpeg62-dev,libunac1-dev,asciidoc,xmlto
 Standards-Version: 3.9.3
+Homepage: http://www.gently.org.uk/flactag
+DM-Upload-Allowed: yes
 
 Package: flactag
 Architecture: any
