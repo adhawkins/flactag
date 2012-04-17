@@ -2,6 +2,8 @@ FLACTAG v1.1
 ============
 Andy Hawkins <andy@gently.org.uk>
 
+Daniel Pocock <daniel@pocock.com.au>
+
 A utility for tagging single album FLAC files with embedded CUE sheets
 using data from the http://www.musicbrainz.org[MusicBrainz] service.
 
@@ -12,7 +14,7 @@ Downloading
 
 The latest version of flactag can always be found http://sourceforge.net/projects/flactag/files/[here].
 
-The current version is http://sourceforge.net/projects/flactag/files/v1.1/[v1.1].
+The current version is http://sourceforge.net/projects/flactag/files/v2.0/[v2.0].
 
 Requirements
 ------------
@@ -55,7 +57,7 @@ with the following executables:
 - *flactag* - The main application
 - *discid* - A test utility to read the disc ID from a CD
 
-To install the software and associated scripts, simply run `*make install*`.
+To install the software and associated scripts, simply run `make install`.
 This step will need to be run as `root` if the install is being done outside of
 the user's home directory.
 
@@ -111,7 +113,7 @@ all FLAC files given as arguments.
 If the flactag utility does not find information for your CD, a URL will be
 provided to submit information for it. Often the MusicBrainz server will
 have information about the tracks and artist, but cannot match this up to your
-CD. In these circumstances, it is simply a matter of \'associating\' your CD's
+CD. In these circumstances, it is simply a matter of \'associating' your CD's
 DiskID with the correct album data on the MusicBrainz server. In other
 instances, you may be required to enter the track and album information into the
 MusicBrainz service. Once you have entered this information, you can re-run
@@ -124,27 +126,27 @@ image:flactag.jpg[flactag interactive mode]
 
 This contains three main areas:
 
-- The *\'Albums\'* window. This will contain a list of albums that match
+- The *\'Albums'* window. This will contain a list of albums that match
 the DiskID for your FLAC file.
 
-- The *\'Tracks\'* window. This contains a list of all the tracks on the
+- The *\'Tracks'* window. This contains a list of all the tracks on the
 currently selected album.
 
-- The *\'Tags\'* window. At startup, this will contain a list of the tags
+- The *\'Tags'* window. At startup, this will contain a list of the tags
 currently found in your FLAC file. If there are no tags present, then an empty
 set appropriate for the album will be displayed. If you make changes to these
-tags, an asterisk (\'*\') will be displayed to indicate that this information has
+tags, an asterisk (\'*') will be displayed to indicate that this information has
 been changed.
 
 The currently active window will be highlighted by the border and window title
 changing colour. To switch between the three windows, press the *TAB* key. To
 scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to
 scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half
-a page at a time). Scrolling in the *\'Albums\'* window will update the information
-in the *\'Tracks\'* window appropriately.
+a page at a time). Scrolling in the *\'Albums'* window will update the information
+in the *\'Tracks'* window appropriately.
 
 Once the appropriate album has been selected, pressing *c* will copy the tags
-for that album into the *\'Tags\'* window. These tags can then be saved to the FLAC
+for that album into the *\'Tags'* window. These tags can then be saved to the FLAC
 file by pressing the *w* key.
 
 Pressing *r* will rename the file based on the settings in the
@@ -198,7 +200,7 @@ made by ripping a disc that was only a copy of the original and
 the copy was not made in disc-at-once mode.
 
 Example uses of these options could be as follows (note the use of the find
-option \'-print0\' and the xargs option \'-0\' to handle filenames containing
+option \'-print0' and the xargs option \'-0' to handle filenames containing
 spaces):
 
 Report on the tags of all FLAC files
@@ -274,8 +276,7 @@ Problems / Suggestions
 ----------------------
 
 If you have any problems with the software, or suggestions for improvements or
-new features, then please mailto:andy@gently.org.uk[contact me] to
-report them.
+new features, then please report them http://sourceforge.net/projects/flactag/[here].
 
 There are two mailing lists for
 http://lists.gently.org.uk/mailman/listinfo/flactag-discuss[discussion] and
@@ -287,7 +288,7 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
-v2.0 - 20th March 2012
+v2.0 - 17th April 2012
 ~~~~~~~~~~~~~~~~~~~~~~
 
 - Build system updated to use autotools (submitted by Daniel Pocock)

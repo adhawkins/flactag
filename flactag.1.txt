@@ -129,27 +129,27 @@ the application's main window will be shown.
 
 This contains three main areas:
 
-- The *\'Albums\'* window. This will contain a list of albums that match
+- The *\'Albums'* window. This will contain a list of albums that match
 the DiskID for your FLAC file.
 
-- The *\'Tracks\'* window. This contains a list of all the tracks on the
+- The *\'Tracks'* window. This contains a list of all the tracks on the
 currently selected album.
 
-- The *\'Tags\'* window. At startup, this will contain a list of the tags
+- The *\'Tags'* window. At startup, this will contain a list of the tags
 currently found in your FLAC file. If there are no tags present, then an empty
 set appropriate for the album will be displayed. If you make changes to these
-tags, an asterisk (\'*\') will be displayed to indicate that this information has
+tags, an asterisk (\'*') will be displayed to indicate that this information has
 been changed.
 
 The currently active window will be highlighted by the border and window title
 changing colour. To switch between the three windows, press the *TAB* key. To
 scroll around the active window, use the *cursor UP* and *cursor DOWN* keys (to
 scroll one line at a time) or the *PAGE UP* and *PAGE DOWN* keys (to scroll half
-a page at a time). Scrolling in the *\'Albums\'* window will update the information
-in the *\'Tracks\'* window appropriately.
+a page at a time). Scrolling in the *\'Albums'* window will update the information
+in the *\'Tracks'* window appropriately.
 
 Once the appropriate album has been selected, pressing *c* will copy the tags
-for that album into the *\'Tags\'* window. These tags can then be saved to the FLAC
+for that album into the *\'Tags'* window. These tags can then be saved to the FLAC
 file by pressing the *w* key.
 
 Pressing *r* will rename the file based on the settings in the
@@ -211,6 +211,7 @@ you can set the 'Server' and 'Port' parameters in the configuration file.
 e.g.
 
 Server=mbserver.localdomain
+
 Port=5000
 
 BUGS / LIMITATIONS / FUTURE ENHANCEMENTS
@@ -220,15 +221,22 @@ back to the original tags.
 
 AUTHOR
 ------
-Written by Andy Hawkins, <mailto:andy@gently.org.uk[]>
+Written by 
+
+Andy Hawkins, <mailto:andy@gently.org.uk[]>
+
+Daniel Pocock, <mailto:daniel@pocock.com.au[]>
 
 RESOURCES
 ---------
 
-Main web site: http://software.gently.org.uk/flactag/v1.1/[]
+Main web site: http://flactag.sourceforge.net[]
 
 COPYING
 -------
 
-Copyright \(C) 2007-2008 Andy Hawkins. Free use of this software is granted
-under the terms of the GNU Lesser General Public License (LGPL).
+Copyright \(C) 2007-2012 Andy Hawkins
+Copyright \(C) 2011-2012 Daniel Pocock
+
+Free use of this software is granted under the terms of the GNU Lesser
+General Public License (LGPL).
