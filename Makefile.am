@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 man_MANS = flactag.1
 
-EXTRA_DIST = COPYING flactag.1.txt flactag.txt flactag.jpg
+EXTRA_DIST = COPYING flactag.1.txt flactag.txt flactag.jpg flactag.html
 EXTRA_DIST += ripflac.in
 EXTRA_DIST += $(man_MANS)
 
