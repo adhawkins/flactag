@@ -1,5 +1,5 @@
-FLACTAG v1.1
-============
+FLACTAG v2.0.0
+==============
 Andy Hawkins <andy@gently.org.uk>
 
 Daniel Pocock <daniel@pocock.com.au>
@@ -14,7 +14,7 @@ Downloading
 
 The latest version of flactag can always be found http://sourceforge.net/projects/flactag/files/[here].
 
-The current version is http://sourceforge.net/projects/flactag/files/v2.0/[v2.0].
+The current version is http://sourceforge.net/projects/flactag/files/v2.0.0/[v2.0.0].
 
 Requirements
 ------------
@@ -288,8 +288,8 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
-v2.0 - 17th April 2012
-~~~~~~~~~~~~~~~~~~~~~~
+v2.0.0 - 18th April 2012
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Build system updated to use autotools (submitted by Daniel Pocock)
 
