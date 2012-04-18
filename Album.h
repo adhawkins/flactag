@@ -4,19 +4,20 @@
    						using data retrieved from the MusicBrainz service
 
    Copyright (C) 2006 Andrew Hawkins
-   
+
    This file is part of flactag.
-   
-   Flactag is free software; you can redistribute it and/or
-   modify it under the terms of v2 of the GNU Lesser General Public
-   License as published by the Free Software Foundation.
-   
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation, either version 3 of the License, or
+	 (at your option) any later version.
+
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
-   
-   You should have received a copy of the GNU Lesser General Public
+
+   You should have received a copy of the GNU General Public
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
@@ -38,7 +39,7 @@ class CAlbum
 {
 public:
 	CAlbum();
-	
+
 	void AddTrack(const CTrack& Track);
 	CUTF8Tag Name() const;
 	CUTF8Tag Artist() const;
@@ -52,7 +53,7 @@ public:
 	CUTF8Tag Type() const;
 	int DiskNumber() const;
 	CCoverArt CoverArt() const;
-		
+
 	void SetDate(const CUTF8Tag & Date);
 	void SetName(const CUTF8Tag& Name);
 	void SetArtist(const CUTF8Tag & Artist);
@@ -64,7 +65,7 @@ public:
 	void SetStatus(const CUTF8Tag & Status);
 	void SetType(const CUTF8Tag & Type);
 	void SetCoverArt(const CCoverArt& CoverArt);
-	
+
 private:
 	std::vector<CTrack> m_Tracks;
 	CUTF8Tag m_Name;

@@ -7,7 +7,7 @@ Daniel Pocock <daniel@pocock.com.au>
 A utility for tagging single album FLAC files with embedded CUE sheets
 using data from the http://www.musicbrainz.org[MusicBrainz] service.
 
-Flactag is licensed under the GNU Lesser General Public License (LGPL).
+Flactag is licensed under the GNU General Public License (GPL) v3.
 
 Downloading
 -----------

@@ -4,19 +4,20 @@
    						using data retrieved from the MusicBrainz service
 
    Copyright (C) 2006 Andrew Hawkins
-   
+
    This file is part of flactag.
-   
-   Flactag is free software; you can redistribute it and/or
-   modify it under the terms of v2 of the GNU Lesser General Public
-   License as published by the Free Software Foundation.
-   
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+	 the Free Software Foundation, either version 3 of the License, or
+	 (at your option) any later version.
+
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
-   
-   You should have received a copy of the GNU Lesser General Public
+
+   You should have received a copy of the GNU General Public
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
@@ -42,15 +43,15 @@ public:
 	CUTF8Tag ArtistSort() const;
 	CUTF8Tag ArtistID() const;
 	CUTF8Tag TrackID() const;
-		
+
 	void SetNumber(FLAC__byte Number);
 	void SetName(const CUTF8Tag& Name);
 	void SetArtist(const CUTF8Tag& Artist);
 	void SetArtistSort(const CUTF8Tag& ArtistSort);
 	void SetArtistID(const CUTF8Tag& ArtistID);
 	void SetTrackID(const CUTF8Tag& TrackID);
-		
-		
+
+
 private:
 	FLAC__byte m_Number;
 	CUTF8Tag m_Name;
