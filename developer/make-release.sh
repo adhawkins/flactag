@@ -10,12 +10,17 @@ DoIt()
 
 	echo "Setting remote push URL"
 	git remote set-url origin --push ssh://$USER@flactag.git.sourceforge.net/gitroot/flactag/flactag || return 1
+
+	#Use for testing script - just push to a local repository
+	rm -rf $SRCDIR/../flactag.git-local
+	git init --bare $SRCDIR/../flactag.git-local
 	git remote set-url origin --push $SRCDIR/../flactag.git-local || return 1
 
 	echo "Making tarball"
-	autoreconf --install > /dev/null || return 1
+	autoreconf --install 2>/dev/null >/dev/null || return 1
 	./configure > /dev/null || return 1
-	make dist-gzip > /dev/null || return 1
+	make dist-gzip 2>/dev/null >/dev/null || return 1
+	[ -f flactag-$VERSION.tar.gz ] || return 1
 
 	echo "Copying tarball to $EXTRACTDIR"
 	cp flactag-$VERSION.tar.gz $EXTRACTDIR || return 1
@@ -36,7 +41,7 @@ DoIt()
 
 	echo "Install test"
 	mkdir "$EXTRACTDIR/install-test" | return 1
-	make DESTDIR="$EXTRACTDIR/install-test" install || return 1
+	make DESTDIR="$EXTRACTDIR/install-test" install > /dev/null || return 1
 
 	echo "Installed binary test"
 	ldd "$EXTRACTDIR/install-test/usr/local/bin/flactag" || return 1
@@ -56,22 +61,19 @@ DoIt()
 	echo "Pushing new tag to origin"
 	git push origin --tags
 
-	cat <<MAILEND
+	MAILTEXT="This is a test mail:\n\nMD5: $MD5\nSHA224: $SHA224\nCOMMIT: $COMMIT\n"
 
-This is a test mail:
+	if ! echo -e "$MAILTEXT" | mutt -s "flactag release" -a flactag-$VERSION.tar.gz -- $KEYID
+	then
+		(echo -e "$MAILTEXT"; uuencode flactag-$VERSION.tar.gz flactag-$VERSION.tar.gz) | Mail -s "flactag release" $KEYID
+	fi
 
-MD5: $MD5
-SHA224: $SHA224
-COMMIT: $COMMIT
-
-MAILEND
+	echo -e "$MAILTEXT"
 }
 
 if [ "$#" -eq "3" ]
 then
-	rm -rf /tmp/tmp.*
-	rm -rf ../flactag.git-local
-	git init --bare ../flactag.git-local
+	#rm -rf /tmp/tmp.*
 
 	USER="$1"
 	VERSION="$2"
@@ -88,8 +90,8 @@ then
 
 	DoIt
 
-	#rm -rf $WORKDIR
-	#rm -rf $EXTRACTDIR
+	rm -rf $WORKDIR
+	rm -rf $EXTRACTDIR
 else
 	echo "Usage: $0 username version keyid"
 fi
