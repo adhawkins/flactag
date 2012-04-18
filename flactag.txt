@@ -14,8 +14,6 @@ Downloading
 
 The latest version of flactag can always be found http://sourceforge.net/projects/flactag/files/[here].
 
-The current version is http://sourceforge.net/projects/flactag/files/v2.0.0/[v2.0.0].
-
 Requirements
 ------------
 
@@ -288,7 +286,14 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
-v2.0.0 - 18th April 2012
+v2.0.1 - 18th April 2012
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Change license to GPL v3
+
+- Documentation updates
+
+v2.0.0 - 17th April 2012
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Build system updated to use autotools (submitted by Daniel Pocock)
