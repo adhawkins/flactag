@@ -17,19 +17,19 @@ DoIt()
 	git remote set-url origin --push $SRCDIR/../flactag.git-local || return 1
 
 	echo "Making tarball"
-	autoreconf --install 2>/dev/null >/dev/null || return 1
+	autoreconf --install >/dev/null || return 1
 	./configure > /dev/null || return 1
-	make dist-gzip 2>/dev/null >/dev/null || return 1
-	[ -f flactag-$VERSION.tar.gz ] || return 1
+	make dist-gzip >/dev/null || return 1
+	[ -f $TARBALL ] || return 1
 
 	echo "Copying tarball to $EXTRACTDIR"
-	cp flactag-$VERSION.tar.gz $EXTRACTDIR || return 1
+	cp $TARBALL $EXTRACTDIR || return 1
 
 	echo "Entering extract directory"
 	cd $EXTRACTDIR || return 1
 
 	echo "Extracting tarball"
-	tar xf flactag-$VERSION.tar.gz || return 1
+	tar xzf $TARBALL || return 1
 
 	echo "Building"
 	cd flactag-$VERSION || return 1
@@ -46,8 +46,8 @@ DoIt()
 	echo "Installed binary test"
 	ldd "$EXTRACTDIR/install-test/usr/local/bin/flactag" > /dev/null || return 1
 
-	MD5=`md5sum $WORKDIR/flactag-$VERSION.tar.gz | cut -d' ' -f1`
-	SHA224=`sha224sum $WORKDIR/flactag-$VERSION.tar.gz | cut -d' ' -f1`
+	MD5=`md5sum $WORKDIR/$TARBALL | cut -d' ' -f1`
+	SHA224=`sha224sum $WORKDIR/$TARBALL | cut -d' ' -f1`
 
 	MAILTEXT="This is a test mail:\n\nMD5: $MD5\nSHA224: $SHA224"
 
@@ -56,18 +56,18 @@ DoIt()
 		echo "Tagging work repository"
 
 		cd $WORKDIR
-		git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum $SHA224" $TAGNAME || exit 1
+		git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum $SHA224" $TAGNAME || return 1
 
 		COMMIT=`git show $TAGNAME | grep commit | cut -d ' ' -f 2`
 
 		echo "Pushing new tag to origin"
-		git push origin --tags
+		git push origin --tags || return 1
 
 		MAILTEXT="$MAILTEXT\nCOMMIT: $COMMIT\n"
 
-		if ! echo -e "$MAILTEXT" | mutt -s "flactag release" -a flactag-$VERSION.tar.gz -- $KEYID
+		if ! echo -e "$MAILTEXT" | mutt -s "flactag release" -a $TARBALL -- $KEYID
 		then
-			(echo -e "$MAILTEXT"; uuencode flactag-$VERSION.tar.gz flactag-$VERSION.tar.gz) | Mail -s "flactag release" $KEYID
+			(echo -e "$MAILTEXT"; uuencode $TARBALL $TARBALL) | Mail -s "flactag release" $KEYID
 		fi
 
 		git --no-pager show --raw $TAGNAME
@@ -107,6 +107,7 @@ then
 
 	SRCDIR=`pwd`
 	TAGNAME="test-$VERSION"
+	TARBALL="flactag-$VERSION.tar.gz"
 	#TAGNAME=$VERSION
 
 	WORKDIR=`mktemp -d`
