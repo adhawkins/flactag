@@ -1,5 +1,5 @@
-1. update the version number in configure.ac (already done for 2.0.0).
-commit and push this change
+1. update the version number in configure.ac. Ensure changelog is present
+in flactag.txt. Commit and push this change.
 
 2. make a fresh clone from Sourceforge to a new directory on the build
 machine - this guarantees that you are running `make dist' in a
@@ -34,7 +34,6 @@ directory, do all the testing in /tmp/something)
 
 => if the tarball is no good, don't make a tag, just fix the issue and
 return to step (2)
-
 
 6. if the tarball is good, tag (in the directory where you made the new
 clone).  A new idea just occurred to me: maybe include the md5 and SHA
