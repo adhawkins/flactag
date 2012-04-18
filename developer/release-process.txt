@@ -1,6 +1,21 @@
 1. update the version number in configure.ac. Ensure changelog is present
 in flactag.txt. Commit and push this change.
 
+All the following steps can be completed using the 'make-release.sh' script
+in the developer directory
+
+developer/make-release.sh sourceforgeuser version gpgkeyid
+
+e.g
+
+developer/make-release.sh adhawkins 2.0.1 andy@gently.org.uk
+
+Make arguments for the software build can be passed using an environment
+variable as follows:
+
+MARKARGS="-j 4" developer/make-release.sh adhawkins 2.0.1 andy@gently.org.uk
+
+
 2. make a fresh clone from Sourceforge to a new directory on the build
 machine - this guarantees that you are running `make dist' in a
 repeatable manner on a tree without any uncommitted changes or untracked
