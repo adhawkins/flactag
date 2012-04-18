@@ -44,48 +44,70 @@ DoIt()
 	make DESTDIR="$EXTRACTDIR/install-test" install > /dev/null || return 1
 
 	echo "Installed binary test"
-	ldd "$EXTRACTDIR/install-test/usr/local/bin/flactag" || return 1
+	ldd "$EXTRACTDIR/install-test/usr/local/bin/flactag" > /dev/null || return 1
 
-	echo "Taking copy of tarball"
-	cp $WORKDIR/flactag-$VERSION.tar.gz $SRCDIR || return 1
 	MD5=`md5sum $WORKDIR/flactag-$VERSION.tar.gz | cut -d' ' -f1`
 	SHA224=`sha224sum $WORKDIR/flactag-$VERSION.tar.gz | cut -d' ' -f1`
 
-	echo "Tagging work repository"
+	MAILTEXT="This is a test mail:\n\nMD5: $MD5\nSHA224: $SHA224"
 
-	cd $WORKDIR
-	git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum $SHA224" $TAGNAME || exit 1
-
-	COMMIT=`git show $TAGNAME | grep commit | cut -d ' ' -f 2`
-
-	echo "Pushing new tag to origin"
-	git push origin --tags
-
-	MAILTEXT="This is a test mail:\n\nMD5: $MD5\nSHA224: $SHA224\nCOMMIT: $COMMIT\n"
-
-	if ! echo -e "$MAILTEXT" | mutt -s "flactag release" -a flactag-$VERSION.tar.gz -- $KEYID
+	if [ "$TAGANDPUSH" -eq "1" ]
 	then
-		(echo -e "$MAILTEXT"; uuencode flactag-$VERSION.tar.gz flactag-$VERSION.tar.gz) | Mail -s "flactag release" $KEYID
+		echo "Tagging work repository"
+
+		cd $WORKDIR
+		git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum $SHA224" $TAGNAME || exit 1
+
+		COMMIT=`git show $TAGNAME | grep commit | cut -d ' ' -f 2`
+
+		echo "Pushing new tag to origin"
+		git push origin --tags
+
+		MAILTEXT="$MAILTEXT\nCOMMIT: $COMMIT\n"
+
+		if ! echo -e "$MAILTEXT" | mutt -s "flactag release" -a flactag-$VERSION.tar.gz -- $KEYID
+		then
+			(echo -e "$MAILTEXT"; uuencode flactag-$VERSION.tar.gz flactag-$VERSION.tar.gz) | Mail -s "flactag release" $KEYID
+		fi
+
+		git --no-pager show --raw $TAGNAME
+
+		echo
 	fi
 
-	git --no-pager show --raw $TAGNAME
-
-	echo
-
 	echo -e "$MAILTEXT"
+	return 0
 }
 
-if [ "$#" -eq "3" ]
+VALIDARGS=0
+TAGANDPUSH=0
+
+if [ "$#" -eq "3" -o "$#" -eq "4" ]
 then
+	VALIDARGS=1
+
 	#rm -rf /tmp/tmp.*
 
+	if [ "$#" -eq "4" ]
+	then
+		if [ "x$4" = "x--tag-and-push" ]
+		then
+			TAGANDPUSH=1
+		else
+			VALIDARGS="0"
+		fi
+	fi
+fi
+
+if [ "$VALIDARGS" -eq "1" ]
+then
 	USER="$1"
 	VERSION="$2"
+	KEYID="$3"
+
+	SRCDIR=`pwd`
 	TAGNAME="test-$VERSION"
 	#TAGNAME=$VERSION
-
-	KEYID="$3"
-	SRCDIR=`pwd`
 
 	WORKDIR=`mktemp -d`
 	EXTRACTDIR=`mktemp -d`
@@ -93,9 +115,16 @@ then
 	echo "Using directories $WORKDIR and $EXTRACTDIR"
 
 	DoIt
+	RET=$?
 
-	rm -rf $WORKDIR
+	if [ "$RET" -eq "1" -o "$TAGANDPUSH" -eq "1" ]
+	then
+		rm -rf $WORKDIR
+	else
+		echo "Files remain in $WORKDIR"
+	fi
+
 	rm -rf $EXTRACTDIR
 else
-	echo "Usage: $0 username version keyid"
+	echo "Usage: $0 username version keyid [ --tag-and-push ]"
 fi
