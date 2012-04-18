@@ -1,5 +1,5 @@
-FLACTAG v2.0.0
-==============
+FLACTAG
+=======
 Andy Hawkins <andy@gently.org.uk>
 
 Daniel Pocock <daniel@pocock.com.au>
