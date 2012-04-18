@@ -68,6 +68,10 @@ DoIt()
 		(echo -e "$MAILTEXT"; uuencode flactag-$VERSION.tar.gz flactag-$VERSION.tar.gz) | Mail -s "flactag release" $KEYID
 	fi
 
+	git --no-pager show --raw $TAGNAME
+
+	echo
+
 	echo -e "$MAILTEXT"
 }
 
