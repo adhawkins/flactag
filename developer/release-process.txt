@@ -1,0 +1,60 @@
+1. update the version number in configure.ac (already done for 2.0.0).
+commit and push this change
+
+2. make a fresh clone from Sourceforge to a new directory on the build
+machine - this guarantees that you are running `make dist' in a
+repeatable manner on a tree without any uncommitted changes or untracked
+files
+
+git clone ssh:sourceforge....  flactag-release
+
+3. go in the new clone and run the exact set of commands:
+
+autoreconf --install && ./configure && make dist
+
+(or make dist-gzip)
+
+You should always run the autoreconf command on the same platform (e.g.
+Debian 6) with the same autotools versions for any given minor release
+number.  In other words, you can change your autotools build environment
+when you go from 2.0.0 to 2.1.0, but when you release 2.0.0, 2.0.1, etc
+you must always use the same autotools.  The simple reason for this is
+that autotools has a lot of macros that change between versions, and it
+behaves differently for different end users.  You may put out a very
+minor 2.0.1 fix for a memory leak and find that all your FreeBSD users
+start complaining, then you have to make a 2.0.2 release, etc.  Simple
+solution: always use same autotools.
+
+4. take a checksum of the tar.gz file with md5 or SHA224, save it in a
+draft email
+
+5. sanity check the tarball: expand it in /tmp/something and try to run
+./configure && make (but make no changes within the git working
+directory, do all the testing in /tmp/something)
+
+=> if the tarball is no good, don't make a tag, just fix the issue and
+return to step (2)
+
+
+6. if the tarball is good, tag (in the directory where you made the new
+clone).  A new idea just occurred to me: maybe include the md5 and SHA
+checksums of the tarball in the tag message too.  Make it a PGP signed tag.
+
+7. push the tag to sourceforge
+
+8. upload the tarball (maybe put it in a `pre-release' web page for up
+to 7 days)
+
+9. send a PGP signed email to interested parties (e.g. if you run a
+mailing list) with the full git commit number, tag name and tarball
+checksums (MD5 and SHA) in the signed email.  This is important as it
+allows people to trace both the tag and the tarball to you (or me, or
+whoever does the release).  It also lets you prove to yourself that some
+tarball you come across in future is in fact the same tarball you created.
+
+If you impose a `release candidate' period, e.g. 7 days, then you can
+send two emails, one to announce it is a test period, and one to confirm
+the official release.  Both emails have the digital signature,
+checksums, etc, otherwise people can't prove that what you released is
+the same tarball you tested.
+
