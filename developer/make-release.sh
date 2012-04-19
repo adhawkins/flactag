@@ -49,7 +49,7 @@ DoIt()
 	MD5=`md5sum $WORKDIR/$TARBALL | cut -d' ' -f1`
 	SHA224=`sha224sum $WORKDIR/$TARBALL | cut -d' ' -f1`
 
-	MAILTEXT="This is a test mail:\n\nMD5: $MD5\nSHA224: $SHA224"
+	MAILTEXT="New release of flactag $VERSION is attached:\n\nMD5: $MD5\nSHA224: $SHA224"
 
 	if [ "$TAGANDPUSH" -eq "1" ]
 	then
