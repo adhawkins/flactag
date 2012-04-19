@@ -12,9 +12,9 @@ DoIt()
 	git remote set-url origin --push ssh://$USER@flactag.git.sourceforge.net/gitroot/flactag/flactag || return 1
 
 	#Use for testing script - just push to a local repository
-	rm -rf $SRCDIR/../flactag.git-local
-	git init --bare $SRCDIR/../flactag.git-local
-	git remote set-url origin --push $SRCDIR/../flactag.git-local || return 1
+	#rm -rf $SRCDIR/../flactag.git-local
+	#git init --bare $SRCDIR/../flactag.git-local
+	#git remote set-url origin --push $SRCDIR/../flactag.git-local || return 1
 
 	echo "Making tarball"
 	autoreconf --install >/dev/null || return 1
@@ -106,9 +106,11 @@ then
 	KEYID="$3"
 
 	SRCDIR=`pwd`
-	TAGNAME="test-$VERSION"
 	TARBALL="flactag-$VERSION.tar.gz"
-	#TAGNAME=$VERSION
+	TAGNAME="test-$VERSION"
+
+	#Comment this line out to do test pushes
+	TAGNAME=$VERSION
 
 	WORKDIR=`mktemp -d`
 	EXTRACTDIR=`mktemp -d`
