@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -271,7 +272,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							}
 							else
 							{
-								char RealPath[256];
+								char RealPath[PATH_MAX];
 								realpath(m_FlacFile.c_str(),RealPath);
 
 								if (m_RenameFile!=RealPath)
