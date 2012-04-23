@@ -43,11 +43,8 @@ ripflac:	ripflac.in Makefile
 	$(ripflac_subst) < $(srcdir)/ripflac.in > ripflac
 	chmod +x ripflac
 
-flactag.1:	flactag.1.xml Makefile
-	xmlto man flactag.1.xml
-
-flactag.1.xml:	flactag.1.txt Makefile
-	asciidoc -d manpage -b docbook flactag.1.txt
+flactag.1:	flactag.1.txt Makefile
+	a2x -f manpage flactag.1.txt
 
 flactag.html:	flactag.txt Makefile
 	asciidoc -a numbered flactag.txt
