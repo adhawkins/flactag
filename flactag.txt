@@ -25,7 +25,6 @@ Requirements
 - http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
 - http://www.ijg.org/[libjpeg] (I used version 8b-1 from Debian)
 - http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 8.5.2 from Debian)
-- http://docbook2x.sourceforge.net/[docbook2x] (I used version 0.8.8 from Debian)
 
 Building and Installing
 -----------------------
