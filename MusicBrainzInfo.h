@@ -35,10 +35,10 @@
 #include "Cuesheet.h"
 #include "DiscIDWrapper.h"
 
-#include "musicbrainz4/Release.h"
-#include "musicbrainz4/Medium.h"
-#include "musicbrainz4/Track.h"
-#include "musicbrainz4/ArtistCredit.h"
+#include "musicbrainz5/Release.h"
+#include "musicbrainz5/Medium.h"
+#include "musicbrainz5/Track.h"
+#include "musicbrainz5/ArtistCredit.h"
 
 class CMusicBrainzInfo
 {
@@ -52,9 +52,9 @@ public:
 private:
 	std::string AlbumType(const std::string Type) const;
 	std::string AlbumStatus(const std::string Status) const;
-	CAlbum ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium* Medium);
-	CTrack ParseTrack(const MusicBrainz4::CTrack* MBTrack);
-	void ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
+	CAlbum ParseAlbum(const MusicBrainz5::CRelease& Release, const MusicBrainz5::CMedium* Medium);
+	CTrack ParseTrack(const MusicBrainz5::CTrack* MBTrack);
+	void ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
 	std::vector<unsigned char> GetCoverArt(const CUTF8Tag& ASIN);
 
 	std::vector<CAlbum> m_Albums;

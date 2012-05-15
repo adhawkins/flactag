@@ -37,16 +37,16 @@
 #include "DiscIDWrapper.h"
 #include "ErrorLog.h"
 
-#include "musicbrainz4/HTTPFetch.h"
-#include "musicbrainz4/Query.h"
-#include "musicbrainz4/Track.h"
-#include "musicbrainz4/Release.h"
-#include "musicbrainz4/Medium.h"
-#include "musicbrainz4/ReleaseGroup.h"
-#include "musicbrainz4/ArtistCredit.h"
-#include "musicbrainz4/Artist.h"
-#include "musicbrainz4/Recording.h"
-#include "musicbrainz4/NameCredit.h"
+#include "musicbrainz5/HTTPFetch.h"
+#include "musicbrainz5/Query.h"
+#include "musicbrainz5/Track.h"
+#include "musicbrainz5/Release.h"
+#include "musicbrainz5/Medium.h"
+#include "musicbrainz5/ReleaseGroup.h"
+#include "musicbrainz5/ArtistCredit.h"
+#include "musicbrainz5/Artist.h"
+#include "musicbrainz5/Recording.h"
+#include "musicbrainz5/NameCredit.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet)
 :	m_Server(Server),
@@ -97,11 +97,11 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	//CErrorLog::Log("DiskID: " + DiskID);
 	//CErrorLog::Log("Submit: " + DiscIDWrapper.SubmitURL());
 
-	MusicBrainz4::CQuery MusicBrainz("flactag-" VERSION,m_Server,m_Port);
+	MusicBrainz5::CQuery MusicBrainz("flactag-" VERSION,m_Server,m_Port);
 
 	try
 	{
-		MusicBrainz4::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(m_DiskID);
+		MusicBrainz5::CReleaseList ReleaseList=MusicBrainz.LookupDiscID(m_DiskID);
 
 		if (ReleaseList.NumItems())
 		{
@@ -109,23 +109,23 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 
 			for (int ReleaseNum=0;ReleaseNum<ReleaseList.NumItems();ReleaseNum++)
 			{
-				MusicBrainz4::CRelease *Release=ReleaseList.Item(ReleaseNum);
+				MusicBrainz5::CRelease *Release=ReleaseList.Item(ReleaseNum);
 
-				MusicBrainz4::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
+				MusicBrainz5::CRelease FullRelease=MusicBrainz.LookupRelease(Release->ID());
 
-				MusicBrainz4::CMediumList MediaList=FullRelease.MediaMatchingDiscID(m_DiskID);
+				MusicBrainz5::CMediumList MediaList=FullRelease.MediaMatchingDiscID(m_DiskID);
 	 			for (int MediumNumber=0;MediumNumber<MediaList.NumItems();MediumNumber++)
 				{
-					MusicBrainz4::CMedium *Medium=MediaList.Item(MediumNumber);
+					MusicBrainz5::CMedium *Medium=MediaList.Item(MediumNumber);
 
 					CAlbum Album=ParseAlbum(FullRelease,Medium);
 
-					MusicBrainz4::CTrackList *TrackList=Medium->TrackList();
+					MusicBrainz5::CTrackList *TrackList=Medium->TrackList();
 					if (TrackList)
 					{
 						for (int TrackNumber=0;TrackNumber<TrackList->NumItems();TrackNumber++)
 						{
-							MusicBrainz4::CTrack *MBTrack=TrackList->Item(TrackNumber);
+							MusicBrainz5::CTrack *MBTrack=TrackList->Item(TrackNumber);
 
 							CTrack Track=ParseTrack(MBTrack);
 
@@ -151,7 +151,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 		}
 	}
 
-	catch (MusicBrainz4::CResourceNotFoundError Exception)
+	catch (MusicBrainz5::CResourceNotFoundError Exception)
 	{
 			std::stringstream os;
 			os << "No albums found for file '" << FlacFile << "'";
@@ -161,7 +161,7 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 			CErrorLog::Log(m_DiscIDWrapper.SubmitURL());
 	}
 
-	catch (MusicBrainz4::CExceptionBase Exception)
+	catch (MusicBrainz5::CExceptionBase Exception)
 	{
 		std::cerr << FlacFile << ": Exception: " << Exception.what() << std::endl;
 	}
@@ -175,7 +175,7 @@ std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
 
 	std::string URL="/images/P/" + ASIN.DisplayValue() + ".02.LZZZZZZZ.jpg";
 
-	MusicBrainz4::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
+	MusicBrainz5::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
 
 	int Bytes=Fetch.Fetch(URL);
 	if (Bytes<1000)
@@ -199,7 +199,7 @@ std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
 	return Data;
 }
 
-CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const MusicBrainz4::CMedium* Medium)
+CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease& Release, const MusicBrainz5::CMedium* Medium)
 {
 	CAlbum Album;
 
@@ -213,7 +213,7 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const
 
 	Album.SetAlbumID(Release.ID());
 
-	MusicBrainz4::CArtistCredit *ArtistCredit=Release.ArtistCredit();
+	MusicBrainz5::CArtistCredit *ArtistCredit=Release.ArtistCredit();
 	if (ArtistCredit)
 	{
 		std::string ArtistID;
@@ -237,7 +237,7 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const
 	}
 
 	if (Release.ReleaseGroup())
-			Album.SetType(AlbumType(Release.ReleaseGroup()->Type()));
+			Album.SetType(AlbumType(Release.ReleaseGroup()->PrimaryType()));
 
 	Album.SetStatus(AlbumStatus(Release.Status()));
 
@@ -252,18 +252,18 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz4::CRelease& Release, const
 	return Album;
 }
 
-void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort)
+void CMusicBrainzInfo::ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort)
 {
 	bool FirstArtist=true;
 
-	MusicBrainz4::CNameCreditList *NameCreditsList=ArtistCredit->NameCreditList();
+	MusicBrainz5::CNameCreditList *NameCreditsList=ArtistCredit->NameCreditList();
 	if (NameCreditsList)
 	{
 		for (int NameCreditNumber=0;NameCreditNumber<NameCreditsList->NumItems();NameCreditNumber++)
 		{
-			MusicBrainz4::CNameCredit *NameCredit=NameCreditsList->Item(NameCreditNumber);
+			MusicBrainz5::CNameCredit *NameCredit=NameCreditsList->Item(NameCreditNumber);
 
-			MusicBrainz4::CArtist *Artist=NameCredit->Artist();
+			MusicBrainz5::CArtist *Artist=NameCredit->Artist();
 
 			if (!NameCredit->Name().empty())
 				ArtistName+=NameCredit->Name();
@@ -288,7 +288,7 @@ void CMusicBrainzInfo::ParseArtist(const MusicBrainz4::CArtistCredit* ArtistCred
 	}
 }
 
-CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack* MBTrack)
+CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz5::CTrack* MBTrack)
 {
 	CTrack Track;
 
@@ -301,7 +301,7 @@ CTrack CMusicBrainzInfo::ParseTrack(const MusicBrainz4::CTrack* MBTrack)
 
 	if (MBTrack->Recording())
 	{
-		MusicBrainz4::CArtistCredit *ArtistCredit=MBTrack->Recording()->ArtistCredit();
+		MusicBrainz5::CArtistCredit *ArtistCredit=MBTrack->Recording()->ArtistCredit();
 		if (ArtistCredit)
 		{
 			std::string ArtistID;
