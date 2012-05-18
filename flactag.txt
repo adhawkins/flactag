@@ -284,6 +284,15 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
+v2.0.2 - 18th May 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Build system updates
+
+- Fix bug passing incorrect buffer size to realpath
+
+- Update to use libmusicbrainz5
+
 v2.0.1 - 18th April 2012
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
