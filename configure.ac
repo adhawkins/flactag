@@ -24,7 +24,7 @@ AC_PROG_LIBTOOL
 AC_PROG_LN_S
 
 PKG_CHECK_MODULES([DEP_ALL], [libdiscid])
-PKG_CHECK_MODULES([DEP_FLACTAG], [neon slang libmusicbrainz5 flac++ unac])
+PKG_CHECK_MODULES([DEP_FLACTAG], [neon slang libmusicbrainz5 flac++ unac libcoverart])
 AC_SEARCH_LIBS([jpeg_read_header], jpeg, , [
      AC_MSG_ERROR([unable to find jpeg_read_header, install libjpeg-dev and/or set CPPFLAGS/LDFLAGS])
 ])

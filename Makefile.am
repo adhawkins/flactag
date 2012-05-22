@@ -12,7 +12,7 @@ dist-hook:
 
 #SUBDIRS = MusicBrainz
 
-AM_CPPFLAGS = -DSYSCONFDIR='"$(sysconfdir)"' -DPKGLIBDIR='"$(pkglibdir)"' 
+AM_CPPFLAGS = -DSYSCONFDIR='"$(sysconfdir)"' -DPKGLIBDIR='"$(pkglibdir)"'
 AM_CPPFLAGS += @DEP_ALL_CFLAGS@ @DEP_FLACTAG_CFLAGS@
 #-I$(builddir)/lib +=
 
@@ -22,7 +22,7 @@ AM_CPPFLAGS += @DEP_ALL_CFLAGS@ @DEP_FLACTAG_CFLAGS@
 bin_PROGRAMS = flactag discid
 flactag_LDADD = @DEP_ALL_LIBS@ @DEP_FLACTAG_LIBS@
 #flactag_CFLAGS = -I/usr/include/neon
-flactag_SOURCES = flactag.cc Album.cc Track.cc AlbumWindow.cc TrackWindow.cc FlacInfo.cc TagName.cc TagsWindow.cc CuesheetTrack.cc Cuesheet.cc DiscIDWrapper.cc base64.cc ScrollableWindow.cc ConfigFile.cc MusicBrainzInfo.cc FileNameBuilder.cc ErrorLog.cc CommandLine.cc CoverArt.cc UTF8Tag.cc WriteInfo.cc
+flactag_SOURCES = flactag.cc Album.cc Track.cc AlbumWindow.cc TrackWindow.cc FlacInfo.cc TagName.cc TagsWindow.cc CuesheetTrack.cc Cuesheet.cc DiscIDWrapper.cc base64.cc ScrollableWindow.cc ConfigFile.cc MusicBrainzInfo.cc FileNameBuilder.cc ErrorLog.cc CommandLine.cc CoverArt.cc UTF8Tag.cc WriteInfo.cc CoverArtFetch.cc
 discid_LDADD = @DEP_ALL_LIBS@
 discid_SOURCES = discid.cc DiscIDWrapper.cc Cuesheet.cc CuesheetTrack.cc
 

@@ -55,7 +55,7 @@ private:
 	CAlbum ParseAlbum(const MusicBrainz5::CRelease& Release, const MusicBrainz5::CMedium* Medium);
 	CTrack ParseTrack(const MusicBrainz5::CTrack* MBTrack);
 	void ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
-	std::vector<unsigned char> GetCoverArt(const CUTF8Tag& ASIN);
+	CCoverArt GetCoverArt(const CUTF8Tag& ReleaseID, const CUTF8Tag& ASIN);
 
 	std::vector<CAlbum> m_Albums;
 	std::string m_Server;

@@ -80,6 +80,15 @@ CCoverArt::CCoverArt(const unsigned char *Data, size_t Length)
 	SetArt(Data,Length,true);
 }
 
+CCoverArt::CCoverArt(const std::vector<unsigned char> &Data)
+:	m_Data(0),
+	m_Length(0),
+	m_Width(0),
+	m_Height(0)
+{
+	SetArt(&Data[0],Data.size(),true);
+}
+
 CCoverArt::CCoverArt(const CCoverArt& Other)
 :	m_Data(0),
 	m_Length(0),

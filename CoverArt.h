@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include <string>
+#include <vector>
 
 #include <jpeglib.h>
 #include <jerror.h>
@@ -39,6 +40,7 @@ class CCoverArt
 {
 public:
 	CCoverArt(const unsigned char *Data=0, size_t Length=0);
+	CCoverArt(const std::vector<unsigned char> &Data);
 	CCoverArt(const CCoverArt& Other);
 	~CCoverArt();
 
