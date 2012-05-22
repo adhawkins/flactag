@@ -330,7 +330,18 @@ bool CFlacInfo::WriteInfo(const CWriteInfo& WriteInfo)
 					m_PictureBlock = new FLAC::Metadata::Picture;
 					SetPictureBlock(WriteInfo.CoverArt());
 
-					RetVal=Iterator.insert_block_after(m_PictureBlock);
+					//insert_block_after takes ownership of the block
+					//we need to get it back out again so we have ownership
+
+					if (Iterator.insert_block_after(m_PictureBlock))
+					{
+						Iterator.next();
+
+						if (Iterator.get_block_type()==FLAC__METADATA_TYPE_PICTURE)
+						{
+							m_PictureBlock=(FLAC::Metadata::Picture *)Iterator.get_block();
+						}
+					}
 				}
 			}
 		}
@@ -423,8 +434,11 @@ void CFlacInfo::SetPictureBlock(const CCoverArt& CoverArt)
 	{
 		m_PictureBlock->set_type(FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER);
 		unsigned char *TmpData=new unsigned char[CoverArt.Length()];
+
 		memcpy(TmpData,CoverArt.Data(),CoverArt.Length());
 		m_PictureBlock->set_data(TmpData,CoverArt.Length());
+		delete[] TmpData;
+
 		m_PictureBlock->set_width(CoverArt.Width());
 		m_PictureBlock->set_height(CoverArt.Height());
 		m_PictureBlock->set_mime_type("image/jpeg");
