@@ -76,7 +76,10 @@ void CUTF8Tag::Convert()
 		char *InBuff=In;
 		char *OutBuff=Out;
 
-		iconv_t Convert=iconv_open(Codeset,"UTF-8");
+		std::stringstream NewCodeset;
+		NewCodeset << Codeset << "//TRANSLIT//IGNORE";
+
+		iconv_t Convert=iconv_open(NewCodeset.str().c_str(),"UTF-8");
 		if ((iconv_t)-1!=Convert)
 		{
 			if ((size_t)-1!=iconv(Convert,&InBuff,&InLeft,&OutBuff,&OutLeft))
