@@ -297,6 +297,8 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 
 void CFlacTag::Interactive()
 {
+	SLutf8_enable(-1);
+
 	SLtt_get_terminfo();
 
 	if (-1==SLkp_init())
