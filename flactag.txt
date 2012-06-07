@@ -287,6 +287,21 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
+v2.0.3 - 7th June 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Have iconv transliterate characters wherever possible
+
+- Correctly initialise UTF-8 in slang
+
+- Fix memory issues when writing picture blocks
+
+- Fix crash under debian unstable 64 due to incorrect buffer size passed to realpath
+
+- Correctly check return value from realpath
+
+- Allow user to pass path to cdrom drive in ripflac and ripdataflac
+
 v2.0.2 - 18th May 2012
 ~~~~~~~~~~~~~~~~~~~~~~
 
