@@ -390,7 +390,7 @@ void CFlacTag::Interactive()
 			SLsmg_write_string(const_cast<char *>("rite "));
 		}
 
-		char RealPath[256];
+		char RealPath[PATH_MAX];
 		realpath(m_FlacFile.c_str(),RealPath);
 
 		if (m_RenameFile!=RealPath)
