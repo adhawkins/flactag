@@ -273,9 +273,8 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							else
 							{
 								char RealPath[PATH_MAX];
-								realpath(m_FlacFile.c_str(),RealPath);
 
-								if (m_RenameFile!=RealPath)
+								if (realpath(m_FlacFile.c_str(),RealPath) && m_RenameFile!=RealPath)
 								{
 									std::string OrigFile=m_FlacFile;
 
@@ -391,9 +390,8 @@ void CFlacTag::Interactive()
 		}
 
 		char RealPath[PATH_MAX];
-		realpath(m_FlacFile.c_str(),RealPath);
 
-		if (m_RenameFile!=RealPath)
+		if (realpath(m_FlacFile.c_str(),RealPath) && m_RenameFile!=RealPath)
 		{
 			SLsmg_reverse_video();
 			SLsmg_write_string(const_cast<char *>("R"));
