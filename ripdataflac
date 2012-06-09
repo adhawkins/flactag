@@ -2,12 +2,16 @@
 
 CDROM=/dev/cdrom
 
-if [ $# = "2" ]
+if [ "$#" -eq "2" -o "$#" -eq "3" ]
 then
-
 	FILENAME=$1
 	SPAN=$2
-	
+
+	if [ "$#" -eq "3" ]
+	then
+		CDROM=$3
+	fi
+
 	CDID=`discid $CDROM`
 	if cdparanoia $SPAN $FILENAME.bin
 	then
@@ -20,9 +24,9 @@ then
 			rm -f ${FILENAME}-fixed.toc
 			rm -f $FILENAME.toc
 			rm -f $FILENAME.cue*
-	
+
 			FLACID=`flactag --discid $FILENAME.flac | cut -d':' -f 2| cut -d' ' -f 2`
-	
+
 			if [ "$FLACID" != "$CDID" ]
 			then
 				echo "**********"
@@ -36,7 +40,5 @@ then
 		fi
 	fi
 else
-	echo "Usage: $0 cdname tracks"
+	echo "Usage: $0 cdname tracks [ /path/to/cdrom ]"
 fi
-
-

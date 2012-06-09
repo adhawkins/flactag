@@ -82,13 +82,16 @@ CD*
 
 To rip a CD to flac, simply enter `ripflac <basename>` (where basename is
 used as the base name of the FLAC file you will be creating. The CD in the drive
-will be ripped, and a FLAC file created containing an embedded CUE sheet.
+will be ripped, and a FLAC file created containing an embedded CUE sheet. ripflac
+takes an optional final parameter for the path to the CD drive, which defaults
+to /dev/cdrom.
 
 If the original CD contains data tracks, then the FLAC conversion will fail.
 Should this happen, enter `ripdataflac <basename> <range>` (where basename is
 the same one specified in the first rip attempt, and range is the range of
 tracks to rip (e.g. if the CD has 13 tracks, where track 13 is the data track,
-then the range would be 1-12).
+then the range would be 1-12). ripdataflac takes an optional final parameter
+for the path to the CD drive, which defaults to /dev/cdrom.
 
 During the ripping of the data CD, you will be provided with the CUE sheet in an
 editor. You should delete the data track from this CUE sheet file and save it (I
@@ -284,6 +287,21 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
+v2.0.3 - 7th June 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Have iconv transliterate characters wherever possible
+
+- Correctly initialise UTF-8 in slang
+
+- Fix memory issues when writing picture blocks
+
+- Fix crash under debian unstable 64 due to incorrect buffer size passed to realpath
+
+- Correctly check return value from realpath
+
+- Allow user to pass path to cdrom drive in ripflac and ripdataflac
+
 v2.0.2 - 18th May 2012
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -428,4 +446,3 @@ v0.01 - 16th September 2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Initial version
-

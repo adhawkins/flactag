@@ -2,12 +2,15 @@
 
 CDROM=/dev/cdrom
 
-if [ $1 ]
+if [ "$#" -eq "1" -o "$#" -eq "2" ]
 then
-
 	FILENAME=$1
 
-	#cdrdao read-cd --device $CDROM --driver generic-mmc --with-cddb --datafile $FILENAME.bin $FILENAME.toc
+	if [ "$#" -eq "2" ]
+	then
+		CDROM=$2
+	fi
+
 	CDID=`discid $CDROM`
 	if cdrdao read-cd --device $CDROM --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
 	then
@@ -19,9 +22,9 @@ then
 			rm -f ${FILENAME}-fixed.toc
 			rm -f $FILENAME.toc
 			rm -f $FILENAME.cue
-	
+
 			FLACID=`flactag --discid $FILENAME.flac | cut -d':' -f 2| cut -d' ' -f 2`
-	
+
 			if [ "$FLACID" != "$CDID" ]
 			then
 				echo "**********"
@@ -35,7 +38,5 @@ then
 		fi
 	fi
 else
-	echo "Usage: $0 cdname"
+	echo "Usage: $0 cdname [ /path/to/cdrom ]"
 fi
-
-
