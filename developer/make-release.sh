@@ -56,7 +56,7 @@ DoIt()
 		echo "Tagging work repository"
 
 		cd $WORKDIR
-		git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum $SHA224" $TAGNAME || return 1
+		git tag -s -u $KEYID -m "Tag release $VERSION" -m "MD5 checksum: $MD5" -m "SHA224 checksum: $SHA224" $TAGNAME || return 1
 
 		COMMIT=`git show $TAGNAME | grep commit | cut -d ' ' -f 2`
 
