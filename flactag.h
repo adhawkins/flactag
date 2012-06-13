@@ -64,6 +64,7 @@ private:
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
 	void CopyTags(int AlbumNumber);
 	void SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& TagValue);
+	bool NeedsRename() const;
 
 	CCommandLine m_CommandLine;
 	std::string m_FlacFile;

@@ -272,9 +272,7 @@ CFlacTag::CFlacTag(const CCommandLine& CommandLine)
 							}
 							else
 							{
-								char RealPath[PATH_MAX];
-
-								if (realpath(m_FlacFile.c_str(),RealPath) && m_RenameFile!=RealPath)
+								if (NeedsRename())
 								{
 									std::string OrigFile=m_FlacFile;
 
@@ -389,9 +387,7 @@ void CFlacTag::Interactive()
 			SLsmg_write_string(const_cast<char *>("rite "));
 		}
 
-		char RealPath[PATH_MAX];
-
-		if (realpath(m_FlacFile.c_str(),RealPath) && m_RenameFile!=RealPath)
+		if (NeedsRename())
 		{
 			SLsmg_reverse_video();
 			SLsmg_write_string(const_cast<char *>("R"));
@@ -530,7 +526,7 @@ void CFlacTag::Interactive()
 
 				case 'r':
 				case 'R':
-					if (m_RenameFile!=RealPath)
+					if (NeedsRename())
 						RenameFile();
 					else
 						SLtt_beep();
@@ -998,4 +994,24 @@ void CFlacTag::SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& Ta
 		Tags[TagName]=TagValue;
 	else
 		Tags.erase(TagName);
+}
+
+bool CFlacTag::NeedsRename() const
+{
+	bool RetVal=false;
+
+	char *RealPath=realpath(m_FlacFile.c_str(),NULL);
+	if (RealPath)
+	{
+		std::stringstream os;
+		os << "File: '" << m_FlacFile << "', realpath: '" << RealPath << "'" << std::endl;
+		CErrorLog::Log(os.str());
+
+		if (m_RenameFile!=RealPath)
+			RetVal=true;
+
+		free(RealPath);
+	}
+
+	return RetVal;
 }
