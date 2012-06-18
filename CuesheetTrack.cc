@@ -75,8 +75,8 @@ std::string CuesheetTrackIndex(FLAC__uint64 _offset)
 	char sep = ':';
 	std::stringstream os;
 	int frames = _offset % 75;
-	int _secs = (_offset - frames) / 75;
-	int secs = _secs % 60 - 2;
+	int _secs = ((_offset - frames) / 75) - 2;
+	int secs = _secs % 60;
 	int mins = (_secs - secs) / 60;
 	os << doubleDigit(mins) << sep << doubleDigit(secs)
            << sep << doubleDigit(frames);
