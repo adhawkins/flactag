@@ -16,10 +16,16 @@ DoIt()
 	#git init --bare $SRCDIR/../flactag.git-local
 	#git remote set-url origin --push $SRCDIR/../flactag.git-local || return 1
 
-	echo "Making tarball"
+	echo "Running autoreconf"
 	autoreconf --install >/dev/null || return 1
+
+	echo "Running configure"
 	./configure > /dev/null || return 1
+
+	echo "Making tarball"
 	make dist-gzip >/dev/null || return 1
+
+	echo "Checking for tarball $TARBALL"
 	[ -f $TARBALL ] || return 1
 
 	echo "Copying tarball to $EXTRACTDIR"

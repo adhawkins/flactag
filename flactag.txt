@@ -287,6 +287,13 @@ gmane.comp.audio.flactag.discuss respectively.
 Version History
 ---------------
 
+v2.0.4 - 19th June 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix Debian bug #677296 - Don't write negative times in CUE sheets
+
+- Resolve realpath related compilation issues on Hurd
+
 v2.0.3 - 7th June 2012
 ~~~~~~~~~~~~~~~~~~~~~~
 

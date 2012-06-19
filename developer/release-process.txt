@@ -8,7 +8,7 @@ developer/make-release.sh sourceforgeuser version gpgkeyid
 
 e.g
 
-developer/make-release.sh adhawkins 2.0.1 andy@gently.org.uk
+developer/make-release.sh adhawkins 2.0.1 andy@gently.org.uk --tag-and-push
 
 Make arguments for the software build can be passed using an environment
 variable as follows:
