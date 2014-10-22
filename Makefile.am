@@ -58,6 +58,13 @@ install-data-hook:
 	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/checkflac.1
 	$(LN_S) $(DESTDIR)$(man1dir)/flactag.1 $(DESTDIR)$(man1dir)/discid.1
 
+RM_F = rm -f
+uninstall-hook:
+	$(RM_F) $(DESTDIR)$(man1dir)/ripflac.1
+	$(RM_F) $(DESTDIR)$(man1dir)/ripdataflac.1
+	$(RM_F) $(DESTDIR)$(man1dir)/checkflac.1
+	$(RM_F) $(DESTDIR)$(man1dir)/discid.1
+
 noinst_HEADERS = CuesheetTrack.h \
         TagName.h \
         WriteInfo.h \
