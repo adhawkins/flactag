@@ -39,10 +39,16 @@ int main(int argc, const char *argv[])
     if (DiscID.FromDevice(argv[1]))
     	printf("%s\n",DiscID.ID().c_str());
     else
+		{
 			printf("Query failed: %s\n",DiscID.Error().c_str());
+			return 2;
+		}
 	}
 	else
+	{
 		printf("Usage: %s pathtocddevice\n",argv[0]);
+		return 1;
+	}
 
   return 0;
 }
