@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 CDROM=/dev/hdc
 
@@ -20,11 +21,14 @@ then
 		echo "**********"
 		echo "**********"
 		echo "**********"
+		exit 2
 	else
 		echo "IDs match, disk is OK"
+		exit 0
 	fi
 else
 	echo "Usage: $0 flacfile"
+	exit 1
 fi
 
 
