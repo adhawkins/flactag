@@ -1,7 +1,10 @@
 #!/bin/sh
 set -e
 
-CDROM=/dev/hdc
+if [ -z "$CDROM" ];
+then
+  CDROM=/dev/cdrom
+fi
 
 if [ $# = "1" ]
 then
