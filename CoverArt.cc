@@ -195,7 +195,7 @@ boolean CCoverArt::FillInputBuffer(j_decompress_ptr cinfo)
 	src->pub.next_input_byte = src->eoi_buffer;
 	src->pub.bytes_in_buffer = 2;
 
-	return true;
+	return (boolean)true;
 }
 
 void CCoverArt::SkipInputData(j_decompress_ptr cinfo, long num_bytes)
