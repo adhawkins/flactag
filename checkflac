@@ -11,22 +11,36 @@ then
 	FILENAME="$1"
 	
 	CDID=`discid $CDROM`
-	FLACID=`flactag --discid $FILENAME | cut -d':' -f 2| cut -d' ' -f 2`
+	if [ -z "${CDID}" ]
+	then
+		echo "Failed to get disc ID from ${CDROM}"
+		exit 1
+	fi
+
+	FLACID=`flactag --discid "${FILENAME}" | rev | cut -d' ' -f1 | rev`
+	if [ -z "${FLACID}" ]
+	then
+		echo "Failed to get disc ID from FLAC file ${FILENAME}"
+		exit 1
+	fi
 
 	if [ "$FLACID" != "$CDID" ]
 	then
 		echo "**********"
 		echo "**********"
 		echo "**********"
-		echo "********** Disc ID of FLAC doesn't match Disc ID of CD  **********"
-		echo "********** Please re-rip this CD and remove any invalid **********"
-		echo "********** disc IDs from the MusicBrainz service        **********"
+                echo "********** Disc ID of CD:   ${CDID}"
+                echo "********** Disc ID of FLAC: ${FLACID} * INVALID *"
+                echo "**********"
+		echo "********** Disc ID of FLAC doesn't match Disc ID of CD   ***********"
+		echo "********** Please re-rip this CD and remove any invalid  ***********"
+		echo "********** disc IDs from the MusicBrainz service         ***********"
 		echo "**********"
 		echo "**********"
 		echo "**********"
 		exit 2
 	else
-		echo "IDs match, disk is OK"
+		echo "IDs match, FLAC file is OK"
 		exit 0
 	fi
 else
