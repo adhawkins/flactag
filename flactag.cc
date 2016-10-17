@@ -1003,10 +1003,6 @@ bool CFlacTag::NeedsRename() const
 	char *RealPath=realpath(m_FlacFile.c_str(),NULL);
 	if (RealPath)
 	{
-		std::stringstream os;
-		os << "File: '" << m_FlacFile << "', realpath: '" << RealPath << "'" << std::endl;
-		CErrorLog::Log(os.str());
-
 		if (m_RenameFile!=RealPath)
 			RetVal=true;
 
