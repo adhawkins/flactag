@@ -40,7 +40,11 @@ CDiscIDWrapper::~CDiscIDWrapper()
 
 bool CDiscIDWrapper::FromDevice(const std::string& Device)
 {
+#if defined(DISCID_VERSION_MAJOR) && (DISCID_VERSION_MAJOR > 0 || (DISCID_VERSION_MAJOR == 0 && DISCID_VERSION_MINOR >= 4))
+	return discid_read_sparse(m_DiscID,Device.c_str(),DISCID_FEATURE_READ);
+#else
 	return discid_read(m_DiscID,Device.c_str());
+#endif
 }
 
 bool CDiscIDWrapper::FromCuesheet(const CCuesheet& Cuesheet)
