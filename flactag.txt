@@ -29,23 +29,23 @@ Requirements
 Building and Installing
 -----------------------
 
-If you take the source code directly from the repository (not a tarball),
-you must run
-
-- *autoreconf --install*
-
-to prepare the autotools environment.
-
-The project is built using autotools.  Once you have obtained the source
+The project is built using cmake.  Once you have obtained the source
 code (either from the repository or a tarball), you run
 
-- *./configure* - this will create the Makefile
-- *make* - this will compile
-- *make install* - this will install everything
+- `cmake -DCMAKE_BUILD_TYPE=Release -S /path/to/source-dir -B /path/to/build-dir` - this will create the build environment
+- `cmake --build /path/to/build-dir` - this will compile
+- `cmake --install /path/to/build-dir` - this will install everything
 
-See the help output from the *./configure* command for details about
-how to change LDFLAGS, CXXFLAGS, installation directories and other
-settings.
+By default, the program will be installed to /usr/local. You can change this when
+creating the build environment using the CMAKE_INSTALL_PREFIX option, for example:
+
+   cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ...
+
+For overview of all available options use:
+
+   cmake -L .
+
+or use a GUI. See http://www.cmake.org/HTML/RunningCMake.html for more details.
 
 The build process should complete with no errors. You will be left
 with the following executables:
@@ -53,20 +53,9 @@ with the following executables:
 - *flactag* - The main application
 - *discid* - A test utility to read the disc ID from a CD
 
-To install the software and associated scripts, simply run `make install`.
+To install the software and associated scripts, simply run `cmake --install /path/to/build-dir`.
 This step will need to be run as `root` if the install is being done outside of
 the user's home directory.
-
-Developer notes
----------------
-
-When releasing a new version, it is necessary to change the version
-number in *configure.ac* before making a tag in the version control
-system.
-
-To build a tarball for public distribution, use the command
-
-- *make dist* - this will create flactag-$(VERSION).tar.gz
 
 Ripping CDs to FLAC
 -------------------

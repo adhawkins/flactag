@@ -14,7 +14,7 @@ then
 	CDID=`discid $CDROM`
 	if cdrdao read-cd --device $CDROM --driver generic-mmc --datafile $FILENAME.bin $FILENAME.toc
 	then
-		sed -f INSTALLPATH/tocfix.sed $FILENAME.toc > ${FILENAME}-fixed.toc
+		sed -f ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/flactag/tocfix.sed $FILENAME.toc > ${FILENAME}-fixed.toc
 		cueconvert ${FILENAME}-fixed.toc $FILENAME.cue
 		if nice flac -8 --replay-gain --endian=big --sign=signed --channels=2 --bps=16 --sample-rate=44100 --cuesheet=$FILENAME.cue $FILENAME.bin
 		then
@@ -23,7 +23,7 @@ then
 			rm -f $FILENAME.toc
 			rm -f $FILENAME.cue
 
-			FLACID=`flactag --discid $FILENAME.flac | cut -d':' -f 2| cut -d' ' -f 2`
+			FLACID=`flactag --discid $FILENAME.flac | cut -d':' -f 2 | cut -d' ' -f 2`
 
 			if [ "$FLACID" != "$CDID" ]
 			then
