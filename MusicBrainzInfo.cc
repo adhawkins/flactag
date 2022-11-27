@@ -49,13 +49,13 @@
 #include "musicbrainz5/Recording.h"
 #include "musicbrainz5/NameCredit.h"
 
-CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet)
-:	m_Server(Server),
-	m_Port(Port),
-	m_Cuesheet(Cuesheet),
-	m_DiscIDWrapper(),
-	m_DiskID(""),
-	m_OverrideDiskID(false)
+CMusicBrainzInfo::CMusicBrainzInfo(const std::string &Server, int Port, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID)
+		: m_Server(Server),
+			m_Port(Port),
+			m_Cuesheet(Cuesheet),
+			m_DiscIDWrapper(),
+			m_DiskID(DiskID),
+			m_OverrideDiskID(OverrideDiskID)
 {
 	if (m_Server.empty())
 		m_Server="musicbrainz.org";
@@ -64,24 +64,8 @@ CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CC
 		m_Port=80;
 
 	m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
-	m_DiskID.assign(m_DiscIDWrapper.ID());
-}
-
-CMusicBrainzInfo::CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet, std::string DiskID)
-:       m_Server(Server),
-        m_Port(Port),
-        m_Cuesheet(Cuesheet),
-        m_DiscIDWrapper(),
-	m_DiskID(DiskID),
-	m_OverrideDiskID(true)
-{
-        if (m_Server.empty())
-                m_Server="musicbrainz.org";
-
-        if (0==m_Port)
-                m_Port=80;
-
-        m_DiscIDWrapper.FromCuesheet(m_Cuesheet);
+	if (!m_OverrideDiskID)
+		m_DiskID.assign(m_DiscIDWrapper.ID());
 }
 
 bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)

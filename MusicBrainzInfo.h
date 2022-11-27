@@ -43,8 +43,7 @@
 class CMusicBrainzInfo
 {
 public:
-	CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet);
-	CMusicBrainzInfo(const std::string& Server, int Port, const CCuesheet& Cuesheet, std::string OverrideDiscID);
+	CMusicBrainzInfo(const std::string &Server, int Port, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID);
 
 	bool LoadInfo(const std::string& FlacFile);
 	std::vector<CAlbum> Albums() const;
