@@ -574,15 +574,15 @@ bool CFlacTag::LoadData()
 		m_WriteInfo=CWriteInfo(m_FlacInfo.Tags(),m_FlacInfo.CoverArt());
 
 		CFileNameBuilder FileNameBuilder(m_FlacInfo.Tags(),
-														m_ConfigFile.Value("BasePath"),
-														m_ConfigFile.Value("SingleDiskFileName"),
-														m_ConfigFile.Value("MultiDiskFileName"));
+																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
+																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
+																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName));
 
 		CFileNameBuilder CueFileNameBuilder(m_FlacInfo.Tags(),
-			m_ConfigFile.Value("BasePath"),
-			m_ConfigFile.Value("SingleDiskFileName"),
-			m_ConfigFile.Value("MultiDiskFileName"),
-			"cue");
+																				m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
+																				m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
+																				m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName),
+																				"cue");
 
 		m_RenameFile=FileNameBuilder.FileName();
 		m_RenameFileCue=CueFileNameBuilder.FileName();
@@ -618,10 +618,10 @@ bool CFlacTag::LoadData()
 
 		int Port=80;
 		std::stringstream os;
-		os << m_ConfigFile.Value("Port");
+		os << m_ConfigFile.Value(CConfigFile::tConfigEntry::Port);
 		os >> Port;
 
-		CMusicBrainzInfo Info(m_ConfigFile.Value("Server"), Port, m_FlacCuesheet, m_CommandLine.OverrideDiscID(), m_CommandLine.OverrideDiscID_val());
+		CMusicBrainzInfo Info(m_ConfigFile.Value(CConfigFile::tConfigEntry::Server), Port, m_FlacCuesheet, m_CommandLine.OverrideDiscID(), m_CommandLine.OverrideDiscID_val());
 		if (Info.LoadInfo(m_FlacFile))
 			m_Albums = Info.Albums();
 		else
@@ -691,7 +691,7 @@ bool CFlacTag::MakeDirectoryTree(const std::string& Directory) const
 
 		int Mode;
 		std::stringstream os;
-		os << m_ConfigFile.Value("DirectoryCreatePermissions");
+		os << m_ConfigFile.Value(CConfigFile::tConfigEntry::DirectoryCreatePermissions);
 		os >> std::oct >> Mode;
 
 		while (RetVal && Components.end()!=ThisComponent)
@@ -799,7 +799,7 @@ bool CFlacTag::RenameFile()
 
 					m_FlacFile=m_RenameFile;
 					LoadData();
-					if(m_ConfigFile.BoolValue("CreateCuesheetAfterRename"))
+					if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::CreateCuesheetAfterRename))
 						MakeCuesheetFile();
 				}
 				else
@@ -812,7 +812,7 @@ bool CFlacTag::RenameFile()
 
 							m_FlacFile=m_RenameFile;
 							LoadData();
-							if(m_ConfigFile.BoolValue("CreateCuesheetAfterRename"))
+							if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::CreateCuesheetAfterRename))
 								MakeCuesheetFile();
 						}
 					}

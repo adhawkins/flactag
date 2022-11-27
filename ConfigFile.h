@@ -35,16 +35,38 @@
 class CConfigFile
 {
 public:
-	CConfigFile();
+  enum class tConfigEntry
+  {
+    BasePath,
+    SingleDiskFileName,
+    MultiDiskFileName,
+    Server,
+    Port,
+    DirectoryCreatePermissions,
+    CreateCuesheetAfterRename,
+  };
 
-	bool LoadFile(const std::string& FileName);
-	bool SaveFile(const std::string& FileName) const;
+  CConfigFile();
 
-	std::string Value(const std::string& Name) const;
-	bool BoolValue(const std::string& Name) const;
+  bool LoadFile(const std::string &FileName);
+  bool SaveFile(const std::string &FileName) const;
+
+  std::string Value(tConfigEntry Entry) const;
+  bool BoolValue(tConfigEntry Entry) const;
 
 private:
-	std::map<std::string,std::string> m_Values;
+  std::string EntryLookup(CConfigFile::tConfigEntry Entry) const;
+
+  std::map<std::string, std::string> m_Values;
+  const std::map<tConfigEntry, std::string> m_EntryLookup = {
+      {tConfigEntry::BasePath, "BasePath"},
+      {tConfigEntry::SingleDiskFileName, "SingleDiskFileName"},
+      {tConfigEntry::MultiDiskFileName, "MultiDiskFileName"},
+      {tConfigEntry::Server, "Server"},
+      {tConfigEntry::Port, "Port"},
+      {tConfigEntry::DirectoryCreatePermissions, "DirectoryCreatePermissions"},
+      {tConfigEntry::CreateCuesheetAfterRename, "CreateCuesheetAfterRename"},
+  };
 };
 
 #endif

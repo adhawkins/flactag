@@ -28,34 +28,46 @@
 
 #include "ConfigFile.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <strings.h>
 
 CConfigFile::CConfigFile()
 {
-	m_Values["BasePath"]="";
-	m_Values["SingleDiskFileName"]="";
-	m_Values["MultiDiskFileName"]="";
-	m_Values["DirectoryCreatePermissions"]="0755";
-	m_Values["Server"]="musicbrainz.org";
-	m_Values["Port"]="80";
-	m_Values["CreateCuesheetAfterRename"]="0";
+	m_Values[EntryLookup(tConfigEntry::BasePath)] = "";
+	m_Values[EntryLookup(tConfigEntry::SingleDiskFileName)] = "";
+	m_Values[EntryLookup(tConfigEntry::MultiDiskFileName)] = "";
+	m_Values[EntryLookup(tConfigEntry::DirectoryCreatePermissions)] = "0755";
+	m_Values[EntryLookup(tConfigEntry::Server)] = "musicbrainz.org";
+	m_Values[EntryLookup(tConfigEntry::Port)] = "80";
+	m_Values[EntryLookup(tConfigEntry::CreateCuesheetAfterRename)] = "0";
 }
 
-std::string CConfigFile::Value(const std::string& Name) const
+std::string CConfigFile::EntryLookup(CConfigFile::tConfigEntry Entry) const
+{
+	auto EntryName = m_EntryLookup.find(Entry);
+	assert(EntryName != m_EntryLookup.end());
+
+	return (*EntryName).second;
+}
+
+std::string CConfigFile::Value(CConfigFile::tConfigEntry Entry) const
 {
 	std::string Value;
 
-	std::map<std::string,std::string>::const_iterator ThisValue=m_Values.find(Name);
-	if (m_Values.end()!=ThisValue)
-		Value=(*ThisValue).second;
+	std::string EntryName = EntryLookup(Entry);
+	std::map<std::string, std::string>::const_iterator ThisValue = m_Values.find(EntryName);
+	if (m_Values.end() != ThisValue)
+	{
+		Value = (*ThisValue).second;
+	}
 
 	return Value;
 }
 
-bool CConfigFile::BoolValue(const std::string& Name) const
+bool CConfigFile::BoolValue(CConfigFile::tConfigEntry Entry) const
 {
-	std::string _val(Value(Name));
+	std::string _val(Value(Entry));
 
 	for(unsigned int i = 0; i < _val.size(); i++)
 		_val[i] = std::tolower(_val[i]);
