@@ -255,6 +255,13 @@ Server=mbserver.localdomain
 
 Port=5000
 
+Album Name Disambiguation
+-------------------------
+
+If you wish to include any album name disambiguation (say for multiple releases
+of an album) this can be achieved by setting the 'IncludeAlbumDisambiguation'
+value in the configuration file to 'yes'.
+
 Bugs / Limitations / Future Enhancements
 ----------------------------------------
 

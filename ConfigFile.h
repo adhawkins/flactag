@@ -44,6 +44,7 @@ public:
     Port,
     DirectoryCreatePermissions,
     CreateCuesheetAfterRename,
+    IncludeAlbumDisambiguation,
   };
 
   CConfigFile();
@@ -66,6 +67,7 @@ private:
       {tConfigEntry::Port, "Port"},
       {tConfigEntry::DirectoryCreatePermissions, "DirectoryCreatePermissions"},
       {tConfigEntry::CreateCuesheetAfterRename, "CreateCuesheetAfterRename"},
+      {tConfigEntry::IncludeAlbumDisambiguation, "IncludeAlbumDisambiguation"},
   };
 };
 

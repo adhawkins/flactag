@@ -138,6 +138,11 @@ bool CUTF8Tag::operator !=(const CUTF8Tag& Other) const
 	return !(*this==Other);
 }
 
+CUTF8Tag CUTF8Tag::operator+(const CUTF8Tag &Other)
+{
+	return m_UTF8Value + Other.m_UTF8Value;
+}
+
 bool CUTF8Tag::empty() const
 {
 	return m_UTF8Value.empty();

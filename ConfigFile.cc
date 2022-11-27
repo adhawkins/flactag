@@ -41,6 +41,7 @@ CConfigFile::CConfigFile()
 	m_Values[EntryLookup(tConfigEntry::Server)] = "musicbrainz.org";
 	m_Values[EntryLookup(tConfigEntry::Port)] = "80";
 	m_Values[EntryLookup(tConfigEntry::CreateCuesheetAfterRename)] = "0";
+	m_Values[EntryLookup(tConfigEntry::IncludeAlbumDisambiguation)] = "yes";
 }
 
 std::string CConfigFile::EntryLookup(CConfigFile::tConfigEntry Entry) const

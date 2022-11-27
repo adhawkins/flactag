@@ -171,9 +171,21 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease& Release, const
 	CAlbum Album;
 
 	if (!Release.Title().empty())
+	{
 		Album.SetName(Release.Title());
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release.Disambiguation().empty())
+		{
+			Album.SetName(Album.Name() + std::string(" (") + Release.Disambiguation() + std::string(")"));
+		}
+	}
 	else if (Release.ReleaseGroup() && !Release.ReleaseGroup()->Title().empty())
+	{
 		Album.SetName(Release.ReleaseGroup()->Title());
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release.ReleaseGroup()->Disambiguation().empty())
+		{
+			Album.SetName(Album.Name() + std::string(" (") + Release.ReleaseGroup()->Disambiguation() + std::string(")"));
+		}
+	}
 
 	if (Release.MediumList() && Release.MediumList()->NumItems()>1)
 		Album.SetDiskNumber(Medium->Position());
