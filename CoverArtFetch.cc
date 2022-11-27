@@ -60,7 +60,7 @@ void CCoverArtFetch::Fetch(const std::string &ReleaseID, const std::string &ASIN
 
 		std::string URL = "/images/P/" + ASIN + ".02.LZZZZZZZ.jpg";
 
-		MusicBrainz5::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
+		MusicBrainz5::CHTTPFetch Fetch("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36", "images.amazon.com");
 
 		int Bytes = Fetch.Fetch(URL);
 		if (Bytes < 1000)
