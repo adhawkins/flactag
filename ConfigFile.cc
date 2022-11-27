@@ -42,6 +42,7 @@ CConfigFile::CConfigFile()
 	m_Values[EntryLookup(tConfigEntry::Port)] = "80";
 	m_Values[EntryLookup(tConfigEntry::CreateCuesheetAfterRename)] = "0";
 	m_Values[EntryLookup(tConfigEntry::IncludeAlbumDisambiguation)] = "yes";
+	m_Values[EntryLookup(tConfigEntry::StandardiseArtists)] = "yes";
 }
 
 std::string CConfigFile::EntryLookup(CConfigFile::tConfigEntry Entry) const

@@ -262,6 +262,16 @@ If you wish to include any album name disambiguation (say for multiple releases
 of an album) this can be achieved by setting the 'IncludeAlbumDisambiguation'
 value in the configuration file to 'yes'.
 
+Using Standardised Artist Names
+-------------------------------
+
+MusicBrainz allows for artists to be credited using different names (for example)
+'Jean Michel Jarre', 'Jean-Michel Jarre' and 'JM Jarre' are all alternatives for
+the same artist). If you would prefer your artist names to be 'standardised' (i.e.
+all tracks by an artist use the same representation of their name, irrespective of
+how they are credited) then this can be done by setting the 'StandardiseArtists' value in the config
+file to 'yes'.
+
 Bugs / Limitations / Future Enhancements
 ----------------------------------------
 

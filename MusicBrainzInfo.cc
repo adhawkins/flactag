@@ -229,6 +229,7 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease& Release, const
 void CMusicBrainzInfo::ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort)
 {
 	bool FirstArtist=true;
+	bool UseArtistCreditName = !m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::StandardiseArtists);
 
 	MusicBrainz5::CNameCreditList *NameCreditsList=ArtistCredit->NameCreditList();
 	if (NameCreditsList)
@@ -239,7 +240,7 @@ void CMusicBrainzInfo::ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCred
 
 			MusicBrainz5::CArtist *Artist=NameCredit->Artist();
 
-			if (!NameCredit->Name().empty())
+			if (UseArtistCreditName && !NameCredit->Name().empty())
 				ArtistName+=NameCredit->Name();
 			else if (Artist)
 				ArtistName+=Artist->Name();

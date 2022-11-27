@@ -1,17 +1,17 @@
 /* --------------------------------------------------------------------------
 
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
-   						using data retrieved from the MusicBrainz service
+              using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006-2012 Andrew Hawkins
+   Copyright (C) 2006-2022 Andrew Hawkins
    Copyright (C) 2011-2012 Daniel Pocock
 
    This file is part of flactag.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -45,6 +45,7 @@ public:
     DirectoryCreatePermissions,
     CreateCuesheetAfterRename,
     IncludeAlbumDisambiguation,
+    StandardiseArtists,
   };
 
   CConfigFile();
@@ -68,6 +69,7 @@ private:
       {tConfigEntry::DirectoryCreatePermissions, "DirectoryCreatePermissions"},
       {tConfigEntry::CreateCuesheetAfterRename, "CreateCuesheetAfterRename"},
       {tConfigEntry::IncludeAlbumDisambiguation, "IncludeAlbumDisambiguation"},
+      {tConfigEntry::StandardiseArtists, "StandardiseArtists"},
   };
 };
 
