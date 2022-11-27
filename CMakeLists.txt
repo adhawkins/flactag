@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.18.0)
 project(flactag VERSION 3.0.0)
 
+set(CMAKE_CXX_STANDARD 11)
+
 include(GNUInstallDirs)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
