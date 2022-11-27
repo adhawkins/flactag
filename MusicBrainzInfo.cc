@@ -49,16 +49,22 @@
 #include "musicbrainz5/Recording.h"
 #include "musicbrainz5/NameCredit.h"
 
-CMusicBrainzInfo::CMusicBrainzInfo(const std::string &Server, int Port, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID)
-		: m_Server(Server),
-			m_Port(Port),
+CMusicBrainzInfo::CMusicBrainzInfo(const CConfigFile &ConfigFile, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID)
+		: m_ConfigFile(ConfigFile),
 			m_Cuesheet(Cuesheet),
 			m_DiscIDWrapper(),
 			m_DiskID(DiskID),
 			m_OverrideDiskID(OverrideDiskID)
 {
+	m_Server = m_ConfigFile.Value(CConfigFile::tConfigEntry::Server);
+
 	if (m_Server.empty())
 		m_Server="musicbrainz.org";
+
+	int Port = 80;
+	std::stringstream os;
+	os << m_ConfigFile.Value(CConfigFile::tConfigEntry::Port);
+	os >> m_Port;
 
 	if (0==m_Port)
 		m_Port=80;

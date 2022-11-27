@@ -616,12 +616,7 @@ bool CFlacTag::LoadData()
 			m_WriteInfo.SetCoverArt(CCoverArt());
 		}
 
-		int Port=80;
-		std::stringstream os;
-		os << m_ConfigFile.Value(CConfigFile::tConfigEntry::Port);
-		os >> Port;
-
-		CMusicBrainzInfo Info(m_ConfigFile.Value(CConfigFile::tConfigEntry::Server), Port, m_FlacCuesheet, m_CommandLine.OverrideDiscID(), m_CommandLine.OverrideDiscID_val());
+		CMusicBrainzInfo Info(m_ConfigFile, m_FlacCuesheet, m_CommandLine.OverrideDiscID(), m_CommandLine.OverrideDiscID_val());
 		if (Info.LoadInfo(m_FlacFile))
 			m_Albums = Info.Albums();
 		else

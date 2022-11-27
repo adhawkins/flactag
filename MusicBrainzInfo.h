@@ -32,6 +32,7 @@
 #include <vector>
 
 #include "Album.h"
+#include "ConfigFile.h"
 #include "Cuesheet.h"
 #include "DiscIDWrapper.h"
 
@@ -43,7 +44,7 @@
 class CMusicBrainzInfo
 {
 public:
-	CMusicBrainzInfo(const std::string &Server, int Port, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID);
+	CMusicBrainzInfo(const CConfigFile &ConfigFile, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID);
 
 	bool LoadInfo(const std::string& FlacFile);
 	std::vector<CAlbum> Albums() const;
@@ -57,6 +58,7 @@ private:
 	CCoverArt GetCoverArt(const CUTF8Tag &ReleaseID, const CUTF8Tag &ASIN);
 
 	std::vector<CAlbum> m_Albums;
+	CConfigFile m_ConfigFile;
 	std::string m_Server;
 	int m_Port;
 	CCuesheet m_Cuesheet;
