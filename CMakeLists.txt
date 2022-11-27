@@ -20,6 +20,7 @@ pkg_search_module(LIBMUSICBRAINZ5CC REQUIRED libmusicbrainz5cc)
 pkg_search_module(FLACPP REQUIRED flac++)
 pkg_search_module(LIBDISCID REQUIRED libdiscid)
 pkg_search_module(UNAC REQUIRED unac)
+pkg_search_module(LIBCOVERARTCC REQUIRED libcoverartcc)
 
 add_executable(flactag
 	Album.cc
@@ -28,6 +29,7 @@ add_executable(flactag
 	CommandLine.cc
 	ConfigFile.cc
 	CoverArt.cc
+	CoverArtFetch.cc
 	Cuesheet.cc
 	CuesheetTrack.cc
 	DiscIDWrapper.cc
@@ -52,6 +54,7 @@ target_link_libraries(flactag
 	${FLACPP_LIBRARIES}
 	${LIBDISCID_LIBRARIES}
 	${UNAC_LIBRARIES}
+	${LIBCOVERARTCC_LIBRARIES}
 )
 
 add_executable(discid-bin

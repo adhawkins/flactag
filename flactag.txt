@@ -18,6 +18,7 @@ Requirements
 ------------
 
 - http://musicbrainz.org/doc/libmusicbrainz[libmusicbrainz] (Version 5 required)
+- http://musicbrainz.org/doc/libcoverart[libcoverart]
 - http://musicbrainz.org/doc/libdiscid[libdiscid]
 - http://flac.sourceforge.net/download.html[libflac++] (I used version 1.2.1)
 - http://www.s-lang.org/download.html[S-Lang] (I used version 2.2.2 from Debian)

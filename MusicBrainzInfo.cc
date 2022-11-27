@@ -1,28 +1,28 @@
 /* --------------------------------------------------------------------------
 
-   flactag -- A tagger for single album FLAC files with embedded CUE sheets
-   						using data retrieved from the MusicBrainz service
+	 flactag -- A tagger for single album FLAC files with embedded CUE sheets
+							using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006-2012 Andrew Hawkins
-   Copyright (C) 2011-2012 Daniel Pocock
+	 Copyright (C) 2006-2022 Andrew Hawkins
+	 Copyright (C) 2011-2012 Daniel Pocock
 
-   This file is part of flactag.
+	 This file is part of flactag.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
+	 This program is free software: you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
 	 the Free Software Foundation, either version 3 of the License, or
 	 (at your option) any later version.
 
-   Flactag is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
+	 Flactag is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	 Lesser General Public License for more details.
 
-   You should have received a copy of the GNU General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	 You should have received a copy of the GNU General Public
+	 License along with this library; if not, write to the Free Software
+	 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-     $Id$
+		 $Id$
 
 ----------------------------------------------------------------------------*/
 
@@ -34,6 +34,7 @@
 
 #include "base64.h"
 
+#include "CoverArtFetch.h"
 #include "DiscIDWrapper.h"
 #include "ErrorLog.h"
 
@@ -169,34 +170,10 @@ bool CMusicBrainzInfo::LoadInfo(const std::string& FlacFile)
 	return RetVal;
 }
 
-std::vector<unsigned char> CMusicBrainzInfo::GetCoverArt(const CUTF8Tag& ASIN)
+CCoverArt CMusicBrainzInfo::GetCoverArt(const CUTF8Tag &ReleaseID, const CUTF8Tag &ASIN)
 {
-	std::vector<unsigned char> Data;
-
-	std::string URL="/images/P/" + ASIN.DisplayValue() + ".02.LZZZZZZZ.jpg";
-
-	MusicBrainz5::CHTTPFetch Fetch("flactag/v" VERSION, "images.amazon.com");
-
-	int Bytes=Fetch.Fetch(URL);
-	if (Bytes<1000)
-	{
-		URL="/images/P/" + ASIN.DisplayValue() + ".02.MZZZZZZZ.jpg";
-		Bytes=Fetch.Fetch(URL);
-	}
-
-	if (Bytes>0)
-	{
-		if (Bytes<1000)
-			CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
-		else
-		{
-			Data=Fetch.Data();
-		}
-	}
-	else
-		CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
-
-	return Data;
+	CCoverArtFetch CoverArtFetch(ReleaseID.DisplayValue(), ASIN.DisplayValue());
+	return CoverArtFetch.CoverArt();
 }
 
 CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease& Release, const MusicBrainz5::CMedium* Medium)
@@ -229,12 +206,7 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease& Release, const
 
 	Album.SetASIN(Release.ASIN());
 
-	if (!Album.ASIN().empty())
-	{
-		std::vector<unsigned char> Data=GetCoverArt(Album.ASIN());
-		if (Data.size()>1000)
-			Album.SetCoverArt(CCoverArt(&Data[0],Data.size()));
-	}
+	Album.SetCoverArt(GetCoverArt(Release.ID(), Album.ASIN()));
 
 	if (Release.ReleaseGroup())
 			Album.SetType(AlbumType(Release.ReleaseGroup()->PrimaryType()));
