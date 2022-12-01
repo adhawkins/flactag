@@ -99,6 +99,7 @@ find_program(ASCIIDOC_EXE NAMES asciidoc REQUIRED)
 add_custom_target(webpage ALL DEPENDS flactag.html)
 add_custom_command(OUTPUT flactag.html
 	MAIN_DEPENDENCY flactag.txt
+	DEPENDS CHANGELOG.txt
 	COMMAND ${ASCIIDOC_EXE} -a numbered -o ${CMAKE_CURRENT_BINARY_DIR}/flactag.html ${CMAKE_CURRENT_SOURCE_DIR}/flactag.txt
 )
 

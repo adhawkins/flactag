@@ -1,0 +1,169 @@
+Version History
+---------------
+
+v2.0.4 - 19th June 2012
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix Debian bug #677296 - Don't write negative times in CUE sheets
+
+- Resolve realpath related compilation issues on Hurd
+
+v2.0.3 - 7th June 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Have iconv transliterate characters wherever possible
+
+- Correctly initialise UTF-8 in slang
+
+- Fix memory issues when writing picture blocks
+
+- Fix crash under debian unstable 64 due to incorrect buffer size passed to realpath
+
+- Correctly check return value from realpath
+
+- Allow user to pass path to cdrom drive in ripflac and ripdataflac
+
+v2.0.2 - 18th May 2012
+~~~~~~~~~~~~~~~~~~~~~~
+
+- Build system updates
+
+- Fix bug passing incorrect buffer size to realpath
+
+- Update to use libmusicbrainz5
+
+v2.0.1 - 18th April 2012
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Change license to GPL v3
+
+- Documentation updates
+
+v2.0.0 - 17th April 2012
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Build system updated to use autotools (submitted by Daniel Pocock)
+
+- Updated to work with MusicBrainz NGS using libmusicbrainz4
+
+- Add ability to generate CUE file containing appropriate tag information (submitted by Daniel Pocock)
+
+- Add ability to specify disk id rather than using the one derived from the CUE sheet (submitted by Daniel Pocock)
+
+- More work on packaging for Debian
+
+- Add ability to specify both server and port to query
+
+v1.1 - 16th December 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Scripts no longer have '.sh' extension
+
+- Initial work on packaging for Debian
+
+- More consistent mechanism for delaying requests to MusicBrainz
+
+- Fix file name building issues if base path is '.'
+
+- Handle presence and absence of trailing '/' in base path
+
+- New option '--overwrite-existing' when renaming files
+
+- Fix compilation problems caused by newer gcc
+
+- Switch to neon for downloading image files
+
+v1.1RC1 - 17th July 2008
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use new version of MusicBrainz library
+
+- Correctly handle exceptions generated
+
+- Limit rate of requests to MusicBrainz server
+
+- Append '(Single)' to end of names of singles
+
+- Removed '--force-multi' option from command line. Now compare stored MUSICBRAINZ_ALBUMID
+if multiple releases are returned.
+
+- Store embedded cover art
+
+
+v1.0 - 27th September 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Handle PICTURE block if library supports it
+
+v1.0RC2 - 10th January 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Add install target to install application and associated scripts
+
+- Documentation now generated using asciidoc
+
+- Scripts for ripping now included (including modification of TOC files where necessary)
+
+- PAGE UP and PAGE DOWN can now be used for scrolling in windows
+
+- Always use index number 1 when calculating TOC for FLAC file
+
+- Convert accented characters to standard characters in filenames
+
+- Add --discid option to report calculated discid for FLAC file
+
+- Fix various compilation errors on some systems
+
+- Report differences in tags when using --check option
+
+- Compare real path of file (not path used in command line which could be
+relative) to see if renaming should be allowed
+
+- Don't write ALBUMARTIST tag (causes problems with artist sorting in current SlimServer software)
+
+- Add --force-write option
+
+- Correctly write UTF8 values for tags
+
+v1.0-RC1 - 12th October 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Add command line options and ability to handle more than one FLAC file
+
+- Store cover art embedded into file tags
+
+- Handle console screen size changes
+
+- Retrieve more tags from MusicBrainz
+
+v0.04 - 23rd September 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Software released under the GPL
+
+- Add ability to rename file after tagging
+
+- Add logging capability (all log messages are queued and display on exit)
+
+- Add facility to download album cover art from Amazon
+
+- Store more Musicbrainz related information in tags
+
+v0.03 - 18th September 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Fix serious bug in generating submission URLs
+
+v0.02 - 18th September 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Correctly handle multi-album disc sets
+
+- Include ARTISTSORT tag
+
+- Retrieve Amazon ASIN in preparation for downloading cover art
+
+v0.01 - 16th September 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initial version
