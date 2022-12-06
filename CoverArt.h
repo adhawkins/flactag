@@ -33,35 +33,27 @@
 #include <string>
 #include <vector>
 
-#include <jpeglib.h>
-#include <jerror.h>
-
 class CCoverArt
 {
 public:
-	CCoverArt(const unsigned char *Data=0, size_t Length=0);
+	CCoverArt(const unsigned char *Data = 0, size_t Length = 0);
 	CCoverArt(const std::vector<unsigned char> &Data);
-	CCoverArt(const CCoverArt& Other);
+	CCoverArt(const CCoverArt &Other);
 	~CCoverArt();
 
-	CCoverArt& operator =(const CCoverArt& Other);
-	bool operator ==(const CCoverArt& Other) const;
-	bool operator !=(const CCoverArt& Other) const;
+	CCoverArt &operator=(const CCoverArt &Other);
+	bool operator==(const CCoverArt &Other) const;
+	bool operator!=(const CCoverArt &Other) const;
 	operator bool() const;
 	operator std::string() const;
 
-	void SetArt(const unsigned char *Data, size_t Length, bool RetrieveDimensions);
+	void SetArt(const unsigned char *Data, size_t Length, bool RetrieveDimensions, const std::string &MimeType = "");
 	void Clear();
 	unsigned char *Data() const;
 	size_t Length() const;
 	int Width() const;
 	int Height() const;
-
-	static void InitSource(j_decompress_ptr cinfo);
-	static boolean FillInputBuffer(j_decompress_ptr cinfo);
-	static void SkipInputData(j_decompress_ptr cinfo, long num_bytes);
-	static void TermSource(j_decompress_ptr cinfo);
-	static void JPEGMemorySource(j_decompress_ptr cinfo, const JOCTET * buffer, size_t bufsize);
+	std::string MimeType() const;
 
 private:
 	void Free();
@@ -71,6 +63,7 @@ private:
 	size_t m_Length;
 	int m_Width;
 	int m_Height;
+	std::string m_MimeType;
 };
 
 #endif

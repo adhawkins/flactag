@@ -16,13 +16,14 @@ configure_file(ripflac.in ripflac)
 
 find_package(PkgConfig REQUIRED)
 
-pkg_search_module(LIBJPEG REQUIRED libjpeg)
 pkg_search_module(SLANG REQUIRED slang)
 pkg_search_module(LIBMUSICBRAINZ5CC REQUIRED libmusicbrainz5cc)
 pkg_search_module(FLACPP REQUIRED flac++)
 pkg_search_module(LIBDISCID REQUIRED libdiscid)
 pkg_search_module(UNAC REQUIRED unac)
 pkg_search_module(LIBCOVERARTCC REQUIRED libcoverartcc)
+
+find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 
 add_executable(flactag
 	Album.cc
@@ -49,14 +50,18 @@ add_executable(flactag
 	WriteInfo.cc
 )
 
+target_include_directories(flactag PRIVATE
+	${ImageMagick_INCLUDE_DIRS}
+)
+
 target_link_libraries(flactag
-	${LIBJPEG_LIBRARIES}
 	${SLANG_LIBRARIES}
 	${LIBMUSICBRAINZ5CC_LIBRARIES}
 	${FLACPP_LIBRARIES}
 	${LIBDISCID_LIBRARIES}
 	${UNAC_LIBRARIES}
 	${LIBCOVERARTCC_LIBRARIES}
+	${ImageMagick_LIBRARIES}
 )
 
 add_executable(discid-bin

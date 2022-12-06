@@ -36,6 +36,7 @@
 #include <errno.h>
 
 #include <slang.h>
+#include <Magick++.h>
 
 #include "config.h"
 
@@ -81,6 +82,8 @@ CFlacTag::CFlacTag(const CCommandLine &CommandLine)
 		: m_CommandLine(CommandLine),
 			m_SelectedWindow(eWindow_Albums)
 {
+	// Magick::InitializeMagick(NULL);
+
 	if (CommandLine.Version())
 	{
 		printf("flactag: Version " VERSION "\n");
