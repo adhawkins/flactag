@@ -25,6 +25,19 @@ pkg_search_module(LIBCOVERARTCC REQUIRED libcoverartcc)
 
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
 
+find_program(MAGICK_CONFIG Magick++-config)
+if(NOT MAGICK_CONFIG OR NOT EXISTS ${MAGICK_CONFIG})
+	unset(MAGICK_CONFIG CACHE)
+	get_filename_component(MAGICK_LIB_DIR ${ImageMagick_Magick++_LIBRARY} DIRECTORY)
+	file(GLOB_RECURSE MAGICK_CONFIG FOLLOW_SYMLINKS ${MAGICK_LIB_DIR}/Magick++-config)
+	set(MAGICK_CONFIG ${MAGICK_CONFIG} CACHE STRING "Path to Magick++-config utility")
+endif()
+
+execute_process(COMMAND "${MAGICK_CONFIG}" "--cxxflags" OUTPUT_VARIABLE MAGICK_CXX_FLAGS)
+string (REGEX MATCH "-DMAGICKCORE_HDRI_ENABLE=." magick_config_hdri ${MAGICK_CXX_FLAGS})
+string (REGEX MATCH "-DMAGICKCORE_QUANTUM_DEPTH=[0-9]+" magick_config_quantum ${MAGICK_CXX_FLAGS})
+set(MAGICK_CXX_FLAGS ${magick_config_hdri} ${magick_config_quantum})
+
 add_executable(flactag
 	Album.cc
 	AlbumWindow.cc
@@ -49,6 +62,8 @@ add_executable(flactag
 	UTF8Tag.cc
 	WriteInfo.cc
 )
+
+target_compile_definitions(flactag PRIVATE ${MAGICK_CXX_FLAGS})
 
 target_include_directories(flactag PRIVATE
 	${ImageMagick_INCLUDE_DIRS}
