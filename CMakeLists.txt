@@ -3,6 +3,12 @@ project(flactag VERSION 3.0.0)
 
 set(CMAKE_CXX_STANDARD 11)
 
+if (MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
+
 include(GNUInstallDirs)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -65,7 +71,7 @@ add_executable(flactag
 
 target_compile_definitions(flactag PRIVATE ${MAGICK_CXX_FLAGS})
 
-target_include_directories(flactag PRIVATE
+target_include_directories(flactag SYSTEM PRIVATE
 	${ImageMagick_INCLUDE_DIRS}
 )
 

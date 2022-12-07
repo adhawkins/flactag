@@ -113,15 +113,11 @@ bool CFlacInfo::Read()
 						switch (Iterator.get_block_type())
 						{
 						case FLAC__METADATA_TYPE_STREAMINFO:
-							break;
-
 						case FLAC__METADATA_TYPE_PADDING:
-							break;
-
 						case FLAC__METADATA_TYPE_APPLICATION:
-							break;
-
 						case FLAC__METADATA_TYPE_SEEKTABLE:
+						case FLAC__METADATA_TYPE_UNDEFINED:
+						case FLAC__MAX_METADATA_TYPE:
 							break;
 
 						case FLAC__METADATA_TYPE_VORBIS_COMMENT:
@@ -161,9 +157,6 @@ bool CFlacInfo::Read()
 
 							break;
 						}
-
-						case FLAC__METADATA_TYPE_UNDEFINED:
-							break;
 
 #ifdef FLAC_API_VERSION_CURRENT
 						case FLAC__METADATA_TYPE_PICTURE:

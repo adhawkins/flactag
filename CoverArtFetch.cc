@@ -54,7 +54,7 @@ void CCoverArtFetch::Fetch(const std::string &ReleaseID, const std::string &ASIN
 		m_CoverArt = CCoverArt(CoverArt.FetchFront(ReleaseID));
 	}
 
-	catch (CoverArtArchive::CExceptionBase e)
+	catch (CoverArtArchive::CExceptionBase &e)
 	{
 		std::vector<unsigned char> Data;
 
