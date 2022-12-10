@@ -23,7 +23,6 @@ Requirements
 - http://flac.sourceforge.net/download.html[libflac++] (I used version 1.2.1)
 - http://www.s-lang.org/download.html[S-Lang] (I used version 2.2.2 from Debian)
 - http://www.webdav.org/neon/[libneon] (I used version 0.27-gnutls from Debian)
-- http://www.nongnu.org/unac/[unac] (I used version 1.8.0 from Debian)
 - https://imagemagick.org/[ImageMagick]
 - http://www.methods.co.nz/asciidoc/[asciidoc] (I used version 8.5.2 from Debian)
 

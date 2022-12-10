@@ -29,7 +29,6 @@
 
 #include <locale.h>
 #include <langinfo.h>
-#include <unac.h>
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
@@ -41,101 +40,48 @@
 
 #include "ErrorLog.h"
 
-CUTF8Tag::CUTF8Tag(const std::string& UTF8Value)
-:	m_UTF8Value(UTF8Value)
-{
-	Convert();
-}
+const std::string CUTF8Tag::m_cBadChars = "/:\"'`;?&,.!";
 
-void CUTF8Tag::Convert()
+CUTF8Tag::CUTF8Tag(const std::string &UTF8Value)
+		: m_UTF8Value(UTF8Value)
 {
 	if (!m_UTF8Value.empty())
 	{
-/*
-		if (m_UTF8Value.length()>=4 && m_UTF8Value.substr(0,4)=="Live")
-		{
-			printf("%s\n",m_UTF8Value.c_str());
+		// if (m_UTF8Value.length() >= 4 && m_UTF8Value.substr(0, 4) == "Jean")
+		// {
+		// 	printf("%s\n", m_UTF8Value.c_str());
 
-			for (std::string::size_type count=0;count<m_UTF8Value.length();count++)
-				printf("%02x (%c)\n",(unsigned char)m_UTF8Value[count],m_UTF8Value[count]);
-			printf("\n");
-		}
-*/
+		// 	for (std::string::size_type count = 0; count < m_UTF8Value.length(); count++)
+		// 		printf("%02x (%c)\n", (unsigned char)m_UTF8Value[count], m_UTF8Value[count]);
+		// 	printf("\n");
+		// }
 
-		setlocale(LC_ALL,  "" );
-		char *Codeset=nl_langinfo(CODESET);
-
-		char *In=new char[m_UTF8Value.length()+1];
-		strcpy(In,m_UTF8Value.c_str());
-		size_t InLeft=m_UTF8Value.length();
-
-		char *Out=new char[m_UTF8Value.length()*4];
-		memset(Out,0,m_UTF8Value.length()*4);
-		size_t OutLeft=m_UTF8Value.length()*4;
-
-		char *InBuff=In;
-		char *OutBuff=Out;
+		setlocale(LC_ALL, "");
+		char *Codeset = nl_langinfo(CODESET);
 
 		std::stringstream NewCodeset;
 		NewCodeset << Codeset << "//TRANSLIT//IGNORE";
 
-		iconv_t Convert=iconv_open(NewCodeset.str().c_str(),"UTF-8");
-		if ((iconv_t)-1!=Convert)
+		m_DisplayValue = ConvertValue(m_UTF8Value, NewCodeset.str());
+
+		m_FilesystemValue = ConvertValue(m_UTF8Value, "ASCII//TRANSLIT//IGNORE");
+
+		for (std::string::size_type count = 0; count < m_FilesystemValue.length(); count++)
 		{
-			if ((size_t)-1!=iconv(Convert,&InBuff,&InLeft,&OutBuff,&OutLeft))
-			{
-				if (OutLeft>=sizeof(char))
-				    *OutBuff='\0';
-
-				m_DisplayValue=Out;
-			}
-			else
-			{
-				std::stringstream os;
-				os << "iconv: "  << strerror(errno);
-				CErrorLog::Log(os.str());
-			}
-
-			iconv_close(Convert);
-		}
-		else
-		{
-			std::stringstream os;
-			os << "iconv_open: "  << strerror(errno);
-			CErrorLog::Log(os.str());
-		}
-
-		if (In)
-			delete[] In;
-
-		if (Out)
-			delete[] Out;
-
-		if (m_DisplayValue.empty())
-		{
-			char *out=0;
-			size_t out_length=0;
-			m_DisplayValue=m_UTF8Value;
-
-			if (0==unac_string("UTF-8",m_DisplayValue.c_str(),m_DisplayValue.length(),&out,&out_length))
-				m_DisplayValue=out;
-			else
-				perror("unac_string");
-
-			if (out)
-				free(out);
+			if (m_cBadChars.find(m_FilesystemValue[count]) != std::string::npos)
+				m_FilesystemValue.replace(count, 1, "-");
 		}
 	}
 }
 
-bool CUTF8Tag::operator ==(const CUTF8Tag& Other) const
+bool CUTF8Tag::operator==(const CUTF8Tag &Other) const
 {
-	return m_UTF8Value==Other.m_UTF8Value;
+	return m_UTF8Value == Other.m_UTF8Value;
 }
 
-bool CUTF8Tag::operator !=(const CUTF8Tag& Other) const
+bool CUTF8Tag::operator!=(const CUTF8Tag &Other) const
 {
-	return !(*this==Other);
+	return !(*this == Other);
 }
 
 CUTF8Tag CUTF8Tag::operator+(const CUTF8Tag &Other)
@@ -156,4 +102,59 @@ std::string CUTF8Tag::UTF8Value() const
 std::string CUTF8Tag::DisplayValue() const
 {
 	return m_DisplayValue;
+}
+
+std::string CUTF8Tag::FilesystemValue() const
+{
+	return m_FilesystemValue;
+}
+
+std::string CUTF8Tag::ConvertValue(const std::string &Input, const std::string &NewCodeset)
+{
+	std::string RetVal;
+
+	char *In = new char[Input.length() + 1];
+	strcpy(In, Input.c_str());
+	size_t InLeft = Input.length();
+
+	char *Out = new char[Input.length() * 4];
+	memset(Out, 0, Input.length() * 4);
+	size_t OutLeft = Input.length() * 4;
+
+	char *InBuff = In;
+	char *OutBuff = Out;
+
+	iconv_t Convert = iconv_open(NewCodeset.c_str(), "UTF-8");
+	if ((iconv_t)-1 != Convert)
+	{
+		if ((size_t)-1 != iconv(Convert, &InBuff, &InLeft, &OutBuff, &OutLeft))
+		{
+			if (OutLeft >= sizeof(char))
+				*OutBuff = '\0';
+
+			RetVal = Out;
+		}
+		else
+		{
+			std::stringstream os;
+			os << "iconv: " << strerror(errno);
+			CErrorLog::Log(os.str());
+		}
+
+		iconv_close(Convert);
+	}
+	else
+	{
+		std::stringstream os;
+		os << "iconv_open: " << strerror(errno);
+		CErrorLog::Log(os.str());
+	}
+
+	if (In)
+		delete[] In;
+
+	if (Out)
+		delete[] Out;
+
+	return RetVal;
 }

@@ -33,22 +33,25 @@
 class CUTF8Tag
 {
 public:
-	CUTF8Tag(const std::string& UTF8Value="");
+	CUTF8Tag(const std::string &UTF8Value = "");
 
-	bool operator ==(const CUTF8Tag& Other) const;
-	bool operator !=(const CUTF8Tag& Other) const;
+	bool operator==(const CUTF8Tag &Other) const;
+	bool operator!=(const CUTF8Tag &Other) const;
 	CUTF8Tag operator+(const CUTF8Tag &Other);
 
 	bool empty() const;
 
 	std::string UTF8Value() const;
 	std::string DisplayValue() const;
+	std::string FilesystemValue() const;
 
 protected:
 	std::string m_UTF8Value;
 	std::string m_DisplayValue;
+	std::string m_FilesystemValue;
+	static const std::string m_cBadChars;
 
-	void Convert();
+	static std::string ConvertValue(const std::string &Input, const std::string &NewCodeset);
 };
 
 #endif

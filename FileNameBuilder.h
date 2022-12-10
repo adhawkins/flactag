@@ -43,8 +43,7 @@ public:
 private:
 	void BuildPath();
 	void ReplaceStringFromTag(const std::string& Search, const std::string& ReplaceTag, bool FirstOnly);
-	void ReplaceString(const std::string& Search, const std::string& Replace);
-	std::string FixString(const std::string& String) const;
+	void ReplaceString(const std::string &Search, const std::string &Replace);
 
 	tTagMap m_Tags;
 	std::string m_BasePath;

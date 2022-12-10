@@ -26,7 +26,6 @@ pkg_search_module(SLANG REQUIRED slang)
 pkg_search_module(LIBMUSICBRAINZ5CC REQUIRED libmusicbrainz5cc)
 pkg_search_module(FLACPP REQUIRED flac++)
 pkg_search_module(LIBDISCID REQUIRED libdiscid)
-pkg_search_module(UNAC REQUIRED unac)
 pkg_search_module(LIBCOVERARTCC REQUIRED libcoverartcc)
 
 find_package(ImageMagick COMPONENTS Magick++ REQUIRED)
@@ -80,7 +79,6 @@ target_link_libraries(flactag
 	${LIBMUSICBRAINZ5CC_LIBRARIES}
 	${FLACPP_LIBRARIES}
 	${LIBDISCID_LIBRARIES}
-	${UNAC_LIBRARIES}
 	${LIBCOVERARTCC_LIBRARIES}
 	${ImageMagick_LIBRARIES}
 )
