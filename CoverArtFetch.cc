@@ -27,6 +27,8 @@
 
 #include "CoverArtFetch.h"
 
+#include <sstream>
+
 #include "config.h"
 
 #include "ErrorLog.h"
@@ -60,23 +62,33 @@ void CCoverArtFetch::Fetch(const std::string &ReleaseID, const std::string &ASIN
 
 		std::string URL = "/images/P/" + ASIN + ".02.LZZZZZZZ.jpg";
 
-		MusicBrainz5::CHTTPFetch Fetch("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36", "images.amazon.com");
-
-		int Bytes = Fetch.Fetch(URL);
-		if (Bytes < 1000)
+		try
 		{
-			URL = "/images/P/" + ASIN + ".02.MZZZZZZZ.jpg";
-			Bytes = Fetch.Fetch(URL);
-		}
+			MusicBrainz5::CHTTPFetch Fetch("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36", "images.amazon.com");
 
-		if (Bytes > 0)
-		{
+			int Bytes = Fetch.Fetch(URL);
 			if (Bytes < 1000)
-				CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+			{
+				URL = "/images/P/" + ASIN + ".02.MZZZZZZZ.jpg";
+				Bytes = Fetch.Fetch(URL);
+			}
+
+			if (Bytes > 0)
+			{
+				if (Bytes < 1000)
+					CErrorLog::Log("Album art downloaded was less than 1000 bytes, ignoring");
+				else
+					m_CoverArt = CCoverArt(Fetch.Data());
+			}
 			else
-				m_CoverArt = CCoverArt(Fetch.Data());
+				CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
 		}
-		else
-			CErrorLog::Log(std::string("Error downloading art: ") + Fetch.ErrorMessage());
+
+		catch (MusicBrainz5::CExceptionBase &e)
+		{
+			std::stringstream os;
+			os << "Amazon coverart fetch exception: '" << e.what() << "'";
+			CErrorLog::Log(os.str());
+		}
 	}
 }
