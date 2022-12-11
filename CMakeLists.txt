@@ -46,6 +46,7 @@ set(MAGICK_CXX_FLAGS ${magick_config_hdri} ${magick_config_quantum})
 add_executable(flactag
 	Album.cc
 	AlbumWindow.cc
+	AlbumInfoWindow.cc
 	base64.cc
 	CommandLine.cc
 	ConfigFile.cc
@@ -63,7 +64,6 @@ add_executable(flactag
 	TagName.cc
 	TagsWindow.cc
 	Track.cc
-	TrackWindow.cc
 	UTF8Tag.cc
 	WriteInfo.cc
 )

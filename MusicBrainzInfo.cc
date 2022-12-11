@@ -207,6 +207,8 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease &Release, const
 
 	Album.SetASIN(Release.ASIN());
 
+	Album.SetBarcode(Release.Barcode());
+
 	Album.SetCoverArt(GetCoverArt(Release.ID(), Album.ASIN()));
 
 	if (Release.ReleaseGroup())
@@ -221,6 +223,8 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease &Release, const
 		AlbumDate = AlbumDate.substr(0, MinusPos);
 
 	Album.SetDate(AlbumDate);
+
+	Album.SetCountry(Release.Country());
 
 	return Album;
 }

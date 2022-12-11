@@ -1,27 +1,27 @@
 /* --------------------------------------------------------------------------
 
-   flactag -- A tagger for single album FLAC files with embedded CUE sheets
-   						using data retrieved from the MusicBrainz service
+	 flactag -- A tagger for single album FLAC files with embedded CUE sheets
+							using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006 Andrew Hawkins
+	 Copyright (C) 2006-2022 Andrew Hawkins
 
-   This file is part of flactag.
+	 This file is part of flactag.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
+	 This program is free software: you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published by
 	 the Free Software Foundation, either version 3 of the License, or
 	 (at your option) any later version.
 
-   Flactag is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
+	 Flactag is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	 Lesser General Public License for more details.
 
-   You should have received a copy of the GNU General Public
-   License along with this library; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+	 You should have received a copy of the GNU General Public
+	 License along with this library; if not, write to the Free Software
+	 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-     $Id$
+		 $Id$
 
 ----------------------------------------------------------------------------*/
 
@@ -46,6 +46,8 @@ public:
 	CUTF8Tag ArtistSort() const;
 	CUTF8Tag Date() const;
 	CUTF8Tag ASIN() const;
+	CUTF8Tag Barcode() const;
+	CUTF8Tag Country() const;
 	std::vector<CTrack> Tracks() const;
 	CUTF8Tag ArtistID() const;
 	CUTF8Tag AlbumID() const;
@@ -54,6 +56,8 @@ public:
 	int DiskNumber() const;
 	CCoverArt CoverArt() const;
 
+	void SetBarcode(const CUTF8Tag &Barcode);
+	void SetCountry(const CUTF8Tag &Country);
 	void SetDate(const CUTF8Tag & Date);
 	void SetName(const CUTF8Tag& Name);
 	void SetArtist(const CUTF8Tag & Artist);
@@ -71,6 +75,8 @@ private:
 	CUTF8Tag m_Name;
 	CUTF8Tag m_Artist;
 	CUTF8Tag m_ArtistSort;
+	CUTF8Tag m_Barcode;
+	CUTF8Tag m_Country;
 	CUTF8Tag m_Date;
 	CUTF8Tag m_ASIN;
 	CUTF8Tag m_ArtistID;

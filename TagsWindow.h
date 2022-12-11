@@ -1,16 +1,16 @@
 /* --------------------------------------------------------------------------
 
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
-   						using data retrieved from the MusicBrainz service
+              using data retrieved from the MusicBrainz service
 
-   Copyright (C) 2006 Andrew Hawkins
+   Copyright (C) 2006-2022 Andrew Hawkins
 
    This file is part of flactag.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-	 the Free Software Foundation, either version 3 of the License, or
-	 (at your option) any later version.
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
    Flactag is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,7 +40,7 @@ public:
 	void SetModified(bool Modified);
 
 	virtual int NumLines() const;
-	virtual std::string GetLine(int Line) const;
+  virtual std::string GetLine(size_t Line) const override;
 
 private:
 	tTagMap m_Tags;

@@ -43,7 +43,7 @@
 #include "flactag.h"
 #include "Album.h"
 #include "AlbumWindow.h"
-#include "TrackWindow.h"
+#include "AlbumInfoWindow.h"
 #include "FlacInfo.h"
 #include "TagsWindow.h"
 #include "MusicBrainzInfo.h"
@@ -323,11 +323,11 @@ void CFlacTag::Interactive()
 	SLsmg_cls();
 
 	CAlbumWindow AlbumWindow(m_Albums);
-	CTrackWindow TrackWindow(m_Albums);
+	CAlbumInfoWindow AlbumInfoWindow(m_Albums);
 	CTagsWindow TagsWindow;
 
 	AlbumWindow.SetSelected(true);
-	TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+	AlbumInfoWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 
 	TagsWindow.SetTags(m_WriteInfo.Tags());
 
@@ -350,7 +350,7 @@ void CFlacTag::Interactive()
 
 			int WindowHeight = (SLtt_Screen_Rows - 5) / 2;
 			AlbumWindow.SetDimensions(0, 0, SLtt_Screen_Cols, 5);
-			TrackWindow.SetDimensions(0, 5, SLtt_Screen_Cols, WindowHeight);
+			AlbumInfoWindow.SetDimensions(0, 5, SLtt_Screen_Cols, WindowHeight);
 			TagsWindow.SetDimensions(0, 5 + WindowHeight, SLtt_Screen_Cols, SLtt_Screen_Rows - WindowHeight - 6);
 		}
 
@@ -358,7 +358,7 @@ void CFlacTag::Interactive()
 		TagsWindow.SetModified(Modified);
 
 		AlbumWindow.Draw();
-		TrackWindow.Draw();
+		AlbumInfoWindow.Draw();
 		TagsWindow.Draw();
 
 		SLsmg_gotorc(SLtt_Screen_Rows - 1, 0);
@@ -413,11 +413,11 @@ void CFlacTag::Interactive()
 				{
 				case eWindow_Albums:
 					AlbumWindow.PageDown();
-					TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+					AlbumInfoWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 					break;
 
 				case eWindow_Tracks:
-					TrackWindow.PageDown();
+					AlbumInfoWindow.PageDown();
 					break;
 
 				case eWindow_Tags:
@@ -431,11 +431,11 @@ void CFlacTag::Interactive()
 				{
 				case eWindow_Albums:
 					AlbumWindow.PageUp();
-					TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+					AlbumInfoWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 					break;
 
 				case eWindow_Tracks:
-					TrackWindow.PageUp();
+					AlbumInfoWindow.PageUp();
 					break;
 
 				case eWindow_Tags:
@@ -449,11 +449,11 @@ void CFlacTag::Interactive()
 				{
 				case eWindow_Albums:
 					AlbumWindow.NextLine();
-					TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+					AlbumInfoWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 					break;
 
 				case eWindow_Tracks:
-					TrackWindow.NextLine();
+					AlbumInfoWindow.NextLine();
 					break;
 
 				case eWindow_Tags:
@@ -467,11 +467,11 @@ void CFlacTag::Interactive()
 				{
 				case eWindow_Albums:
 					AlbumWindow.PreviousLine();
-					TrackWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
+					AlbumInfoWindow.SetCurrentAlbum(AlbumWindow.GetCurrentAlbum());
 					break;
 
 				case eWindow_Tracks:
-					TrackWindow.PreviousLine();
+					AlbumInfoWindow.PreviousLine();
 					break;
 
 				case eWindow_Tags:
@@ -497,7 +497,7 @@ void CFlacTag::Interactive()
 				}
 
 				AlbumWindow.SetSelected(m_SelectedWindow == eWindow_Albums);
-				TrackWindow.SetSelected(m_SelectedWindow == eWindow_Tracks);
+				AlbumInfoWindow.SetSelected(m_SelectedWindow == eWindow_Tracks);
 				TagsWindow.SetSelected(m_SelectedWindow == eWindow_Tags);
 				break;
 
@@ -948,6 +948,8 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	SetTag(WriteTags, CTagName("ARTIST"), ThisAlbum.Artist());
 	SetTag(WriteTags, CTagName("ARTISTSORT"), ThisAlbum.ArtistSort());
 	SetTag(WriteTags, CTagName("ALBUMARTIST"), ThisAlbum.Artist());
+	SetTag(WriteTags, CTagName("BARCODE"), ThisAlbum.Barcode());
+	SetTag(WriteTags, CTagName("RELEASECOUNTRY"), ThisAlbum.Country());
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMARTISTID"), ThisAlbum.ArtistID());
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMID"), ThisAlbum.AlbumID());
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMSTATUS"), ThisAlbum.Status());
