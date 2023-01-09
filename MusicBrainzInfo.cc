@@ -48,6 +48,7 @@
 #include "musicbrainz5/Artist.h"
 #include "musicbrainz5/Recording.h"
 #include "musicbrainz5/NameCredit.h"
+#include "musicbrainz5/Disc.h"
 
 CMusicBrainzInfo::CMusicBrainzInfo(const CConfigFile &ConfigFile, const CCuesheet &Cuesheet, bool OverrideDiskID, const std::string &DiskID)
 		: m_ConfigFile(ConfigFile),
@@ -91,19 +92,25 @@ bool CMusicBrainzInfo::LoadInfo(const std::string &FlacFile)
 
 	try
 	{
-		MusicBrainz5::CReleaseList ReleaseList = MusicBrainz.LookupDiscID(m_DiskID);
+		MusicBrainz5::CQuery::tParamMap Params = {
+				{"inc", "artists recordings release-groups artist-credits aliases"}};
 
-		if (ReleaseList.NumItems())
+		auto Response = MusicBrainz.Query("discid",
+																			m_DiskID,
+																			"",
+																			Params);
+		auto Disc = Response.Disc();
+		auto ReleaseList = Disc ? Disc->ReleaseList() : nullptr;
+
+		if (Disc && ReleaseList && ReleaseList->NumItems())
 		{
 			RetVal = true;
 
-			for (int ReleaseNum = 0; ReleaseNum < ReleaseList.NumItems(); ReleaseNum++)
+			for (int ReleaseNum = 0; ReleaseNum < ReleaseList->NumItems(); ReleaseNum++)
 			{
-				MusicBrainz5::CRelease *Release = ReleaseList.Item(ReleaseNum);
+				MusicBrainz5::CRelease *FullRelease = ReleaseList->Item(ReleaseNum);
 
-				MusicBrainz5::CRelease FullRelease = MusicBrainz.LookupRelease(Release->ID());
-
-				MusicBrainz5::CMediumList MediaList = FullRelease.MediaMatchingDiscID(m_DiskID);
+				MusicBrainz5::CMediumList MediaList = FullRelease->MediaMatchingDiscID(m_DiskID);
 				for (int MediumNumber = 0; MediumNumber < MediaList.NumItems(); MediumNumber++)
 				{
 					MusicBrainz5::CMedium *Medium = MediaList.Item(MediumNumber);
@@ -165,33 +172,33 @@ CCoverArt CMusicBrainzInfo::GetCoverArt(const CUTF8Tag &ReleaseID, const CUTF8Ta
 	return CoverArtFetch.CoverArt();
 }
 
-CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease &Release, const MusicBrainz5::CMedium *Medium)
+CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease *Release, const MusicBrainz5::CMedium *Medium)
 {
 	CAlbum Album;
 
-	if (!Release.Title().empty())
+	if (!Release->Title().empty())
 	{
-		Album.SetName(Release.Title());
-		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release.Disambiguation().empty())
+		Album.SetName(Release->Title());
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release->Disambiguation().empty())
 		{
-			Album.SetName(Album.Name() + std::string(" (") + Release.Disambiguation() + std::string(")"));
+			Album.SetName(Album.Name() + std::string(" (") + Release->Disambiguation() + std::string(")"));
 		}
 	}
-	else if (Release.ReleaseGroup() && !Release.ReleaseGroup()->Title().empty())
+	else if (Release->ReleaseGroup() && !Release->ReleaseGroup()->Title().empty())
 	{
-		Album.SetName(Release.ReleaseGroup()->Title());
-		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release.ReleaseGroup()->Disambiguation().empty())
+		Album.SetName(Release->ReleaseGroup()->Title());
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::IncludeAlbumDisambiguation) && !Release->ReleaseGroup()->Disambiguation().empty())
 		{
-			Album.SetName(Album.Name() + std::string(" (") + Release.ReleaseGroup()->Disambiguation() + std::string(")"));
+			Album.SetName(Album.Name() + std::string(" (") + Release->ReleaseGroup()->Disambiguation() + std::string(")"));
 		}
 	}
 
-	if (Release.MediumList() && Release.MediumList()->NumItems() > 1)
+	if (Release->MediumList() && Release->MediumList()->NumItems() > 1)
 		Album.SetDiskNumber(Medium->Position());
 
-	Album.SetAlbumID(Release.ID());
+	Album.SetAlbumID(Release->ID());
 
-	MusicBrainz5::CArtistCredit *ArtistCredit = Release.ArtistCredit();
+	MusicBrainz5::CArtistCredit *ArtistCredit = Release->ArtistCredit();
 	if (ArtistCredit)
 	{
 		std::string ArtistID;
@@ -205,18 +212,18 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease &Release, const
 		Album.SetArtistSort(ArtistSort);
 	}
 
-	Album.SetASIN(Release.ASIN());
+	Album.SetASIN(Release->ASIN());
 
-	Album.SetBarcode(Release.Barcode());
+	Album.SetBarcode(Release->Barcode());
 
-	Album.SetCoverArt(GetCoverArt(Release.ID(), Album.ASIN()));
+	Album.SetCoverArt(GetCoverArt(Release->ID(), Album.ASIN()));
 
-	if (Release.ReleaseGroup())
-		Album.SetType(AlbumType(Release.ReleaseGroup()->PrimaryType()));
+	if (Release->ReleaseGroup())
+		Album.SetType(AlbumType(Release->ReleaseGroup()->PrimaryType()));
 
-	Album.SetStatus(AlbumStatus(Release.Status()));
+	Album.SetStatus(AlbumStatus(Release->Status()));
 
-	std::string AlbumDate = Release.Date();
+	std::string AlbumDate = Release->Date();
 
 	std::string::size_type MinusPos = AlbumDate.find("-");
 	if (std::string::npos != MinusPos)
@@ -224,7 +231,7 @@ CAlbum CMusicBrainzInfo::ParseAlbum(const MusicBrainz5::CRelease &Release, const
 
 	Album.SetDate(AlbumDate);
 
-	Album.SetCountry(Release.Country());
+	Album.SetCountry(Release->Country());
 
 	return Album;
 }

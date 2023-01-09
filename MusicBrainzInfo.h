@@ -52,7 +52,7 @@ public:
 private:
 	std::string AlbumType(const std::string Type) const;
 	std::string AlbumStatus(const std::string Status) const;
-	CAlbum ParseAlbum(const MusicBrainz5::CRelease& Release, const MusicBrainz5::CMedium* Medium);
+	CAlbum ParseAlbum(const MusicBrainz5::CRelease *Release, const MusicBrainz5::CMedium *Medium);
 	CTrack ParseTrack(const MusicBrainz5::CTrack* MBTrack);
 	void ParseArtist(const MusicBrainz5::CArtistCredit* ArtistCredit, std::string& ArtistID, std::string& ArtistName, std::string& ArtistSort);
 	CCoverArt GetCoverArt(const CUTF8Tag &ReleaseID, const CUTF8Tag &ASIN);
