@@ -46,6 +46,9 @@ public:
     CreateCuesheetAfterRename,
     IncludeAlbumDisambiguation,
     StandardiseArtists,
+    WriteMusicbrainzAlbumArtistIDs,
+    WriteMusicbrainzArtistIDs,
+    WriteMusicbrainzTrackIDs,
   };
 
   CConfigFile();
@@ -70,8 +73,10 @@ private:
       {tConfigEntry::CreateCuesheetAfterRename, "CreateCuesheetAfterRename"},
       {tConfigEntry::IncludeAlbumDisambiguation, "IncludeAlbumDisambiguation"},
       {tConfigEntry::StandardiseArtists, "StandardiseArtists"},
+      {tConfigEntry::WriteMusicbrainzAlbumArtistIDs, "WriteMusicbrainzAlbumArtistIDs"},
+      {tConfigEntry::WriteMusicbrainzArtistIDs, "WriteMusicbrainzArtistIDs"},
+      {tConfigEntry::WriteMusicbrainzTrackIDs, "WriteMusicbrainzTrackIDs"},
   };
 };
 
 #endif
-

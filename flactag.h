@@ -1,7 +1,7 @@
 /* --------------------------------------------------------------------------
 
    flactag -- A tagger for single album FLAC files with embedded CUE sheets
-   						using data retrieved from the MusicBrainz service
+						using data retrieved from the MusicBrainz service
 
    Copyright (C) 2006-2012 Andrew Hawkins
    Copyright (C) 2011-2012 Daniel Pocock
@@ -22,7 +22,7 @@
    License along with this library; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-     $Id$
+	 $Id$
 
 ----------------------------------------------------------------------------*/
 
@@ -64,6 +64,7 @@ private:
 	bool CopyFile(const std::string& SourceFile, const std::string& DestFile) const;
 	void CopyTags(int AlbumNumber);
 	void SetTag(tTagMap& Tags, const CTagName& TagName, const CUTF8Tag& TagValue);
+	void ClearTag(tTagMap& Tags, const CTagName& TagName);
 	bool NeedsRename() const;
 
 	CCommandLine m_CommandLine;

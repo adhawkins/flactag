@@ -79,8 +79,8 @@ int main(int argc, char *const argv[])
 }
 
 CFlacTag::CFlacTag(const CCommandLine &CommandLine)
-		: m_CommandLine(CommandLine),
-			m_SelectedWindow(eWindow_Albums)
+	: m_CommandLine(CommandLine),
+	  m_SelectedWindow(eWindow_Albums)
 {
 	// Magick::InitializeMagick(NULL);
 
@@ -577,15 +577,15 @@ bool CFlacTag::LoadData()
 		m_WriteInfo = CWriteInfo(m_FlacInfo.Tags(), m_FlacInfo.CoverArt());
 
 		CFileNameBuilder FileNameBuilder(m_FlacInfo.Tags(),
-																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
-																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
-																		 m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName));
+										 m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
+										 m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
+										 m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName));
 
 		CFileNameBuilder CueFileNameBuilder(m_FlacInfo.Tags(),
-																				m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
-																				m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
-																				m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName),
-																				"cue");
+											m_ConfigFile.Value(CConfigFile::tConfigEntry::BasePath),
+											m_ConfigFile.Value(CConfigFile::tConfigEntry::SingleDiskFileName),
+											m_ConfigFile.Value(CConfigFile::tConfigEntry::MultiDiskFileName),
+											"cue");
 
 		m_RenameFile = FileNameBuilder.FileName();
 		m_RenameFileCue = CueFileNameBuilder.FileName();
@@ -593,7 +593,7 @@ bool CFlacTag::LoadData()
 		tTagMap WriteTags = m_WriteInfo.Tags();
 
 		if (WriteTags.end() == WriteTags.find(CTagName("ALBUM")) &&
-				WriteTags.end() == WriteTags.find(CTagName("ARTIST")))
+			WriteTags.end() == WriteTags.find(CTagName("ARTIST")))
 		{
 			// Populate write tags with empty tags
 
@@ -936,8 +936,23 @@ void CFlacTag::CopyTags(int AlbumNumber)
 		SetTag(WriteTags, CTagName("TITLE", Track.Number()), Track.Name());
 		SetTag(WriteTags, CTagName("ARTIST", Track.Number()), Track.Artist());
 		SetTag(WriteTags, CTagName("ARTISTSORT", Track.Number()), Track.ArtistSort());
-		SetTag(WriteTags, CTagName("MUSICBRAINZ_ARTISTID", Track.Number()), Track.ArtistID());
-		SetTag(WriteTags, CTagName("MUSICBRAINZ_TRACKID", Track.Number()), Track.TrackID());
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::WriteMusicbrainzArtistIDs))
+		{
+			SetTag(WriteTags, CTagName("MUSICBRAINZ_ARTISTID", Track.Number()), Track.ArtistID());
+		}
+		else
+		{
+			ClearTag(WriteTags, CTagName("MUSICBRAINZ_ARTISTID", Track.Number()));
+		}
+
+		if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::WriteMusicbrainzTrackIDs))
+		{
+			SetTag(WriteTags, CTagName("MUSICBRAINZ_TRACKID", Track.Number()), Track.TrackID());
+		}
+		else
+		{
+			ClearTag(WriteTags, CTagName("MUSICBRAINZ_TRACKID", Track.Number()));
+		}
 	}
 
 	std::string AlbumName = ThisAlbum.Name().UTF8Value();
@@ -950,7 +965,14 @@ void CFlacTag::CopyTags(int AlbumNumber)
 	SetTag(WriteTags, CTagName("ALBUMARTIST"), ThisAlbum.Artist());
 	SetTag(WriteTags, CTagName("BARCODE"), ThisAlbum.Barcode());
 	SetTag(WriteTags, CTagName("RELEASECOUNTRY"), ThisAlbum.Country());
-	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMARTISTID"), ThisAlbum.ArtistID());
+	if (m_ConfigFile.BoolValue(CConfigFile::tConfigEntry::WriteMusicbrainzAlbumArtistIDs))
+	{
+		SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMARTISTID"), ThisAlbum.ArtistID());
+	}
+	else
+	{
+		ClearTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMARTISTID"));
+	}
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMID"), ThisAlbum.AlbumID());
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMSTATUS"), ThisAlbum.Status());
 	SetTag(WriteTags, CTagName("MUSICBRAINZ_ALBUMTYPE"), ThisAlbum.Type());
@@ -973,7 +995,7 @@ void CFlacTag::CopyTags(int AlbumNumber)
 		SetTag(WriteTags, CTagName("COMPILATION"), CUTF8Tag("1"));
 
 #ifdef FLAC_API_VERSION_CURRENT
-	SetTag(WriteTags, CTagName("COVERART"), CUTF8Tag(""));
+	ClearTag(WriteTags, CTagName("COVERART"));
 	m_WriteInfo.SetCoverArt(ThisAlbum.CoverArt());
 #else
 	SetTag(WriteTags, CTagName("COVERART"), CUTF8Tag(ThisAlbum.CoverArt()));
@@ -987,7 +1009,12 @@ void CFlacTag::SetTag(tTagMap &Tags, const CTagName &TagName, const CUTF8Tag &Ta
 	if (!TagValue.empty())
 		Tags[TagName] = TagValue;
 	else
-		Tags.erase(TagName);
+		ClearTag(Tags, TagName);
+}
+
+void CFlacTag::ClearTag(tTagMap &Tags, const CTagName &TagName)
+{
+	Tags.erase(TagName);
 }
 
 bool CFlacTag::NeedsRename() const
